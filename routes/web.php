@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,3 +32,20 @@ Route::get('/cart', function () {
 Route::get('/check-out', function () {
     return view('client.check-out');
 })->name('checkOut');
+
+Route::get('media', function () {
+    return view('admin.media.media');
+})->name('media');
+Route::view('dashboard', 'admin.dashboard')->name('dashboard');
+Route::get('login', [AuthController::class, 'index'])->name('form-login');
+Route::post('login', [AuthController::class,'store'])->name('login');
+
+Route::get('tinycme', function (){
+    return view('admin.post.blog');
+})->name('blog');
+
+Route::get('xoa', function(){
+    return view('admin.post.add');
+});
+
+Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');

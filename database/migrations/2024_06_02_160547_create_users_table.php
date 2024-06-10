@@ -25,9 +25,9 @@ return new class extends Migration
             $table->boolean('active')->default(0);
             $table->boolean('status')->default(false);
             $table->string('address', 255);
-            $table->foreignId('province_id')->constrained()->onDelete('cascade');
-            $table->foreignId('district_id')->constrained()->onDelete('cascade');
-            $table->foreignId('ward_id')->constrained()->onDelete('cascade');
+            $table->foreignId('province_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('district_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('ward_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
