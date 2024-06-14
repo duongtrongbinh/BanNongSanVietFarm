@@ -2,12 +2,12 @@
 
 namespace App\Http\Repositories;
 
-use App\Http\Repositories\RepositoryInteface;
+use App\Http\Repositories\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-abstract class Repository implements RepositoryInteface
+abstract class Repository implements RepositoryInterface
 {
     protected $model;
 
@@ -55,6 +55,11 @@ abstract class Repository implements RepositoryInteface
         $model = $this->model->find($id);
         $model->update($attributes);
         return $model;
+    }
+
+    public function delete(int|array $id): int
+    {
+        return $this->model->delete($id);
     }
 
     public function destroy(int|array $id): int

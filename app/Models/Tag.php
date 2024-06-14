@@ -20,6 +20,6 @@ class Tag extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Tag::class, 'product_tags', 'tag_id', 'product_id')->withTrashed();
     }
 }

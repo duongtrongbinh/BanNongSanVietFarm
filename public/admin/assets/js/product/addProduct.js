@@ -21,6 +21,7 @@ let editor_config = {
     tinyMCE.activeEditor.windowManager.openUrl({
       url : cmsURL,
       title : 'Filemanager',
+      
       width : x * 0.8,
       height : y * 0.8,
       resizable : "yes",
@@ -33,7 +34,6 @@ let editor_config = {
 };
 
 tinymce.init(editor_config);
-
 
     var editor_confihg = {
       path_absolute : "",
