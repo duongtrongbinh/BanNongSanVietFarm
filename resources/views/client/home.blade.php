@@ -113,13 +113,13 @@
                     <div class="col-lg-8 text-end">
                         <ul class="nav nav-pills d-inline-flex text-center mb-5">
                             <li class="nav-item">
-                                <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-1">
+                                <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-0">
                                     <span class="text-dark" style="width: 130px;">All Products</span>
                                 </a>
                             </li>
-                            @foreach ($categories as $category)
+                            @foreach ($categories as $key => $category)
                                 <li class="nav-item">
-                                    <a class="d-flex py-2 m-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-2">
+                                    <a class="d-flex py-2 m-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-{{ $key + 1 }}">
                                         <span class="text-dark" style="width: 130px;">{{ $category->name }}</span>
                                     </a>
                                 </li>
@@ -128,19 +128,19 @@
                     </div>
                 </div>
                 <div class="tab-content">
-                    <div id="tab-1" class="tab-pane fade show p-0 active">
+                    <div id="tab-0" class="tab-pane fade show p-0 active">
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
                                     @foreach ($products as $product)
                                         <div class="col-md-6 col-lg-4 col-xl-3">
-                                            <a class="col-md-6" href="{{ route('product', $product->id) }}">
-                                                <div class="rounded position-relative fruite-item">
+                                            <a href="{{ route('product', $product->id) }}">
+                                                <div class="rounded position-relative fruite-item border border-secondary">
                                                     <div class="fruite-img">
                                                         <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
                                                     </div>
                                                     <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
-                                                    <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                    <div class="p-4 border-top-0 rounded-bottom">
                                                         <h4 class="text-truncate">{{ $product->name }}</h4>
                                                         <p class="text-truncate">{{ $product->description }}</p>
                                                         <div class="d-flex justify-content-between flex-lg-wrap">
@@ -150,7 +150,6 @@
                                                     </div>
                                                 </div>
                                             </a>
-                                            
                                         </div>
                                     @endforeach
                                 </div>
@@ -158,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tab-2" class="tab-pane fade show p-0">
+                    <div id="tab-1" class="tab-pane fade show p-0">
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
@@ -198,7 +197,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tab-3" class="tab-pane fade show p-0">
+                    <div id="tab-2" class="tab-pane fade show p-0">
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
@@ -238,7 +237,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tab-4" class="tab-pane fade show p-0">
+                    <div id="tab-3" class="tab-pane fade show p-0">
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">
@@ -278,7 +277,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="tab-5" class="tab-pane fade show p-0">
+                    <div id="tab-4" class="tab-pane fade show p-0">
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="row g-4">

@@ -52,8 +52,6 @@ class ProductController extends Controller
     public function store(ProductCreateRequest $request)
     {   
         $request['slug'] = Str::slug($request['name']);
-        $request['is_active'] = $request->input('is_active');
-        $request['is_home'] = $request->input('is_home');
         $image_ids = explode(',', $request->input('image')[0]);
         $image = array_shift($image_ids);
         $request['image'] = $image;
@@ -111,25 +109,22 @@ class ProductController extends Controller
         $product = $this->productRepository->updateWithRelations($product->id, $request->all(), ['brand', 'category']);
 
         $newImages = $image_ids;
-        $product_image = $product->product_images->pluck('id')->toArray();
+        $product_images = ProductImage::with(['product'])->where('product_id', $product->id)->get();
+        if ($product_images != Null) {
+            foreach ($product_images as $product_image) {
+                $this->productImageRepository->destroy($product_image->id);
+            }
+        }
         if (!empty($newImages)) {
             foreach ($newImages as $newImage) {
                 $request['product_id'] = $product->id;
                 $request['image'] = $newImage;
-                $this->productImageRepository->createWithRelations($request->all(), ['products']);
+                $this->productImageRepository->createWithRelations($request->all(), ['product']);
             }   
         }
-
-        DB::table('product_tags')->where('product_id', $product->id)->delete();
+        
         $tag_ids = $request->input('tag', []);
-        if (!empty($tag_ids)) {
-            foreach ($tag_ids as $tag_id) {
-                DB::table('product_tags')->insert([
-                    'product_id' => $product->id,
-                    'tag_id' => $tag_id,
-                ]);
-            }   
-        }
+        $product->tags()->sync($tag_ids);   
 
         return back()
             ->with('status', 'Success');
@@ -143,7 +138,15 @@ class ProductController extends Controller
     }
 
     public function destroy(Product $product)
-    {
+    {        
+        $product_images = ProductImage::with(['product'])->where('product_id', $product->id)->get();
+        if ($product_images != Null) {
+            foreach ($product_images as $product_image) {
+                $this->productImageRepository->destroy($product_image->id);
+            }
+        }
+
+        DB::table('product_tags')->where('product_id', $product->id)->delete();
         $this->productRepository->destroy($product->id);
 
         return response()->json(true);

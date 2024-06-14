@@ -110,26 +110,26 @@
             </div>
             <div class="col-12 mt-2">
               <label for="name">Description</label>
-              <textarea class="form-control" name="description"></textarea>
+              <textarea class="form-control" name="description">{{ old('description')}}</textarea>
               @error('description')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             <div class="col-12 mt-2">
               <label for="name">Content</label>
-              <textarea class="form-control my-editor-tinymce4" name="content"></textarea>
+              <textarea class="form-control my-editor-tinymce4" name="content">{{ old('content')}}</textarea>
               @error('content')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_active" id="flexSwitchCheckChecked">
+                <input class="form-check-input" type="checkbox" value="is_active" value="{{ old('is_active')}}" id="flexSwitchCheckChecked">
                 <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
               </div>
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_home" id="flexSwitchCheckChecked">
+                <input class="form-check-input" type="checkbox" value="is_home" value="{{ old('is_home')}}" id="flexSwitchCheckChecked">
                 <label class="form-check-label" for="flexSwitchCheckChecked">Home</label>
               </div>
             </div>

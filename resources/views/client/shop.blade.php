@@ -48,7 +48,10 @@
                                             @foreach ($categories as $category)
                                                 <li>
                                                     <div class="d-flex justify-content-between fruite-name">
-                                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>{{ $category->name }}</a>
+                                                        <a href="{{ route('category', $category->id) }}">
+                                                            <i class="fas fa-apple-alt me-2"></i>
+                                                            {{ $category->name }}
+                                                        </a>
                                                         <span>({{ count($category->products) }})</span>
                                                     </div>
                                                 </li>
@@ -164,24 +167,24 @@
                         <div class="col-lg-9">
                             <div class="row g-4 justify-content-center">
                                 @foreach ($products as $product)
-                                <div class="col-md-6 col-lg-6 col-xl-4">
-                                    <a href="{{ route('product', $product->id) }}">
-                                        <div class="rounded position-relative fruite-item">
-                                            <div class="fruite-img">
-                                                <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
-                                            </div>
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
-                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                                <h4 class="text-truncate">{{ $product->name }}</h4>
-                                                <p class="text-truncate">{{ $product->description }}</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">{{ number_format($product->price_sale, 3) }} VNĐ</p>
-                                                    <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                    <div class="col-md-6 col-lg-6 col-xl-4">
+                                        <a href="{{ route('product', $product->id) }}">
+                                            <div class="rounded position-relative fruite-item border border-secondary">
+                                                <div class="fruite-img">
+                                                    <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
+                                                </div>
+                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
+                                                <div class="p-4 border-top-0 rounded-bottom">
+                                                    <h4 class="text-truncate">{{ $product->name }}</h4>
+                                                    <p class="text-truncate">{{ $product->description }}</p>
+                                                    <div class="d-flex justify-content-between flex-lg-wrap">
+                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ number_format($product->price_sale, 3) }} VNĐ</p>
+                                                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </a>
-                                </div>
+                                        </a>
+                                    </div>
                                 @endforeach
                             </div>
                             {{ $products->links() }}
