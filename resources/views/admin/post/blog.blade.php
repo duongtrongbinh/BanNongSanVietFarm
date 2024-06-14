@@ -21,12 +21,12 @@
           </div>
         <div class="form-group mb-3">
               <label for="select2Multiple">Multiple Tags</label>
-            <select class="select2-multiple form-control" name="tags[]" multiple="multiple"
-                id="select2Multiple">
-                <option value="tag1">tag1</option>
-                <option value="tag2">tag2</option>
-                <option value="tag3">tag3</option>               
-            </select>
+              <select class="select2-multiple form-control" name="tags[]" multiple="multiple"
+                  id="select2Multiple">
+                  <option value="tag1">tag1</option>
+                  <option value="tag2">tag2</option>
+                  <option value="tag3">tag3</option>               
+              </select>
         </div>
   </div>
 </div>

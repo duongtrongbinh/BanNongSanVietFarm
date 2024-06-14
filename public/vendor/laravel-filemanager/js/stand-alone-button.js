@@ -1,6 +1,7 @@
 (function( $ ){
 
-  $.fn.filemanager = function(type, options) {
+  $
+  .fn.filemanager = function(type, options) {
     type = type || 'file';
 
     this.on('click', function(e) {
@@ -22,7 +23,7 @@
         // set or change the preview image src
         items.forEach(function (item) {
           target_preview.append(
-            $('<img>').css('height', '5rem').attr('src', item.thumb_url)
+            $('<img>').css('width', '5rem').attr('src', item.thumb_url)
           );
         });
 

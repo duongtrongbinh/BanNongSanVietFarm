@@ -1,7 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,16 +20,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function () {
-    return view('client.home');
-});
-Route::get('/shop', function () {
-    return view('client.shop');
-})->name('shop');
 
-Route::get('/product', function () {
-    return view('client.product');
-})->name('product');
+Route::get('/', [HomeController::class, 'home']);
+Route::get('/product/{id}', [HomeController::class, 'product'])->name('product');
+Route::get('/category/{id}', [HomeController::class, 'category'])->name('category');
+
+Route::get('/shop', [ShopController::class, 'shop'])->name('shop');
 
 Route::get('/cart', function () {
     return view('client.cart');
@@ -36,7 +38,8 @@ Route::get('/check-out', function () {
 Route::get('media', function () {
     return view('admin.media.media');
 })->name('media');
-Route::view('dashboard', 'admin.dashboard')->name('dashboard');
+
+Route::view('admin/dashboard', 'admin.dashboard')->name('dashboard');
 Route::get('login', [AuthController::class, 'index'])->name('form-login');
 Route::post('login', [AuthController::class,'store'])->name('login');
 
@@ -49,3 +52,14 @@ Route::get('xoa', function(){
 });
 
 Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+
+
+Route::resource('admin/brands', BrandController::class);
+Route::delete('admin/brands/{id}', [BrandController::class,'delete'])->name('brands.delete');
+
+Route::resource('admin/categories', CategoryController::class);
+
+Route::resource('admin/products', ProductController::class);
+Route::delete('admin/products/{id}', [ProductController::class,'delete'])->name('products.delete');
+
+Route::resource('admin/tags', TagController::class);
