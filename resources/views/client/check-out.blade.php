@@ -103,6 +103,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                  @foreach($products as $items)
                                     <tr>
                                         <th scope="row">
                                             <div class="d-flex align-items-center mt-2">
@@ -114,6 +115,7 @@
                                         <td class="py-5" id="price_sale">{{ $items->price_sale }}</td>
                                         <td class="py-5" id="quantity">3</td>
                                     </tr>
+                                  @endforeach
                                 </tbody>
                             </table>
                         </div>
