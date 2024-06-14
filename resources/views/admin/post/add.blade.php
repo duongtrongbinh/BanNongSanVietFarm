@@ -27,11 +27,11 @@
             <th scope="col">Action</th>
           </tr>
         </thead>
-        <tbody> 
+        <tbody>
 
         <tr>
             <td>
-                <a data-url="{{ route('post.destroy') }}"  class="btn btn-warning deleteSlide">Delete</a>
+                <a data-url="{{ route('post.destroy') }}"  class="btn btn-warning deleteSlide" >Delete</a>
                 {{-- data-id="{{ $id }}" --}}
             </td>
         </tr>

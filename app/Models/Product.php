@@ -41,4 +41,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+    public function flashSaleProducts()
+    {
+        return $this->hasMany(FlashSaleProduct::class, 'product_id');
+    }
 }

@@ -14,7 +14,7 @@
               <li class="nav-heading">{{ $item['title'] }}</li>
               @foreach ($item['subtitle'] as $value)
                   <li class="nav-item">
-                      <a class="nav-link collapsed" href="#">
+                      <a class="nav-link collapsed" href="{{ $value['route'] }}">
                           <i class="{{ $value['icon'] }}"></i>
                           <span>{{ $value['title'] }}</span>
                       </a>

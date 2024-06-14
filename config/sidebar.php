@@ -6,13 +6,24 @@ return [
             [
                 'title' => 'dashboard',
                 'icon' => 'bi bi-grid',
-                'route' => 'dashboard',
+                'route' => '/dashboard',
             ],
-    //         [
-    //             'title' => 'Product',
-    //             'icon' => 'bi bi-grid',
-    //             'route' => 'product.index',
-    //         ],
+
+            [
+                'title' => 'vouchers',
+                'icon' => 'bi bi-grid',
+                'route' => '/vouchers',
+            ],
+            [
+                'title' => 'orders',
+                'icon' => 'bi bi-grid',
+                'route' => '/orders',
+            ],
+            [
+                'title' => 'flash-sale',
+                'icon' => 'bi bi-grid',
+                'route' => '/flash-sales',
+            ],
     //         [
     //             'title' => 'Order',
     //             'icon' => 'bi bi-grid',

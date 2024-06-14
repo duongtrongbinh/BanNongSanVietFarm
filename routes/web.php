@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Client\OrderController;
+use \App\Http\Controllers\Admin\FlashSaleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,23 +31,37 @@ Route::get('/cart', function () {
     return view('client.cart');
 })->name('cart');
 
-Route::get('/check-out', function () {
-    return view('client.check-out');
-})->name('checkOut');
+Route::get('/check-out',[OrderController::class,'create'])->name('checkOut');
+
+Route::post('/check-out',[OrderController::class,'store']);
+
 
 Route::get('media', function () {
     return view('admin.media.media');
 })->name('media');
-Route::view('dashboard', 'admin.dashboard')->name('dashboard');
-Route::get('login', [AuthController::class, 'index'])->name('form-login');
-Route::post('login', [AuthController::class,'store'])->name('login');
 
-Route::get('tinycme', function (){
+Route::view('dashboard', 'admin.dashboard')->name('dashboard');
+
+Route::get('login', [AuthController::class, 'index'])->name('form-login');
+
+Route::post('login', [AuthController::class, 'store'])->name('login');
+
+Route::get('tinycme', function () {
     return view('admin.post.blog');
 })->name('blog');
 
-Route::get('xoa', function(){
+Route::get('xoa', function () {
     return view('admin.post.add');
 });
 
-Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+
+Route::get('post/1', [PostController::class, 'destroy'])->name('post.destroy');
+
+Route::resource('vouchers',VoucherController::class);
+Route::get('deleted/vouchers',[VoucherController::class,'deleted']);
+Route::post('restore/vouchers/{id}',[VoucherController::class,'restore'])->name('restore.vouchers');
+
+
+Route::resource('flash-sales',FlashSaleController::class);
+Route::get('orders', [App\Http\Controllers\Admin\OrderController::class,'index'])->name('orders');
+Route::get('order/{id}/detail', [App\Http\Controllers\Admin\OrderController::class,'orderDetail'])->name('orderDetail');
