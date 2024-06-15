@@ -41,4 +41,16 @@ class Product extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class, 'purchase_receipts')
+                    ->withPivot('reference_code', 'quantity', 'type_unit', 'order_code', 'cost');
+    }
+
+    public function purchaseReceipts()
+    {
+        return $this->belongsToMany(PurchaseReceipt::class, 'purchase_receipts', 'product_id', 'id')
+                    ->withPivot('quantity', 'type_unit', 'order_code', 'cost', 'created_by', 'updated_by');
+    }
 }

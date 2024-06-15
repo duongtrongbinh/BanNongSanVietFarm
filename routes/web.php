@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\PurchaseReceiptController;
+use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,3 +51,6 @@ Route::get('xoa', function(){
 });
 
 Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+
+Route::resource('supplier', SupplierController::class);
+Route::resource('purchase_receipt', PurchaseReceiptController::class);

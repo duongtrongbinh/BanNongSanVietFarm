@@ -13,10 +13,15 @@ function actionDelete(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                type: "GET",
+                type: "DELETE",
                 url: urlRequest,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content"
+                    ),
+                },
                 success: function (data) {
-                    if (data == true) {
+                    if (data.data == null) {
                         that.parent().parent().remove();
                         Swal.fire({
                             title: "Deleted!",
@@ -40,4 +45,5 @@ function actionDelete(e) {
 }
 $(function () {
     $(document).on("click", ".deleteSlide", actionDelete);
+    $(document).on("click", ".deleteSupplier", actionDelete);
 });
