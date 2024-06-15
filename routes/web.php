@@ -134,7 +134,3 @@ Route::group(['prefix' => ''], function (){
         Route::get('/auth/google/callback', 'handleGoogleCallback');
     }); 
 });
-
-
-
-
