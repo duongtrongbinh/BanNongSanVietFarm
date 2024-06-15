@@ -3,10 +3,11 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,5 +62,10 @@ Route::resource('admin/categories', CategoryController::class);
 
 Route::resource('admin/products', ProductController::class);
 Route::delete('admin/products/{id}', [ProductController::class,'delete'])->name('products.delete');
-
 Route::resource('admin/tags', TagController::class);
+//
+Route::resource('admin/post', \App\Http\Controllers\Admin\PostController::class);
+Route::resource('admin/comment', \App\Http\Controllers\Admin\CommentController::class);
+Route::delete('admin/products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
+    ->name('product.comment.destroy');
+Route::resource('admin/user',\App\Http\Controllers\Admin\UserController::class);
