@@ -8,6 +8,23 @@ return [
                 'icon' => 'bi bi-grid',
                 'route' => 'dashboard',
             ],
+
+            [
+                'title' => 'vouchers',
+                'icon' => 'ri-coupon-line',
+                'route' => 'vouchers.index',
+            ],
+            [
+                'title' => 'orders',
+                'icon' => 'ri-inbox-unarchive-line',
+                'route' => 'orders.index',
+            ],
+            [
+                'title' => 'flash-sale',
+                'icon' => 'ri-flashlight-line',
+                'route' => 'flash-sales.index',
+            ],
+
             [
                 'title' => 'Brand',
                 'icon' => 'bi bi-award',
@@ -30,6 +47,4 @@ return [
             ],
         ],
     ],
-
-
 ];
