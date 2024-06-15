@@ -1,11 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\TagController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
@@ -62,26 +57,4 @@ Route::get('xoa', function () {
     return view('admin.post.add');
 });
 
-
-Route::get('post/1', [PostController::class, 'destroy'])->name('post.destroy');
-
-Route::resource('admin/vouchers',VoucherController::class);
-Route::get('admin/deleted/vouchers',[VoucherController::class,'deleted'])->name('vouchers.deleted');
-Route::post('admin/restore/vouchers/{id}',[VoucherController::class,'restore'])->name('restore.vouchers');
-
-
-Route::resource('admin/flash-sales',FlashSaleController::class);
-
-Route::get('admin/orders', [App\Http\Controllers\Admin\OrderController::class,'index'])->name('orders.index');
-
-//Route::get('order/{id}/detail', [App\Http\Controllers\Admin\OrderController::class,'orderDetail'])->name('orderDetail');
-
-Route::resource('admin/brands', BrandController::class);
-Route::delete('admin/brands/{id}', [BrandController::class,'delete'])->name('brands.delete');
-
-Route::resource('admin/categories', CategoryController::class);
-
-Route::resource('admin/products', ProductController::class);
-Route::delete('admin/products/{id}', [ProductController::class,'delete'])->name('products.delete');
-
-Route::resource('admin/tags', TagController::class);
+Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
