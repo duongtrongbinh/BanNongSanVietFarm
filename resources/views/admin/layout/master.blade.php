@@ -38,7 +38,6 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-
   @yield('css')
 </head>
 
@@ -52,7 +51,7 @@
 
     @yield('content')
 
-  </main><!-- End #main -->
+    </main><!-- End #main -->
 
     @include('admin.layout.footer')
 
@@ -68,11 +67,11 @@
     <script src="{{ asset('admin/assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('admin/assets/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('admin/assets/vendor/php-email-form/validate.js') }}"></script>
-  
+
     <!-- Template Main JS File -->
     <script src="{{ asset('admin/assets/js/main.js') }}"></script>
     @yield('js')
-  
+
   </body>
-  
+
   </html>

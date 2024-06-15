@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('voucher_id')->constrained()->onDelete('cascade');
             $table->string('address');
+            $table->string('name');
+            $table->string('phone');
+            $table->string('email');
             $table->decimal('before_total_amount', 19, 4);
             $table->decimal('shipping', 19, 4);
             $table->decimal('after_total_amount', 19, 4);
