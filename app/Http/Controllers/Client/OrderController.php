@@ -42,7 +42,7 @@ class OrderController extends Controller
            'shipping' => 'required|numeric|min:0',
            'after_total_amount' => 'required|numeric|min:0',
            'note' => 'string|max:1000',
-           'order_code' => 'required|string|unique:orders,order_code',
+           'order_code' => 'required|string',
        ]);
        $detail = $request->input('address').','.$request->input('ward').','.  $request->input('district').','.$request->input('ward');
        $request->merge(['address' => $detail]);

@@ -5,7 +5,7 @@
 
 @endsection
 @section('content')
-    <form action="/flash-sales" method="post" id="form">
+    <form action="{{ route('flash-sales.store') }}" method="post" id="form">
         @csrf
         @method('POST')
     <div class="card">
@@ -69,7 +69,7 @@
             <div class="form-group mb-3">
                 <div class="form-check">
                     <button type="submit" class="btn btn-success">Submit</button>
-                    <a href="/flash-sales"><button type="button" class="btn btn-warning">Back</button></a>
+                    <a href="{{ route('flash-sales.index') }}"><button type="button" class="btn btn-warning">Back</button></a>
                 </div>
             </div>
         </div>

@@ -2,10 +2,9 @@
 @extends('admin.layout.master')
 @section('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
-
 @endsection
 @section('content')
-    <form action="/flash-sales/{{$flash_sale->id }}" method="post" id="form">
+    <form action="{{ route('flash-sales.update', $flash_sale->id) }}" method="post" id="form">
         @csrf
         @method('PUT')
         <div class="card">
@@ -110,7 +109,7 @@
             <div class="form-group mb-3">
                 <div class="form-check">
                     <button type="submit" class="btn btn-success">Submit</button>
-                    <a href="/flash-sales"><button type="button" class="btn btn-warning">Back</button></a>
+                    <a href="{{ route('flash-sales.index') }}"><button type="button" class="btn btn-warning">Back</button></a>
                 </div>
             </div>
         </div>

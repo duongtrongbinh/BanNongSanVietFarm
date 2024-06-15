@@ -51,7 +51,7 @@
 
     @yield('content')
 
-  </main><!-- End #main -->
+    </main><!-- End #main -->
 
     @include('admin.layout.footer')
 

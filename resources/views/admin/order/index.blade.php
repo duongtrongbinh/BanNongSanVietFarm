@@ -49,11 +49,11 @@
                                                 <span class="badge bg-primary">Delivery</span>
                                             @endif
                                         </td>
-                                        <td><a href="/order/{{$items->id}}/detail" class="link-success">View More <i class="ri-arrow-right-line align-middle"></i></a></td>
+                                        <td><a href="#" class="link-success">View More <i class="ri-arrow-right-line align-middle"></i></a></td>
 
                                         <td>
                                             <div class="d-flex" style="gap: 10px">
-                                                <a href="/{{ $items->id }}/edit"><button class="btn btn-primary">Detail</button></a>
+                                                <a href="#"><button class="btn btn-primary">Detail</button></a>
                                             </div>
                                         </td>
 

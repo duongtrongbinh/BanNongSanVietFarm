@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Repositories;
-use App\Http\Repositories\RepositoryInteface;
+use App\Http\Repositories\RepositoryInterface;
 use App\Models\FlashSaleProduct;
 
-class FlashSaleProductRepository extends Repository implements RepositoryInteface
+class FlashSaleProductRepository extends Repository implements RepositoryInterface
 {
     public function getModel()
     {

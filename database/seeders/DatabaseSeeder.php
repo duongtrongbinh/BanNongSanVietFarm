@@ -14,17 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         User::create([
-            "name"=> "Long Ma Bắc Giang",
-            "email"=> "admin@gmail.com",
-            "password"=> bcrypt("12345678"),
-            "phone" => "0123456789",
-            "user_code" => "PH30417",
-            "address" => "xa kin dang",
-            'province_id' => 1,
-            'district_id' => 1,
-            'ward_id' => 1,
-            "remember_token" => false
-         ]);
+        $this->call(BrandSeeder::class);
+        $this->call(CategorySeeder::class);
+        $this->call(TagSeeder::class);
+        $this->call(ProductSeeder::class);
+        $this->call(ProductImageSeeder::class);
     }
 }

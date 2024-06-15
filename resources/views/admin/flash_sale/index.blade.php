@@ -23,10 +23,10 @@
                         <div class="d-flex justify-content-between">
                                 <p>title</p>
                                 <div>
-                                    <a href="/flash-sales/create">
+                                    <a href="{{ route('flash-sales.create') }}">
                                         <button type="button" class="btn btn-success"><i class="bi bi-plus"></i> add new flash sale</button>
                                     </a>
-                                    <a href="/flash-sales/">
+                                    <a href="#">
                                         <button type="button" class="btn btn-primary"><i class="bi bi-plus"></i>remove</button>
                                     </a>
                                 </div>
@@ -61,9 +61,9 @@
                                         </td>
                                         <td>
                                             <div class="d-flex" style="gap: 10px">
-                                                <a href="flash-sales/{{ $items->id }}"><button class="btn btn-outline-primary">Detail</button></a>
-                                                <a href="flash-sales/{{ $items->id }}/edit"><button class="btn btn-outline-warning">Edit</button></a>
-                                                <form action="/flash-sales/{{$items->id}}" method="post" class="deleteFlashSale" data-url="{{ route('flash-sales.destroy', $items->id) }}">
+                                                <a href=" {{ route('flash-sales.show',$items->id) }}"><button class="btn btn-outline-primary">Detail</button></a>
+                                                <a href="{{ route('flash-sales.edit',$items->id) }}"><button class="btn btn-outline-warning">Edit</button></a>
+                                                <form action="{{ route('flash-sales.destroy', $items->id) }}" method="post" class="deleteFlashSale" data-url="{{ route('flash-sales.destroy', $items->id) }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-outline-danger">

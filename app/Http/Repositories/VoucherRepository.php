@@ -1,9 +1,9 @@
 <?php
 namespace App\Http\Repositories;
-use App\Http\Repositories\RepositoryInteface;
+use App\Http\Repositories\RepositoryInterface;
 use App\Models\Voucher;
 
-class VoucherRepository extends Repository implements RepositoryInteface
+class VoucherRepository extends Repository implements RepositoryInterface
 {
     public function getModel()
     {

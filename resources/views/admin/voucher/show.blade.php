@@ -157,7 +157,7 @@
 
                 </div>
                 <div class="form-group mt-5">
-                        <a href="/vouchers"><button type="button" class="btn btn-warning">Back</button></a>
+                        <a href="{{ route('vouchers.index') }} "><button type="button" class="btn btn-warning">Back</button></a>
                 </div>
             </form>
         </div>

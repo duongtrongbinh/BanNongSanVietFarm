@@ -10,7 +10,7 @@
                 {{ $message }}
             </div>
             @enderror
-            <form action="/vouchers/{{ $voucher->id }}" method="post" id="form">
+            <form action="{{ route('vouchers.update', $voucher->id) }}" method="post" id="form">
                 <input type="hidden" name="id" value="{{ $voucher->id}}">
                 @csrf
                 @method('PUT')
@@ -138,7 +138,7 @@
                 <div class="form-group mt-5">
                     <div class="form-check">
                         <button type="submit" class="btn btn-success">Submit</button>
-                        <a href="/vouchers"><button type="button" class="btn btn-warning">Back</button></a>
+                        <a href="{{ route('vouchers.index') }}"><button type="button" class="btn btn-warning">Back</button></a>
                     </div>
                 </div>
             </form>

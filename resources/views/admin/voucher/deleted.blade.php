@@ -23,10 +23,10 @@
                         <div class="d-flex justify-content-between">
                             <p>title</p>
                             <div>
-                                <a href="/vouchers/create">
+                                <a href="{{ route('vouchers.create') }}">
                                     <button type="button" class="btn btn-success"><i class="bi bi-plus"></i> add new voucher</button>
                                 </a>
-                                <a href="/vouchers/deleted">
+                                <a href="{{ route('vouchers.deleted') }}">
                                     <button type="button" class="btn btn-primary"><i class="bi bi-plus"></i>remove</button>
                                 </a>
                             </div>
@@ -66,7 +66,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex" style="gap: 10px">
-                                                <form action="/vouchers/{{$items->id}}" method="post" class="restoreVouchers" data-url="{{ route('restore.vouchers', $items->id) }}">
+                                                <form action="{{ route('restore.vouchers', $items->id) }}" method="post" class="restoreVouchers" data-url="{{ route('restore.vouchers', $items->id) }}">
                                                     @csrf
                                                     @method('POST')
                                                     <button type="submit" class="btn btn-outline-success">

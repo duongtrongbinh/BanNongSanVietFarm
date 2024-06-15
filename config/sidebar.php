@@ -4,68 +4,47 @@ return [
         'title' => 'Dashboard',
         'subtitle' => [
             [
-                'title' => 'dashboard',
+                'title' => 'Dashboard',
                 'icon' => 'bi bi-grid',
-                'route' => '/dashboard',
+                'route' => 'dashboard',
             ],
 
             [
                 'title' => 'vouchers',
-                'icon' => 'bi bi-grid',
-                'route' => '/vouchers',
+                'icon' => 'ri-coupon-line',
+                'route' => 'vouchers.index',
             ],
             [
                 'title' => 'orders',
-                'icon' => 'bi bi-grid',
-                'route' => '/orders',
+                'icon' => 'ri-inbox-unarchive-line',
+                'route' => 'orders.index',
             ],
             [
                 'title' => 'flash-sale',
-                'icon' => 'bi bi-grid',
-                'route' => '/flash-sales',
+                'icon' => 'ri-flashlight-line',
+                'route' => 'flash-sales.index',
             ],
-    //         [
-    //             'title' => 'Order',
-    //             'icon' => 'bi bi-grid',
-    //             'route' => 'order.index',
-    //         ],
-    //         [
-    //             'title' => 'Customer',
-    //             'icon' => 'bi bi-grid',
-    //             'route' => 'customer.index',
-    //         ],
-    //     ],
-    // ],
-    // [
-    //     'title' => 'User',
-    //     'subtitle' => [
-    //         [
-    //             'title' => 'Role',
-    //             'icon' => 'fas fa-plus',
-    //             'route' => 'role.index',
-    //         ],
-    //         [
-    //             'title' => 'User',
-    //             'icon' => 'fas fa-plus',
-    //             'route' => 'user.index',
-    //         ],
-    //     ],
-    // ],
-    // [
-    //     'title' => 'Setting',
-    //     'subtitle' => [
-    //         [
-    //             'title' => 'Profile',
-    //             'icon' => 'fas fa-plus',
-    //             'route' => 'profile.index',
-    //         ],
-    //         [
-    //             'title' => 'Change Password',
-    //             'icon' => 'fas fa-plus',
-    //             'route' => 'change.password',
-    //         ],
+
+            [
+                'title' => 'Brand',
+                'icon' => 'bi bi-award',
+                'route' => 'brands.index',
+            ],
+            [
+                'title' => 'Category',
+                'icon' => 'bi bi-card-list',
+                'route' => 'categories.index',
+            ],
+            [
+                'title' => 'Product',
+                'icon' => 'bi bi-box-seam',
+                'route' => 'products.index',
+            ],
+            [
+                'title' => 'Tag',
+                'icon' => 'bi bi-tag',
+                'route' => 'tags.index',
+            ],
         ],
     ],
-
-
 ];

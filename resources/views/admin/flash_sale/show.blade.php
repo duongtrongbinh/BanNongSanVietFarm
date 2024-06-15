@@ -113,7 +113,7 @@
             </div>
             <div class="form-group mb-3">
                 <div class="form-check">
-                    <a href="/flash-sales"><button type="button" class="btn btn-warning">Back</button></a>
+                    <a href="{{ route('flash-sales.index') }}"><button type="button" class="btn btn-warning">Back</button></a>
                 </div>
             </div>
         </div>
