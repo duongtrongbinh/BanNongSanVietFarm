@@ -1,11 +1,11 @@
 @extends('admin.layout.master')
 @section('content')
     <div class="pagetitle">
-        <h1>Dashboard</h1>
+        <h1>Orders</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-                <li class="breadcrumb-item active">Vouchers</li>
+                <li class="breadcrumb-item active">Orders</li>
             </ol>
         </nav>
     </div>
@@ -15,10 +15,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Vouchers</h5>
-                        <div class="d-flex justify-content-between">
-
-                        </div>
+                        <h5 class="card-title">Orders</h5>
                         <!-- Table with stripped rows -->
                         <table class="table datatable">
                             <thead>
@@ -49,11 +46,11 @@
                                                 <span class="badge bg-primary">Delivery</span>
                                             @endif
                                         </td>
-                                        <td><a href="#" class="link-success">View More <i class="ri-arrow-right-line align-middle"></i></a></td>
+                                        <td><a href="/order/{{$items->id}}/detail" class="link-success">View More <i class="ri-arrow-right-line align-middle"></i></a></td>
 
                                         <td>
                                             <div class="d-flex" style="gap: 10px">
-                                                <a href="#"><button class="btn btn-primary">Detail</button></a>
+                                                <a href="/{{ $items->id }}/edit"><button class="btn btn-primary">Detail</button></a>
                                             </div>
                                         </td>
 
@@ -62,11 +59,8 @@
                             @endif
                             </tbody>
                         </table>
-                        <!-- End Table with stripped rows -->
                         <div class="pagination justify-content-center">
-{{--                                                        @if(isset($orders))--}}
-{{--                                                            {{ $orders->links('vendor.pagination.bootstrap-5') }} <!-- Sử dụng blade phân trang của trang index -->--}}
-{{--                                                        @endif--}}
+
                         </div>
                     </div>
                 </div>
