@@ -8,6 +8,7 @@
   <title>Dashboard - NiceAdmin Bootstrap Template</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!-- Favicons -->
   <link href="{{ asset('admin/assets/img/favicon.png') }}" rel="icon">
@@ -37,7 +38,6 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-
   @yield('css')
 </head>
 
@@ -67,11 +67,11 @@
     <script src="{{ asset('admin/assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('admin/assets/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('admin/assets/vendor/php-email-form/validate.js') }}"></script>
-  
+
     <!-- Template Main JS File -->
     <script src="{{ asset('admin/assets/js/main.js') }}"></script>
     @yield('js')
-  
+
   </body>
-  
+
   </html>

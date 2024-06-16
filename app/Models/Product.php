@@ -48,12 +48,4 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
-    public function productComments()
-    {
-        return $this->hasMany(ProductComment::class);
-    }
-    public function comments()
-    {
-        return $this->hasManyThrough(Comment::class, ProductComment::class, 'product_id', 'id', 'id', 'comment_id');
-    }
 }

@@ -1,16 +1,15 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Client\OrderController;
+use \App\Http\Controllers\Admin\FlashSaleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,9 +31,10 @@ Route::get('/cart', function () {
     return view('client.cart');
 })->name('cart');
 
-Route::get('/check-out', function () {
-    return view('client.check-out');
-})->name('checkOut');
+Route::get('/check-out',[OrderController::class,'create'])->name('checkOut');
+
+Route::post('/check-out',[OrderController::class,'store']);
+
 
 Route::get('media', function () {
     return view('admin.media.media');
@@ -44,26 +44,16 @@ Route::view('admin/dashboard', 'admin.dashboard')->name('dashboard');
 Route::get('login', [AuthController::class, 'index'])->name('form-login');
 Route::post('login', [AuthController::class,'store'])->name('login');
 
-Route::get('tinycme', function (){
+Route::get('tinycme', function () {
     return view('admin.post.blog');
 })->name('blog');
 
-Route::get('xoa', function(){
+Route::get('xoa', function () {
     return view('admin.post.add');
 });
 
-Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+//Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
 
-
-Route::resource('admin/brands', BrandController::class);
-Route::delete('admin/brands/{id}', [BrandController::class,'delete'])->name('brands.delete');
-
-Route::resource('admin/categories', CategoryController::class);
-
-Route::resource('admin/products', ProductController::class);
-Route::delete('admin/products/{id}', [ProductController::class,'delete'])->name('products.delete');
-Route::resource('admin/tags', TagController::class);
-//
 Route::resource('admin/post', \App\Http\Controllers\Admin\PostController::class);
 Route::resource('admin/comment', \App\Http\Controllers\Admin\CommentController::class);
 Route::delete('admin/products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])

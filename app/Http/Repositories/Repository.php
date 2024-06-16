@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Repositories;
-
 use App\Http\Repositories\RepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -44,6 +43,7 @@ abstract class Repository implements RepositoryInterface
     {
         return $this->model->findOrFail($id);
     }
+
 
     public function create(array $attributes): Model
     {
@@ -104,7 +104,7 @@ abstract class Repository implements RepositoryInterface
         return $model->load($relations); // Load the relations to return the full object with relationships
     }
 
-    
+
     public function updateWithRelations($id, array $data, array $relations = []): Model
     {
         // Tìm model chính
@@ -136,7 +136,7 @@ abstract class Repository implements RepositoryInterface
 
         return $model->load($relations); // Tải các mối quan hệ để trả về đối tượng đầy đủ với các mối quan hệ
     }
-    
+
     // Tạo một bài viết mới với các thẻ
     // $postData = [
     //     'title' => 'Bài viết mới',
