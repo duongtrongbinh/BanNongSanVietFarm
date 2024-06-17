@@ -8,6 +8,15 @@ return [
                 'icon' => 'bi bi-grid',
                 'route' => 'dashboard',
             ],
+            [
+                'title' => 'Supplier',
+                'icon' => 'bi bi-grid',
+                'route' => 'supplier.index',
+            ],
+            [
+                'title' => 'Purchase Receipt',
+                'icon' => 'bi bi-grid',
+                'route' => 'purchase_receipt.index',
 
             [
                 'title' => 'vouchers',
@@ -47,4 +56,5 @@ return [
             ],
         ],
     ],
+]
 ];
