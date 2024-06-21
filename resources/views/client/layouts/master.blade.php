@@ -4,8 +4,7 @@
         <meta charset="utf-8">
         <title>@yield('title')</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
-        <meta content="" name="keywords">
-        <meta content="" name="description">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,7 +53,273 @@
 
         <!-- Template Javascript -->
         <script src="{{ asset('client/assets/js/main.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                function formatNumber(number) {
+                    // // Chuyển đổi số thành chuỗi và loại bỏ các chữ số thập phân không cần thiết
+                    let formattedNumber = Math.floor(number);
 
+                    // // Định dạng chuỗi số thành số có dấu phân cách hàng nghìn
+                    return Number(formattedNumber).toLocaleString('en-US');
+                }
+
+                function addToCart(product, url) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            product: product,
+                            quantity: 1,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert(response.message);
+                            $('.cart-count').text(Object.keys(response.cart).length);
+                        }
+                    });
+                }
+
+                function renderCart(url) {
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function(response) {
+                            let totalPrice = 0;
+                            let total = 0;
+                            let subtotal = 0;
+                            const cartDrop = document.querySelector('.dropdown-menu-cart');
+                            cartDrop.innerHTML = '';
+                            if (response.cart === null) {
+                                let cartEmpty = document.createElement('div');
+                                cartEmpty.classList.add('text-center', 'empty-cart');
+                                cartEmpty.id = 'empty-cart';
+                                cartEmpty.innerHTML = `
+                                    <div class="avatar-md mx-auto my-3">
+                                        <div class="avatar-title bg-info-subtle text-info fs-36 rounded-circle">
+                                            <i class='bx bx-cart'></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="mb-3">Your Cart is Empty!</h5>
+                                    <a href="{{ route('shop') }}" class="btn btn-success w-md mb-3">Shop Now</a>
+                                `;
+                                cartDrop.appendChild(cartEmpty);
+                            }else {
+                                cartDrop.innerHTML = `
+                                    <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="m-0 fs-16 fw-semibold">Giỏ hàng</h6>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="badge bg-warning-subtle text-warning fs-13">
+                                                    <span class="cartitem-badge cart-count">{{ count(session()->get('cart', [])) ?? 0 }}</span>
+                                                    sản phẩm
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div data-simplebar style="max-height: 100%;" class="div-cart">
+                                        <div class="p-2 cart-items">
+
+                                        </div>
+                                    </div>
+                                    <div class="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border" id="checkout-elem">
+                                        <div class="d-flex justify-content-between align-items-center pb-3">
+                                            <h5 class="m-0 text-muted">Tổng: </h5>
+                                            <div class="px-2">
+                                                <h5 class="m-0" id="cart-item-total">đ</h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <a href="{{ route('cart.index') }}" class="btn btn-secondary text-center w-100 m-1">Giỏ hàng</a>
+                                            <a href="{{ route('checkout') }}" class="btn btn-success text-center w-100 m-1">Checkout</a>
+                                        </div>
+                                    </div>
+                                `;
+                                
+                                const cartItems = document.querySelector('.cart-items');
+                                cartItems.innerHTML = '';
+                                
+                                // Lấy danh sách các khóa từ đối tượng cart
+                                let keys = Object.keys(response.cart);
+                                // Chuyển đổi đối tượng thành mảng các sản phẩm
+                                let cartArray = keys.map(key => response.cart[key]);
+                                cartArray.forEach(function(product, id) {
+                                    total = (product.price * product.quantity);
+                                    const cartList = document.createElement('div');
+                                    cartList.classList.add('d-block', 'dropdown-item', 'dropdown-item-cart', 'text-wrap', 'px-3', 'py-2');
+                                    cartList.innerHTML = `
+                                        <div class="d-block text-wrap px-3 py-2">
+                                            <div class="d-flex align-items-center">
+                                                <img src="${product.image}" class="me-3 rounded-circle" style="width: 4.5rem; height: 4.5rem" alt="user-pic">
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mt-0 mb-1 fs-14">
+                                                        <p class="text-reset">${product.name}</p>
+                                                    </h6>
+                                                    <p class="mb-0 fs-12 text-muted">
+                                                        Số lượng: <span>${product.quantity} x ${formatNumber(product.price)}đ</span>
+                                                    </p>
+                                                </div>
+                                                <div class="px-2">
+                                                    <h5 class="m-0 fw-normal">${formatNumber(total)}<span class="cart-item-price">đ</span></h5>
+                                                </div>
+                                                <div class="ps-2">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary remove-cart" data-id="${id}" data-url="{{ route('cart.remove') }}">
+                                                        <i class="fa fa-times text-danger"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    cartItems.appendChild(cartList);
+                                    totalPrice += total;
+                                    subtotal = formatNumber(totalPrice);
+
+                                });
+
+                                $('#cart-item-total').text(subtotal + 'đ');
+                            }
+                        }
+                    });
+                }
+
+                function updateToCart(url, id, quantity) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
+                        data: {
+                            id: id,
+                            quantity: quantity,
+                        },
+                        success: function(response) {
+                            // Lấy danh sách các khóa từ đối tượng cart
+                            let keys = Object.keys(response.cart);
+
+                            // Chuyển đổi đối tượng thành mảng các sản phẩm
+                            let cartArray = keys.map(key => response.cart[key]);
+                            let totalPrice = 0;
+                            cartArray.forEach(function(cart) {
+                                let total = (cart.price * cart.quantity);
+                                totalPrice += total;
+                            });
+                            
+                            const subtotal = formatNumber(totalPrice);
+                            $('#subtotal').text(subtotal + 'đ');
+                        }
+                    });
+                }
+
+                function removeItemFromCart(url, id) {
+                    $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        data: {
+                            id: id,
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert(response.message);
+                            $('.cart-count').text(Object.keys(response.cart).length);
+                            const cartItems = document.querySelector('.div-tbody');
+                            cartItems.innerHTML = '';
+                            // Lấy danh sách các khóa từ đối tượng cart
+                            let keys = Object.keys(response.cart);
+
+                            // Chuyển đổi đối tượng thành mảng các sản phẩm
+                            let cartArray = keys.map(key => response.cart[key]);
+                            let totalPrice = 0;
+                            cartArray.forEach(function(product, id) {
+                                const total = (product.price * product.quantity);
+                                const cartList = document.createElement('tr');
+                                cartList.innerHTML = `
+                                    <td data-th="Product" scope="row">
+                                        <div class="d-flex align-items-center">
+                                            <img src="${product.image}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">${product.name}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">${formatNumber(product.price)}đ</p>
+                                    </td>
+                                    <td>
+                                        <div class="input-group quantity mt-4" style="width: 100px;">
+                                            <input type="number" class="form-control form-control-sm text-center border-0" name="quantity" id="quantity" min="1" value="${product.quantity}" data-id="${id}" data-url="{{ route('cart.update') }}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4 total">${formatNumber(total)}đ</p>
+                                    </td>
+                                    <td class="actions">
+                                        <button class="btn btn-md rounded-circle bg-light border mt-4 remove-cart" data-id="${id}" data-url="{{ route('cart.remove') }}">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </button>
+                                    </td>
+                                `;
+                                cartItems.appendChild(cartList);
+                                totalPrice += total;
+                            });
+
+                            const subtotal = formatNumber(totalPrice);
+                            $('#subtotal').text(subtotal + 'đ');
+                        }
+                    });
+                }
+
+                $(".add-to-cart").on("click", function() {
+                    let url = $(this).data("url");
+
+                    var ele = $(this);
+                    var id = ele.data("id");
+                    var name = ele.data("name");
+                    var image = ele.data("image");
+                    var price = ele.data("price");
+                    var product = {
+                        id: id,
+                        name: name,
+                        image: image,
+                        price: price
+                    };
+
+                    addToCart(product, url);
+                });
+
+                $(".cart-button").on("click", function() {
+                    let url = $(this).data("url");
+
+                    renderCart(url);
+                });
+
+                $('.cart-quantity').on('change', function() {
+                    let url = $(this).data("url");
+                    let id = $(this).data("id");
+                    let quantity = $(this).val();
+                    let price = $(this).data("price");
+                    var $tr = $(this).closest('tr');
+                    var totalPrice = quantity * price;
+                    var total = formatNumber(totalPrice);
+                    $tr.find('.total').text(total + 'đ');
+
+
+                    updateToCart(url, id, quantity);
+                });
+
+                $(".remove-cart").on("click", function() {
+                    let url = $(this).data("url");
+                    let id = $(this).data("id");
+
+                    if(confirm("Bạn có chắc muốn xóa không?")) {
+                        removeItemFromCart(url, id);
+                    }
+                });
+            });
+        </script>
         @yield('scripts')
     </body>
 </html>

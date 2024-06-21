@@ -5,8 +5,7 @@
     <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">Shop</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item active text-white">Shop</li>
         </ol>
     </div>
@@ -178,8 +177,8 @@
                                                     <h4 class="text-truncate">{{ $product->name }}</h4>
                                                     <p class="text-truncate">{{ $product->description }}</p>
                                                     <div class="d-flex justify-content-between flex-lg-wrap">
-                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ number_format($product->price_sale, 3) }} VNĐ</p>
-                                                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ number_format($product->price_sale) }} VNĐ</p>
+                                                        <a href="{{ route('cart.store', $product->id) }}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                                                     </div>
                                                 </div>
                                             </div>
