@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\VoucherController;
@@ -37,17 +40,9 @@ Route::get('media', function () {
     return view('admin.media.media');
 })->name('media');
 
-
 Route::view('admin/dashboard', 'admin.dashboard')->name('dashboard');
 Route::get('login', [AuthController::class, 'index'])->name('form-login');
 Route::post('login', [AuthController::class,'store'])->name('login');
-
-
-Route::view('dashboard', 'admin.dashboard')->name('dashboard');
-
-Route::get('login', [AuthController::class, 'index'])->name('form-login');
-
-Route::post('login', [AuthController::class, 'store'])->name('login');
 
 Route::get('tinycme', function () {
     return view('admin.post.blog');
@@ -57,4 +52,10 @@ Route::get('xoa', function () {
     return view('admin.post.add');
 });
 
-Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+//Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+
+Route::resource('admin/post', \App\Http\Controllers\Admin\PostController::class);
+Route::resource('admin/comment', \App\Http\Controllers\Admin\CommentController::class);
+Route::delete('admin/products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
+    ->name('product.comment.destroy');
+Route::resource('admin/user',\App\Http\Controllers\Admin\UserController::class);
