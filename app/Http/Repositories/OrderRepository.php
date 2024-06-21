@@ -9,5 +9,17 @@ class OrderRepository extends Repository implements RepositoryInterface
     {
         return Order::class;
     }
+    
+    public function getLatestAllWithRelations($relations  = [])
+    {
+        return $this->model->with($relations)->latest('id')->get();
+    }
+
+    public function getLatestAllWithRelationsPaginate($relations  = [], $perPage)
+    {
+        return $this->model->with($relations)->latest('id')->paginate($perPage);
+    }
+
+    
 }
 
