@@ -1,12 +1,12 @@
 @extends('admin.layout.master')
-@section('title', 'Category Create')
+@section('title', 'Create Category')
 @section('content')
     <div class="pagetitle">
-      <h1>Category Create</h1>
+      <h1>Create Category</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Category</li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item active"><a href="{{ route('categories.index') }}">Category</a></li>
         </ol>
       </nav>
     </div>
@@ -16,11 +16,10 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Category Create</h5>
                 <!-- Form -->
                 <form action="{{ route('categories.store') }}" method="POST" data-toggle="validator" enctype="multipart/form-data">
                     @csrf
-                    <div class="row mb-3">
+                    <div class="row mb-3 mt-4">
                         <label for="name" class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
                           <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">

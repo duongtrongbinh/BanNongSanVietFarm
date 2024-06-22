@@ -5,11 +5,11 @@
 @endsection
 @section('content')
     <div class="pagetitle">
-      <h1>Chi tiết đơn hàng</h1>
+      <h1>Order Detail</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Order Detail</li>
+            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('order.index') }}">Order</a></li>
         </ol>
       </nav>
     </div>
@@ -33,7 +33,7 @@
                                 <tr>
                                     <th scope="col">Chi tiết sản phẩm</th>
                                     <th scope="col">Giá</th>
-                                    <th scope="col">Số ượng</th>
+                                    <th scope="col">Số lượng</th>
                                     <th scope="col">Đánh giá</th>
                                     <th scope="col" class="text-end">Thành tiền</th>
                                 </tr>

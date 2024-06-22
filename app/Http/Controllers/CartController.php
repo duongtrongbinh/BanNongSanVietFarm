@@ -11,8 +11,8 @@ class CartController extends Controller
 {
     public function index()
     {
-
-        $cart = session()->get('cart', []);
+        $cart = session()->get('cart');
+        
         return view('client.cart', compact('cart'));
     }
 
@@ -27,6 +27,7 @@ class CartController extends Controller
             $cart[$id]['quantity'] += $quantity;
         } else {
             $cart[$id] = [
+                'id' => $id,
                 'name' => $product['name'],
                 'image' => $product['image'],
                 'price' => $product['price'],
@@ -47,11 +48,15 @@ class CartController extends Controller
 
     public function getCart()
     {
-        $cart = session()->get('cart');
+        if (session()->has('cart')) {
+            $cart = session()->get('cart');
 
-        return response()->json([
-            'cart' => $cart,
-        ]);
+            return response()->json([
+                'cart' => $cart,
+            ]);
+        }
+
+        return response()->json();
     }
 
     public function updateCart(Request $request)
@@ -59,7 +64,7 @@ class CartController extends Controller
         $id = $request->input('id');
         $quantity = $request->input('quantity');
 
-        $cart = session()->get('cart', []);
+        $cart = session()->get('cart');
         $cart[$id]['quantity'] = $quantity;
         session()->put('cart', $cart);
         
@@ -71,7 +76,7 @@ class CartController extends Controller
 
     public function removeCart(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $cart = session()->get('cart');
 
         if(isset($cart[$request->id])) {
             unset($cart[$request->id]);

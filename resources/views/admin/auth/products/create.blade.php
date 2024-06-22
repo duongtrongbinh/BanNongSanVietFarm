@@ -1,25 +1,24 @@
 @extends('admin.layout.master')
-@section('title', 'Product Create')
+@section('title', 'Create Product')
 @section('css')
   <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
 @endsection
 @section('content')
     <div class="pagetitle">
-      <h1>Product Create</h1>
+      <h1>Create Product</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Product</li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item active"><a href="{{ route('products.index') }}">Product</a></li>
         </ol>
       </nav>
     </div>
     <!-- End Page Title -->
-    
     <div class="card">
       <div class="card-body">
         <form action="{{ route('products.store') }}" method="POST" data-toggle="validator" enctype="multipart/form-data">
           @csrf
-          <div class="row form-group">
+          <div class="row form-group mt-2">
             <div class="col-3 mt-2">
               <label for="name">Name</label>
               <input type="text" class="form-control" name="name" value="{{ old('name')}}">

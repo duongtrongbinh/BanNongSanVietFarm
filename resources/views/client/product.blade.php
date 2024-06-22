@@ -97,7 +97,10 @@
                                     </button>
                                 </div>
                             </div>
-                            <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-name="{{ $product->name }}" data-image="{{ $product->image }}" data-price="{{ $product->price_sale }}" data-quantity="1">
+                                <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                Add to cart
+                            </a>
                         </div>
                         <div class="col-lg-12">
                             <nav>
@@ -342,7 +345,8 @@
                             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>
                             <div class="d-flex justify-content-between flex-lg-wrap">
                                 <p class="text-dark fs-5 fw-bold">$4.99 / kg</p>
-                                <a href="{{ route('cart.store', $product->id) }}" class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                <a class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary">
+                                    <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                             </div>
                         </div>
                     </div>

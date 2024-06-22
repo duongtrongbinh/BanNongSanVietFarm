@@ -89,7 +89,7 @@
                             let subtotal = 0;
                             const cartDrop = document.querySelector('.dropdown-menu-cart');
                             cartDrop.innerHTML = '';
-                            if (response.cart === null) {
+                            if (response.cart === null || response.cart.length == 0) {
                                 let cartEmpty = document.createElement('div');
                                 cartEmpty.classList.add('text-center', 'empty-cart');
                                 cartEmpty.id = 'empty-cart';
@@ -112,7 +112,7 @@
                                             </div>
                                             <div class="col-auto">
                                                 <span class="badge bg-warning-subtle text-warning fs-13">
-                                                    <span class="cartitem-badge cart-count">{{ count(session()->get('cart', [])) ?? 0 }}</span>
+                                                    <span class="cartitem-badge cart-count">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
                                                     sản phẩm
                                                 </span>
                                             </div>
@@ -144,7 +144,7 @@
                                 let keys = Object.keys(response.cart);
                                 // Chuyển đổi đối tượng thành mảng các sản phẩm
                                 let cartArray = keys.map(key => response.cart[key]);
-                                cartArray.forEach(function(product, id) {
+                                cartArray.forEach(function(product) {
                                     total = (product.price * product.quantity);
                                     const cartList = document.createElement('div');
                                     cartList.classList.add('d-block', 'dropdown-item', 'dropdown-item-cart', 'text-wrap', 'px-3', 'py-2');
@@ -164,7 +164,7 @@
                                                     <h5 class="m-0 fw-normal">${formatNumber(total)}<span class="cart-item-price">đ</span></h5>
                                                 </div>
                                                 <div class="ps-2">
-                                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary remove-cart" data-id="${id}" data-url="{{ route('cart.remove') }}">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary remove-cart" data-id="${product.id}" data-url="{{ route('cart.remove') }}">
                                                         <i class="fa fa-times text-danger"></i>
                                                     </button>
                                                 </div>
@@ -218,55 +218,28 @@
                     $.ajax({
                         url: url,
                         method: 'DELETE',
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
                         data: {
                             id: id,
-                            _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
+                            let totalPrice = 0;
                             alert(response.message);
                             $('.cart-count').text(Object.keys(response.cart).length);
-                            const cartItems = document.querySelector('.div-tbody');
-                            cartItems.innerHTML = '';
-                            // Lấy danh sách các khóa từ đối tượng cart
-                            let keys = Object.keys(response.cart);
 
-                            // Chuyển đổi đối tượng thành mảng các sản phẩm
+
+                            let keys = Object.keys(response.cart);
                             let cartArray = keys.map(key => response.cart[key]);
-                            let totalPrice = 0;
-                            cartArray.forEach(function(product, id) {
-                                const total = (product.price * product.quantity);
-                                const cartList = document.createElement('tr');
-                                cartList.innerHTML = `
-                                    <td data-th="Product" scope="row">
-                                        <div class="d-flex align-items-center">
-                                            <img src="${product.image}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4">${product.name}</p>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4">${formatNumber(product.price)}đ</p>
-                                    </td>
-                                    <td>
-                                        <div class="input-group quantity mt-4" style="width: 100px;">
-                                            <input type="number" class="form-control form-control-sm text-center border-0" name="quantity" id="quantity" min="1" value="${product.quantity}" data-id="${id}" data-url="{{ route('cart.update') }}">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="mb-0 mt-4 total">${formatNumber(total)}đ</p>
-                                    </td>
-                                    <td class="actions">
-                                        <button class="btn btn-md rounded-circle bg-light border mt-4 remove-cart" data-id="${id}" data-url="{{ route('cart.remove') }}">
-                                            <i class="fa fa-times text-danger"></i>
-                                        </button>
-                                    </td>
-                                `;
-                                cartItems.appendChild(cartList);
+                            cartArray.forEach(function(product) {
+                                let total = (product.price * product.quantity);
                                 totalPrice += total;
                             });
 
-                            const subtotal = formatNumber(totalPrice);
+                            let subtotal = formatNumber(totalPrice);
                             $('#subtotal').text(subtotal + 'đ');
                         }
                     });
@@ -313,10 +286,13 @@
                 $(".remove-cart").on("click", function() {
                     let url = $(this).data("url");
                     let id = $(this).data("id");
-
+                    $(this).closest('tr').remove();
+                    
                     if(confirm("Bạn có chắc muốn xóa không?")) {
                         removeItemFromCart(url, id);
                     }
+
+
                 });
             });
         </script>

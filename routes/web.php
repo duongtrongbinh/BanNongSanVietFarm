@@ -37,11 +37,15 @@ use App\Models\Order;
 |
 */
 
-Route::get('/', [HomeController::class, 'home']);
-Route::get('/product/{id}', [HomeController::class, 'product'])->name('product');
-Route::get('/category/{id}', [HomeController::class, 'category'])->name('category');
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'home');
+    Route::get('/product/{id}', 'product')->name('product');
+    Route::get('/category/{id}', 'category')->name('category');
+});
 
-Route::get('/shop', [ShopController::class, 'shop'])->name('shop');
+Route::controller(ShopController::class)->group(function () {
+    Route::get('/shop', 'shop')->name('shop');
+});
 
 Route::controller(CartController::class)->group(function () {
     Route::get('/cart', 'index')->name('cart.index');
@@ -62,16 +66,8 @@ Route::get('media', function () {
 Route::view('admin/dashboard', 'admin.dashboard')->name('dashboard');
 Route::get('login', [AuthController::class, 'index'])->name('form-login');
 Route::post('login', [AuthController::class,'store'])->name('login');
-
-Route::get('tinycme', function () {
-    return view('admin.post.blog');
-})->name('blog');
-
-Route::get('xoa', function () {
-    return view('admin.post.add');
-});
-
-Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
+Route::get('login', [AuthController::class, 'index'])->name('form-login');
+Route::post('login', [AuthController::class, 'store'])->name('login');
 
 Route::view('admin/dashboard', 'admin.dashboard')->name('dashboard');
 

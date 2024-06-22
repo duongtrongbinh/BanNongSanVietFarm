@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Order;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -39,26 +40,23 @@ class OrderSeeder extends Seeder
             ]);
         }
         
+        $products = Product::all();
         for ($i = 0; $i < 100; $i++) {
             // Create 1-5 order details for each order
-            $orderDetailsCount = $faker->numberBetween(1, 5);
-            $products = Product::all();
+            $orderDetailsCount = rand(2, 10);
+            $product = $products->random();
             for ($j = 0; $j < $orderDetailsCount; $j++) {
-                foreach ($products as $product) {
-                    if ($product->id == rand(1, 100)) {
-                        DB::table('order_details')->insert([
-                            'order_id' => $i + 1,
-                            'product_id' => $product->id,
-                            'name' => $product->name,
-                            'image' => $product->image,
-                            'price_regular' => $product->price_regular,
-                            'price_sale' => $product->price_sale,
-                            'quantity' => $faker->numberBetween(1, 10),
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
-                        ]);
-                    }
-                }
+                DB::table('order_details')->insert([
+                    'order_id' => $i + 1,
+                    'product_id' => $product->id,
+                    'name' => $product->name,
+                    'image' => $product->image,
+                    'price_regular' => $product->price_regular,
+                    'price_sale' => $product->price_sale,
+                    'quantity' => $faker->numberBetween(2, 20),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
             }
         }
     }
