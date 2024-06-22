@@ -2,14 +2,13 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CommentController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\client\AuthController as AuthClientController;
+use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\VoucherController;
-use App\Http\Controllers\Client\OrderController;
-use \App\Http\Controllers\Admin\FlashSaleController;
+use App\Http\Controllers\client\GoogleLoginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,7 +54,25 @@ Route::get('xoa', function () {
 //Route::get('post/1', [PostController::class,'destroy'])->name('post.destroy');
 
 Route::resource('admin/post', \App\Http\Controllers\Admin\PostController::class);
+
 Route::resource('admin/comment', \App\Http\Controllers\Admin\CommentController::class);
+
 Route::delete('admin/products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
     ->name('product.comment.destroy');
 Route::resource('admin/user',\App\Http\Controllers\Admin\UserController::class);
+Route::resource('supplier', SupplierController::class);
+//client
+Route::get('login', [AuthClientController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthClientController::class, 'login']);
+Route::get('/auth/google', [GoogleLoginController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback']);
+Route::post('logout', [AuthClientController::class, 'logout'])->name('logout');
+Route::get('register', [AuthClientController::class, 'showRegistrationForm'])->name('register.form');
+Route::post('register', [AuthClientController::class, 'register'])->name('register');
+Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/post', [HomeController::class, 'post'])->name('post');
+Route::post('/post', [HomeController::class, 'store'])->name('post.store');
+Route::post('/rating', [CommentController::class, 'rating'])->name('rating');
+
+
+

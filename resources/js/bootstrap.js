@@ -30,3 +30,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+window.$ = window.jQuery = require('jquery');
+require('popper.js');
+require('bootstrap');
+mix.js('resources/js/app.js', 'public/js')
+    .js('resources/js/bootstrap.js', 'public/js') // Thêm dòng này
+    .sass('resources/sass/app.scss', 'public/css');

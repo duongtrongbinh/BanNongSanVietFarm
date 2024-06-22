@@ -49,22 +49,6 @@ class PostController extends Controller
         $post->update($data);
         return redirect()->route('post.index')->with('thongbao', 'Bạn đã cập nhật thành công!');
     }
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-//    public function destroy(Post $post)
-//    {
-//        try {
-//            // $post->delete();
-//                $post= true;
-//                return response()->json($post, 200);
-//            } catch (\Exception $exception) {
-//                Log::error("message: " . $exception->getMessage());
-//                return response()->json(false, 500);
-//            }
-//    }
     public function destroy(Post $post)
     {
         // Kiểm tra và xóa hình ảnh nếu tồn tại

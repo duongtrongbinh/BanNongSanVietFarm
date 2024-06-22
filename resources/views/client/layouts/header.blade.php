@@ -29,6 +29,7 @@
                           <a href="{{ route('cart') }}" class="dropdown-item">Cart</a>
                           <a href="{{ route('checkOut') }}" class="dropdown-item">Checkout</a>
                           <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                          <a href="{{route('post')}}" class="dropdown-item">Post</a>
                           <a href="" class="dropdown-item">404 Page</a>
                       </div>
                   </div>
@@ -40,9 +41,32 @@
                       <i class="fa fa-shopping-bag fa-2x"></i>
                       <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
                   </a>
-                  <a href="{{ route('form-login') }}" class="my-auto">
-                      <i class="fas fa-user fa-2x"></i>
-                  </a>
+                  <div class="dropdown">
+                      <a href="#" class="my-auto dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="fas fa-user fa-2x"></i>
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                          @if(auth()->check())
+                              <!-- Hiển thị thông tin người dùng đã đăng nhập -->
+                              <li>
+                                  <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      {{ auth()->user()->name }}
+                                  </button>
+                                  <form action="{{ route('logout') }}" method="POST">
+                                      @csrf
+                                      <button type="submit" class="dropdown-item">Logout</button>
+                                  </form>
+                              </li>
+                          @else
+                              <!-- Hiển thị nút Login -->
+                              <li><a class="dropdown-item" href="{{ route('login') }}">Login</a></li>
+
+                              <!-- Hiển thị nút Register -->
+                              <li><a class="dropdown-item" href="{{ route('register') }}">Register</a></li>
+                          @endif
+                      </ul>
+                  </div>
+
               </div>
           </div>
       </nav>

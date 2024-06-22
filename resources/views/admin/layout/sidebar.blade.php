@@ -6,12 +6,11 @@
               <li class="nav-heading">{{ $item['title'] }}</li>
               @foreach ($item['subtitle'] as $value)
                   <li class="nav-item">
-                      <a class="nav-link collapsed" href="{{ route($value['route']) }}">
+                      <a class="nav-link collapsed">
                           <i class="{{ $value['icon'] }}"></i>
                           <span>{{ $value['title'] }}</span>
                       </a>
                   </li><!-- End Profile Page Nav -->
-
               @endforeach
           @endforeach
 

@@ -17,7 +17,7 @@ return [
                 'title' => 'Purchase Receipt',
                 'icon' => 'bi bi-grid',
                 'route' => 'purchase_receipt.index',
-
+            ],
             [
                 'title' => 'vouchers',
                 'icon' => 'ri-coupon-line',
