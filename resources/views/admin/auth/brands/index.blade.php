@@ -1,12 +1,12 @@
 @extends('admin.layout.master')
-@section('title', 'Brand List')
+@section('title', 'List Brand')
 @section('content')
     <div class="pagetitle">
-      <h1>Brand List</h1>
+      <h1>List Brand</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Brand</li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item active"><a href="{{ route('brands.index') }}">Brand</a></li>
         </ol>
       </nav>
     </div>
@@ -27,8 +27,8 @@
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Image</th>
-                    <th>Name</th>
+                    <th>Logo</th>
+                    <th>Tên</th>
                     <th>Slug</th>
                     <th>Action</th>
                   </tr>

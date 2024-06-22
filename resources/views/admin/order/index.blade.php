@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Orders List')
+@section('title', 'List Order')
 @section('css')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -11,11 +11,11 @@
 
 @section('content')
     <div class="pagetitle">
-      <h1>Order List</h1>
+      <h1>List Order</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Order</li>
+            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('order.index') }}">Order</a></li>
         </ol>
       </nav>
     </div>
@@ -26,9 +26,6 @@
             <div class="card">
                 <div class="card-header border-0">
                     <div class="row align-items-center gy-3">
-                        <div class="col-sm">
-                            <h5 class="card-title mb-0">Danh sách đơn hàng</h5>
-                        </div>
                         <div class="col-sm-auto">
                             <div class="d-flex gap-1 flex-wrap">
                                 <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Create Order</button>
@@ -133,7 +130,7 @@
                                         <th data-ordering="false">ID</th>
                                         <th>Mã hóa đơn</th>
                                         <th>Khách hàng</th>
-                                        <th>Sản phẩm</th>
+                                        <th>Số lượng sản phẩm</th>
                                         <th>Ngày đặt hàng</th>
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
@@ -154,9 +151,7 @@
                                                 {{ $order->user->name }}
                                             </td>
                                             <td>
-                                                @foreach ($order->order_details as $order_detail)
-                                                    <div>{{ $order_detail->name }}</div>
-                                                @endforeach
+                                                {{ count($order->order_details) }}
                                             </td>
                                             <td>
                                                 {{ $order->created_at }}
@@ -231,9 +226,7 @@
                                                 {{ $delivered->user->name }}
                                             </td>
                                             <td>
-                                                @foreach ($delivered->order_details as $order_detail)
-                                                    <div>{{ $order_detail->name }}</div>
-                                                @endforeach
+                                                {{ count($delivered->order_details) }}
                                             </td>
                                             <td>
                                                 {{ $delivered->created_at }}
@@ -309,9 +302,7 @@
                                                 {{ $pickup->user->name }}
                                             </td>
                                             <td>
-                                                @foreach ($pickup->order_details as $order_detail)
-                                                    <div>{{ $order_detail->name }}</div>
-                                                @endforeach
+                                                {{ count($pickup->order_details) }}
                                             </td>
                                             <td>
                                                 {{ $pickup->created_at }}
@@ -387,9 +378,7 @@
                                                 {{ $return->user->name }}
                                             </td>
                                             <td>
-                                                @foreach ($return->order_details as $order_detail)
-                                                    <div>{{ $order_detail->name }}</div>
-                                                @endforeach
+                                                {{ count($return->order_details) }}
                                             </td>
                                             <td>
                                                 {{ $return->created_at }}
@@ -465,9 +454,7 @@
                                                 {{ $cancelled->user->name }}
                                             </td>
                                             <td>
-                                                @foreach ($cancelled->order_details as $order_detail)
-                                                    <div>{{ $order_detail->name }}</div>
-                                                @endforeach
+                                                {{ count($cancelled->order_details) }}
                                             </td>
                                             <td>
                                                 {{ $cancelled->created_at }}

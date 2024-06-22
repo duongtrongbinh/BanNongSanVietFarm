@@ -1,11 +1,11 @@
 @extends('admin.layout.master')
-@section('title', 'Product Update')
+@section('title', 'Edit Product')
 @section('css')
   <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
 @endsection
 @section('content')
     <div class="pagetitle">
-      <h1>Product Update</h1>
+      <h1>Edit Product</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -14,7 +14,6 @@
       </nav>
     </div>
     <!-- End Page Title -->
-    
     <div class="card">
       <div class="card-body">
         <form action="{{ route('products.update', $product) }}" method="POST" data-toggle="validator" enctype="multipart/form-data">

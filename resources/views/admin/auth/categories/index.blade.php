@@ -1,12 +1,12 @@
 @extends('admin.layout.master')
-@section('title', 'Category List')
+@section('title', 'List Category')
 @section('content')
     <div class="pagetitle">
-      <h1>Category List</h1>
+      <h1>List Category</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Category</li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item active"><a href="{{ route('categories.index') }}">Category</a></li>
         </ol>
       </nav>
     </div>
@@ -27,8 +27,8 @@
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Tên</th>
+                    <th>Ghi chú</th>
                     <th>Slug</th>
                     <th>Action</th>
                   </tr>

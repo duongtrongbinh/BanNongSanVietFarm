@@ -39,7 +39,7 @@
                     <div class="dropdown topbar-head-dropdown ms-1 header-item">
                         <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative my-auto cart-button" data-url="{{ route('cart.getCart') }}" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-cart-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-shopping-bag fa-2x"></i>
-                            <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 cart-count" style="top: -5px; left: 30px; height: 20px; min-width: 20px;">{{ count(session()->get('cart', [])) ?? 0 }}</span>
+                            <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 cart-count" style="top: -5px; left: 30px; height: 20px; min-width: 20px;">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end p-0 dropdown-menu-cart" style="min-width: 31.25rem" aria-labelledby="page-header-cart-dropdown">
                             @if (session('cart'))
@@ -50,7 +50,7 @@
                                         </div>
                                         <div class="col-auto">
                                             <span class="badge bg-warning-subtle text-warning fs-13">
-                                                <span class="cartitem-badge cart-count">{{ count(session()->get('cart', [])) ?? 0 }}</span>
+                                                <span class="cartitem-badge cart-count">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
                                                 sản phẩm
                                             </span>
                                         </div>

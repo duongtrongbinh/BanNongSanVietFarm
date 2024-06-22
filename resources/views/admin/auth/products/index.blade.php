@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Product List')
+@section('title', 'List Product')
 @section('css')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -10,7 +10,7 @@
 @endsection
 @section('content')
     <div class="pagetitle">
-      <h1>Product List</h1>
+      <h1>List Product</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -24,7 +24,6 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Danh sách sản phẩm</h5>
                     <div class="col-sm-auto">
                         <div>
                             <a href="{{ route('products.create') }}" class="btn btn-success" id="addproduct-btn"><i class="ri-add-line align-bottom me-1"></i> Add Product</a>
@@ -36,18 +35,18 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Img Thumbnail</th>
-                                <th>Name</th>
-                                <th>Brand</th>
-                                <th>Category</th>
+                                <th>Ảnh</th>
+                                <th>Tên</th>
+                                <th>Thương hiệu</th>
+                                <th>Danh mục</th>
                                 <th>Tag</th>
-                                <th>Quantity</th>
-                                <th>Price Regular</th>
-                                <th>Price Sale</th>
-                                <th>Action</th>
+                                <th>Số lượng</th>
+                                <th>Giá gốc</th>
+                                <th>Giá giảm</th>
                                 <th>Slug</th>
-                                <th>Is Active</th>
-                                <th>Is Home</th>
+                                <th>Active</th>
+                                <th>Home</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,16 +67,6 @@
                               <td>{{ $product->quantity }}</td>
                               <td>{{ number_format($product->price_regular, 0) }} VNĐ</td>
                               <td>{{ number_format($product->price_sale, 0) }} VNĐ</td>
-                              <td>
-                                <div class="d-flex justify-content-center align-items-center">
-                                  <a href="{{ route('products.edit', $product) }}" class="btn btn-secondary btn-sm">
-                                    <i class="bi bi-pencil-square"></i>
-                                  </a>
-                                  <a data-url="{{ route('products.destroy', $product) }}"  class="btn btn-danger btn-sm deleteSlide">
-                                    <i class="bi bi-trash"></i>
-                                  </a>
-                                </div>
-                              </td>
                               <td>{{ $product->slug }}</td>
                               <td>
                                 @if ($product->is_active == true)
@@ -92,6 +81,16 @@
                                 @else
                                   <span class="badge bg-danger">No</span>
                                 @endif
+                              </td>
+                              <td>
+                                <div class="d-flex justify-content-center align-items-center">
+                                  <a href="{{ route('products.edit', $product) }}" class="btn btn-secondary btn-sm">
+                                    <i class="bi bi-pencil-square"></i>
+                                  </a>
+                                  <a data-url="{{ route('products.destroy', $product) }}"  class="btn btn-danger btn-sm deleteSlide">
+                                    <i class="bi bi-trash"></i>
+                                  </a>
+                                </div>
                               </td>
                             </tr>
                           @endforeach
@@ -119,7 +118,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      new DataTable("#example");
+      $('#example').DataTable({
+        responsive: true,
+        columnDefs: [
+          { responsivePriority: 1, targets: 0 },  // ID
+          { responsivePriority: 2, targets: 1 },  // Img Thumbnail
+          { responsivePriority: 3, targets: 2 },  // Name
+          { responsivePriority: 4, targets: 3 },  // Brand
+          { responsivePriority: 5, targets: 4 },  // Category
+          { responsivePriority: 6, targets: 5 },  // Tag
+          { responsivePriority: 7, targets: 6 },  // Quantity
+          { responsivePriority: 8, targets: 7 },  // Price Regular
+          { responsivePriority: 9, targets: 8 },  // Price Sale
+          { responsivePriority: 100, targets: 9 }, // Slug (ít ưu tiên nhất)
+          { responsivePriority: 100, targets: 10 }, // Is Active (ít ưu tiên nhất)
+          { responsivePriority: 100, targets: 11 }, // Is Home (ít ưu tiên nhất)
+          { responsivePriority: 10, targets: 12 }  // Action
+        ]
+      });
+
       function actionDelete(e) {
         e.preventDefault();
         let urlRequest = $(this).data("url");

@@ -1,12 +1,12 @@
 @extends('admin.layout.master')
-@section('title', 'Brand Edit')
+@section('title', 'Edit Brand')
 @section('content')
     <div class="pagetitle">
-      <h1>Brand Update</h1>
+      <h1>Edit Brand</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Brand</li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+          <li class="breadcrumb-item active"><a href="{{ route('brands.index') }}">Brand</a></li>
         </ol>
       </nav>
     </div>
@@ -16,12 +16,11 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Brand Update</h5>
                 <!-- Form -->
                 <form action="{{ route('brands.update', $brand) }}" method="post" data-toggle="validator" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="row mb-3">
+                    <div class="row mb-3 mt-4">
                         <label for="name" class="col-sm-2 col-form-label">Name</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="name" name="name" value="{{ $brand->name }}">
