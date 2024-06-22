@@ -53,7 +53,7 @@
                         <tbody>
                           @foreach ($products as $key => $product)
                             <tr>
-                              <td>{{ $product->id }}</td>
+                              <td>{{ $key }}</td>
                               <td>
                                   <img src="{{ $product->image }}" width="100px">
                               </td>
@@ -66,8 +66,8 @@
                                 @endforeach
                               </td>
                               <td>{{ $product->quantity }}</td>
-                              <td>{{ number_format($product->price_regular, 3) }} VNĐ</td>
-                              <td>{{ number_format($product->price_sale, 3) }} VNĐ</td>
+                              <td>{{ number_format($product->price_regular, 0) }} VNĐ</td>
+                              <td>{{ number_format($product->price_sale, 0) }} VNĐ</td>
                               <td>
                                 <div class="d-flex justify-content-center align-items-center">
                                   <a href="{{ route('products.edit', $product) }}" class="btn btn-secondary btn-sm">

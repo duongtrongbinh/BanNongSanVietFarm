@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('price_sale', 19, 4);
             $table->integer('quantity');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
+
         Schema::dropIfExists('order_details');
     }
 };
