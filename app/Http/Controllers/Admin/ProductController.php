@@ -41,7 +41,7 @@ class ProductController extends Controller
     }
 
     public function create()
-    {   
+    {
         $brands = $this->brandRepository->getAll();
         $categories = $this->categoryRepository->getAll();
         $tags = $this->tagRepository->getAll();
@@ -50,7 +50,7 @@ class ProductController extends Controller
     }
 
     public function store(ProductCreateRequest $request)
-    {   
+    {
         $request['slug'] = Str::slug($request['name']);
         $image_ids = explode(',', $request->input('image')[0]);
         $image = array_shift($image_ids);
@@ -63,7 +63,7 @@ class ProductController extends Controller
                 $request['product_id'] = $product->id;
                 $request['image'] = $newImage;
                 $this->productImageRepository->createWithRelations($request->all(), ['product']);
-            }   
+            }
         }
 
         $tag_ids = $request->input('tag', []);
@@ -73,9 +73,9 @@ class ProductController extends Controller
                     'product_id' => $product->id,
                     'tag_id' => $tag_id,
                 ]);
-            }   
+            }
         }
-        
+
         return redirect()
             ->route('products.index')
             ->with('status', 'Success');
@@ -89,7 +89,7 @@ class ProductController extends Controller
     }
 
     public function edit(Product $product)
-    {   
+    {
         $product = Product::with(['brand', 'category', 'tags', 'product_images'])->find($product->id);
         $brands = $this->brandRepository->getAll();
         $categories = $this->categoryRepository->getAll();
@@ -120,11 +120,11 @@ class ProductController extends Controller
                 $request['product_id'] = $product->id;
                 $request['image'] = $newImage;
                 $this->productImageRepository->createWithRelations($request->all(), ['product']);
-            }   
+            }
         }
-        
+
         $tag_ids = $request->input('tag', []);
-        $product->tags()->sync($tag_ids);   
+        $product->tags()->sync($tag_ids);
 
         return back()
             ->with('status', 'Success');
@@ -138,17 +138,15 @@ class ProductController extends Controller
     }
 
     public function destroy(Product $product)
-    {        
+    {
         $product_images = ProductImage::with(['product'])->where('product_id', $product->id)->get();
         if ($product_images != Null) {
             foreach ($product_images as $product_image) {
                 $this->productImageRepository->destroy($product_image->id);
             }
         }
-
         DB::table('product_tags')->where('product_id', $product->id)->delete();
         $this->productRepository->destroy($product->id);
-
         return response()->json(true);
     }
 }

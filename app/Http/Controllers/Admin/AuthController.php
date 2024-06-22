@@ -22,18 +22,17 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         $remember = $request->has('remember_token') ? true : false;
-        if(auth()->attempt([
-            'email'=>$request->email,
-            'password'=>$request->password
-        ], $remember)){
+        if (auth()->attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ], $remember)) {
             return view('admin.dashboard');
         }
     }
 
-    public function logout(){
+    public function logout()
+    {
         Auth::logout();
         return view('dashboard.admin.users.user');
     }
-
-    
 }

@@ -48,6 +48,12 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
+
+
+    public function comments()
+    {
+        return $this->belongsToMany(Comment::class, 'product_comments', 'product_id', 'comment_id');
+
   
     public function flashSaleProducts()
     {
