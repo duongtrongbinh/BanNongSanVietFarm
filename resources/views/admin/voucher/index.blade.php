@@ -19,15 +19,17 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Vouchers</h5>
+                        <h5 class="card-title">
+                            <a href="{{ route('flash-sales.create') }}">
+                                <i class="bi bi-plus-circle"></i>
+                                Create Sale
+                            </a>
+                        </h5>
                         <div class="d-flex justify-content-between">
-                            <p>title</p>
+                            <p></p>
                             <div>
-                                <a href="{{ route('vouchers.create') }}">
-                                    <button type="button" class="btn btn-success"><i class="bi bi-plus"></i> add new voucher</button>
-                                </a>
                                 <a href="{{ route('vouchers.deleted') }}">
-                                    <button type="button" class="btn btn-primary"><i class="bi bi-plus"></i>remove</button>
+                                    <button type="button" class="btn btn-outline-danger"><i class="ri-delete-bin-2-line"></i>deleted</button>
                                 </a>
                             </div>
                         </div>

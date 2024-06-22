@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Http\Controllers\Admin\OrderController;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Database\Seeder;
