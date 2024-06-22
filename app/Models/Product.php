@@ -33,7 +33,7 @@ class Product extends Model
     {
         return $this->BelongsTo(Brand::class, 'brand_id')->withTrashed();
     }
-
+    
     public function category()
     {
         return $this->BelongsTo(Category::class, 'category_id')->withTrashed();
@@ -81,5 +81,12 @@ class Product extends Model
     public function productComments()
     {
         return $this->hasMany(ProductComment::class);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_details')
+                    ->withPivot('name', 'image', 'price_regular', 'price_sale', 'quantity')
+                    ->withTimestamps();
     }
 }

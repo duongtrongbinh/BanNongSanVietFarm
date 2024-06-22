@@ -9,15 +9,13 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use DB;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
-    use HasFactory, SoftDeletes;
-    use Notifiable;
-
-    protected $table = 'users';
+    use HasFactory, Notifiable,HasRoles;
+    use SoftDeletes;
+    public $table = 'users';
     public $timestamps = true;
     protected $fillable = [
         'name',

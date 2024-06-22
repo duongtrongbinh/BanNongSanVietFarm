@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
+            $table->string('code');
             $table->string('description', 255)->nullable();
             $table->boolean('is_active')->default(false);
             $table->boolean('type_unit')->default(0)->comment('0: Total Bill, 1: Percent');

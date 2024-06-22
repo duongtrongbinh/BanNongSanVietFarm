@@ -1,10 +1,11 @@
 <?php
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Client\AuthController as AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
 use Illuminate\Support\Facades\Route;
@@ -13,12 +14,9 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\OrderController;
 use \App\Http\Controllers\Admin\FlashSaleController;
 use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PurchaseReceiptController;
-use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ShopController;
 
 /*
@@ -91,7 +89,7 @@ Route::group(['prefix' => 'admin'], function () {
 /* Route Client */
 /* Route Home */
 Route::group(['prefix' => ''], function (){
-    Route::controller(HomeController::class)->group(function () {
+    Route::controller(\App\Http\Controllers\Client\HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
         Route::get('/product/{id}', 'product')->name('product');
         Route::get('/category/{id}', 'category')->name('category');

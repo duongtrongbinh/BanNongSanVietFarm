@@ -22,7 +22,7 @@ class ProductCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brand_id' => 'required',
+            'brand_id' => 'required|exists:brands,id',
             'category_id' => 'required',
             'name' => 'required|max:255',
             'image' => 'required',

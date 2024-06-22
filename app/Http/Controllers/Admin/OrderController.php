@@ -30,7 +30,7 @@ class OrderController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('orders', 'delivereds', 'pickups', 'returns', 'cancelleds'));
     }
-
+     
     public function show(Order $order)
     {
         $order = Order::with(['user', 'order_details'])->find($order->id);
@@ -38,4 +38,16 @@ class OrderController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('order'));
 
     }
+
+    public function test()
+    {
+        $orders = $this->orderRepository->getLatestAllWithRelations(['user', 'order_details']);
+        $delivereds = Order::where('status', '3')->latest('id')->get();
+        $pickups = Order::where('status', '2')->latest('id')->get();
+        $returns = Order::where('status', '4')->latest('id')->get();
+        $cancelleds = Order::where('status', '5')->latest('id')->get();
+
+        return view('index', compact('orders', 'delivereds', 'pickups', 'returns', 'cancelleds'));
+    }    
+
 }
