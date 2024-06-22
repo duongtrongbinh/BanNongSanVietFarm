@@ -15,6 +15,7 @@ class ProductSeeder extends Seeder
         $faker = Faker::create();
         for ($i = 0; $i < 100; $i++) {
             $name = $faker->sentence(3);
+            $priceRegular = $faker->randomFloat(4, 1000, 100000);
             Product::insert([
                 'category_id' => rand(1, 3),
                 'brand_id' => rand(1, 10),
@@ -22,8 +23,8 @@ class ProductSeeder extends Seeder
                 'image' => 'https://mtcs.1cdn.vn/2023/05/30/rau-cu-qua.jpg',
                 'slug' => Str::slug($name),
                 'excerpt' => $faker->sentence,
-                'price_regular' => $faker->randomFloat(4, 10, 100),
-                'price_sale' => $faker->randomFloat(4, 5, 50),
+                'price_regular' => $priceRegular,
+                'price_sale' => $faker->randomFloat(4, 1000, $priceRegular),
                 'quantity' => $faker->numberBetween(1, 100),
                 'is_home' => $faker->boolean,
                 'is_active' => $faker->boolean,

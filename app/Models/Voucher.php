@@ -17,4 +17,9 @@ class Voucher extends Model
 
     public $fillable = ['title','description','is_active','type_unit','quantity','amount','start_date','end_date','created_at','updated_at','deleted_at'];
 
+    public function order()
+    {
+        return $this->hasMany(Order::class, 'voucher_id', 'id');
+    }
+
 }
