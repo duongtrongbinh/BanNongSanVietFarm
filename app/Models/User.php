@@ -31,6 +31,8 @@ class User extends Authenticatable
         'name_avatar',
         'image_avatar',
         'desc',
+        'avatar',
+        'user_code',
         'birthday'
     ];
 
@@ -59,3 +61,4 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 }
+

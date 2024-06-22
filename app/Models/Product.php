@@ -48,6 +48,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
+  
     public function flashSaleProducts()
     {
         return $this->hasMany(FlashSaleProduct::class, 'product_id');
@@ -70,3 +71,4 @@ class Product extends Model
         return $this->hasMany(OrderDetail::class, 'product_id', 'id');
     }
 }
+

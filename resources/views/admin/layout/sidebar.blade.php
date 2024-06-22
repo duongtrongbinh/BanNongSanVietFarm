@@ -11,6 +11,7 @@
                           <span>{{ $value['title'] }}</span>
                       </a>
                   </li><!-- End Profile Page Nav -->
+
               @endforeach
           @endforeach
 
