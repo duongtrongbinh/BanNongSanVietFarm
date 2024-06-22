@@ -31,5 +31,8 @@ class Comment extends Model
     {
         return $this->hasMany(ProductComment::class);
     }
-
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'post_comments');
+    }
 }

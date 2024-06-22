@@ -5,11 +5,11 @@
 @endsection
 @section('content')
     <div class="pagetitle">
-        <h1>Dashboard</h1>
+        <h1>Flash Sales</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-                <li class="breadcrumb-item active">Vouchers</li>
+                <li class="breadcrumb-item active">Flash Sales</li>
             </ol>
         </nav>
     </div>
@@ -19,18 +19,12 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Flash Sale</h5>
-                        <div class="d-flex justify-content-between">
-                                <p>title</p>
-                                <div>
-                                    <a href="{{ route('flash-sales.create') }}">
-                                        <button type="button" class="btn btn-success"><i class="bi bi-plus"></i> add new flash sale</button>
-                                    </a>
-                                    <a href="#">
-                                        <button type="button" class="btn btn-primary"><i class="bi bi-plus"></i>remove</button>
-                                    </a>
-                                </div>
-                        </div>
+                        <h5 class="card-title">
+                            <a href="{{ route('flash-sales.create') }}">
+                                <i class="bi bi-plus-circle"></i>
+                                Create Sale
+                            </a>
+                        </h5>
                         <!-- Table with stripped rows -->
                         <table class="table datatable">
                             <thead>

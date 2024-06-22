@@ -1,6 +1,5 @@
 @extends('client.layouts.master')
 @section('title', 'Product')
-
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
@@ -31,7 +30,7 @@
                                             <img src="{{ $product_image->image }}" class="d-block w-100" alt="...">
                                         </div>
                                       @endforeach
-                                     
+
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
                                       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -49,13 +48,42 @@
                             <p class="mb-3">Category: {{ $product->category->name }}</p>
                             <h5 class="fw-bold mb-3">{{ number_format($product->price_sale, 3) }} VND</h5>
                             <div class="d-flex mb-4">
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <i class="fa fa-star"></i>
+
                             </div>
                             <p class="mb-4">{{ $product->description }}</p>
+                            @php
+                                $totalRatting = 0;
+                                $totalCount = count($product->comments);
+
+                                foreach ($product->comments as $comment) {
+                                    $totalRatting += $comment->ratting;
+                                }
+                                $averageRatting = $totalCount > 0 ? $totalRatting / $totalCount : 0;
+                            @endphp
+                            <div class="d-flex mb-4 align-items-center">
+                                <div class="me-2">
+                                    @php
+                                        $fullStars = floor($averageRatting); // Số sao nguyên
+                                        $halfStar = ceil($averageRatting - $fullStars); // Số sao nửa
+                                        $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+                                    @endphp
+
+                                    @for ($i = 1; $i <= $fullStars; $i++)
+                                        <i class="fa fa-star text-secondary" data-ratting="{{ $i }}"></i>
+                                    @endfor
+
+                                    @if ($halfStar > 0)
+                                        <i class="fa fa-star-half-alt text-secondary" data-ratting="{{ $i }}"></i>
+                                        @php $i++; @endphp
+                                    @endif
+                                    @for ($j = 1; $j <= $emptyStars; $j++)
+                                        <i class="fa fa-star " data-ratting="{{ $i }}"></i>
+                                        @php $i++; @endphp
+                                    @endfor
+                                </div>
+                                <p class="mb-0">{{ number_format($averageRatting, 1) }}</p>
+                            </div>
+
                             <div class="input-group quantity mb-5" style="width: 100px;">
                                 <div class="input-group-btn">
                                     <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
@@ -92,41 +120,25 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                                    <div class="d-flex">
-                                        <img src="{{ asset('client/assets/img/avatar.jpg') }}" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                        <div class="">
-                                            <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                            <div class="d-flex justify-content-between">
-                                                <h5>Jason Smith</h5>
-                                                <div class="d-flex mb-3">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
+                                    <div class="container">
+                                        <h4>{{ $commentsCount }} Bình luận</h4>
+                                        @foreach($comments as $comment)
+                                            <div class="d-flex mb-4">
+                                                <img src="{{ asset('client/assets/img/avatar.jpg') }}" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="{{ $comment->user->name }}">
+                                                <div class="">
+                                                    <p class="mb-2" style="font-size: 14px;">{{ $comment->created_at->format('F j, Y') }}</p>
+                                                    <div class="d-flex justify-content-between">
+                                                        <h5>{{ $comment->user->name }}</h5>
+                                                        <div class="d-flex mb-3">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <i class="fa fa-star {{ $i <= $comment->ratting ? 'text-warning' : 'text-secondary' }}"></i>
+                                                            @endfor
+                                                        </div>
+                                                    </div>
+                                                    <p>{{ $comment->content }}</p>
                                                 </div>
                                             </div>
-                                            <p>The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
-                                                words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex">
-                                        <img src="{{ asset('client/assets/img/avatar.jpg') }}" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
-                                        <div class="">
-                                            <p class="mb-2" style="font-size: 14px;">April 12, 2024</p>
-                                            <div class="d-flex justify-content-between">
-                                                <h5>Sam Peters</h5>
-                                                <div class="d-flex mb-3">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                            </div>
-                                            <p class="text-dark">The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic 
-                                                words etc. Susp endisse ultricies nisi vel quam suscipit </p>
-                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-vision" role="tabpanel">
@@ -137,22 +149,13 @@
                                 </div>
                             </div>
                         </div>
-                        <form action="#">
-                            <h4 class="mb-5 fw-bold">Leave a Reply</h4>
+                        <form id="comment-form" action="{{ route('rating', $product->id) }}" method="post" onsubmit="return validateForm()">
+                            @csrf
+                            <h4 class="mb-5 fw-bold">Comment bài viết</h4>
                             <div class="row g-4">
-                                <div class="col-lg-6">
-                                    <div class="border-bottom rounded">
-                                        <input type="text" class="form-control border-0 me-4" placeholder="Yur Name *">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="border-bottom rounded">
-                                        <input type="email" class="form-control border-0" placeholder="Your Email *">
-                                    </div>
-                                </div>
                                 <div class="col-lg-12">
                                     <div class="border-bottom rounded my-4">
-                                        <textarea name="" id="" class="form-control border-0" cols="30" rows="8" placeholder="Your Review *" spellcheck="false"></textarea>
+                                        <textarea name="comment" class="form-control border-0" id="comment" cols="30" rows="8" placeholder="Comment Bài Viết  *" spellcheck="false" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -160,14 +163,17 @@
                                         <div class="d-flex align-items-center">
                                             <p class="mb-0 me-3">Please rate:</p>
                                             <div class="d-flex align-items-center" style="font-size: 12px;">
-                                                <i class="fa fa-star text-muted"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star fa-star1 text-muted" data-ratting="1"></i>
+                                                <i class="fa fa-star fa-star1" data-ratting="2"></i>
+                                                <i class="fa fa-star fa-star1" data-ratting="3"></i>
+                                                <i class="fa fa-star fa-star1" data-ratting="4"></i>
+                                                <i class="fa fa-star fa-star1" data-ratting="5"></i>
                                             </div>
                                         </div>
-                                        <a href="#" class="btn border border-secondary text-primary rounded-pill px-4 py-3"> Post Comment</a>
+                                        <input type="hidden" name="ratting" id="ratting-input">
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="user_id" id="user_id" value="{{ auth()->check() ? auth()->user()->id : '' }}">
+                                        <button type="submit" class="btn border border-secondary text-primary rounded-pill px-4 py-3">Post Comment</button>
                                     </div>
                                 </div>
                             </div>
@@ -446,9 +452,53 @@
             </div>
         </div>
     </div>
-    <!-- Single Product End -->
+    <script>
+        const stars = document.querySelectorAll('.fa-star1');
+        const rattingInput = document.getElementById('ratting-input');
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const ratting = this.getAttribute('data-ratting');
+                rattingInput.value = ratting;
+
+                stars.forEach(star => {
+                    if (star.getAttribute('data-ratting') <= ratting) {
+                        star.classList.remove('text-muted');
+                        star.classList.add('text-warning');
+                    } else {
+                        star.classList.remove('text-warning');
+                        star.classList.add('text-muted');
+                    }
+                });
+            });
+        });
+
+        function validateForm() {
+            var hasCommented = false; // Biến để kiểm tra người dùng đã bình luận chưa
+            var rattingInput = document.getElementById('ratting-input');
+            var userId = document.getElementById('user_id').value;
+
+            // Kiểm tra xem đã chọn rating chưa
+            if (rattingInput.value === "") {
+                alert("Please select a rating.");
+                return false;
+            }
+
+            // Kiểm tra xem người dùng đã đăng nhập chưa
+            if (userId === '') {
+                alert('Bạn cần đăng nhập để thực hiện thao tác này.');
+                return false;
+            }
+            if (hasCommented) {
+                alert('Bạn đã bình luận sản phẩm này rồi.');
+                return false;
+            }
+            // Nếu đã đăng nhập và đã chọn rating, cho phép submit form
+            return true;
+        }
+    </script>
 @endsection
 @section('js')
 <script src="path-to-your-tinymce/tinymce.min.js"></script>
-    
+
 @endsection

@@ -8,7 +8,10 @@ use App\Http\Repositories\ProductImageRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Repositories\TagRepository;
 use App\Models\Category;
+use App\Http\Requests\StorePostRequest;
 use App\Models\Product;
+use App\Models\Post;
+
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -39,12 +42,14 @@ class HomeController extends Controller
     }
 
     public function product($id)
-    {   
+    {
         $product = Product::with(['brand', 'category', 'tags', 'product_images'])->find($id);
         $products = $this->productRepository->getHomeLatestAllWithRelations(['brand', 'category']);
         $categories = $this->categoryRepository->getLatestAll();
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('product',  'products', 'categories'));
+        // Lấy bình luận của sản phẩm
+        $comments = $product->comments()->with('user')->orderBy('created_at', 'desc')->get();
+        $commentsCount = $comments->count();
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product',  'products', 'categories','comments', 'commentsCount','comments'));
     }
 
     public function category($id)
@@ -57,6 +62,18 @@ class HomeController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('categories', 'products'));
     }
 
+    public function post()
+    {
+        $posts = Post::query()->get();
+        return view('client.post', compact('posts'));
+    }
+    public function store(StorePostRequest $request)
+    {
+        $data = $request->except('image');
+        $data['image'] = $request->input('image');
+        $post = Post::create($data);
+        return redirect()->route('post');
+    }
 }
 
 
