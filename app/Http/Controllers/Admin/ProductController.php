@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    const PATH_VIEW = 'admin.auth.products.';
+    const PATH_VIEW = 'admin.products.';
     protected $productRepository;
     protected $brandRepository;
     protected $categoryRepository;

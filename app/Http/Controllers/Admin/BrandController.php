@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 class BrandController extends Controller
 {
-    const PATH_VIEW = 'admin.auth.brands.';
+    const PATH_VIEW = 'admin.brands.';
     protected $brandRepository;
     protected $productRepository;
     protected $productImageRepository;

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    const PATH_VIEW = 'admin.auth.categories.';
+    const PATH_VIEW = 'admin.categories.';
     protected $categoryRepository;
 
     public function __construct(CategoryRepository $categoryRepository)

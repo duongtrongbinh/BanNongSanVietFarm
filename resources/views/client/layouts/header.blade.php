@@ -20,56 +20,22 @@
               <span class="fa fa-bars text-primary"></span>
           </button>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
-              <div class="navbar-nav mx-auto">
-                  <a href="/" class="nav-item nav-link active">Trang chủ</a>
-                  <a href="{{ route('shop') }}" class="nav-item nav-link">Shop</a>
-                  <div class="nav-item dropdown">
-                      <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                      <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                          <a href="{{ route('cart.index') }}" class="dropdown-item">Cart</a>
-                          <a href="{{ route('checkout') }}" class="dropdown-item">Checkout</a>
-                          <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                          <a href="{{route('post')}}" class="dropdown-item">Post</a>
-                          <a href="" class="dropdown-item">404 Page</a>
-                      </div>
-                  </div>
-                  <a href="contact.html" class="nav-item nav-link">Contact</a>
-              </div>
-
-              <div class="d-flex m-3 me-0">
-                  <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
-                  <a href="#" class="position-relative me-4 my-auto">
-                      <i class="fa fa-shopping-bag fa-2x"></i>
-                      <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
-                  </a>
-                  <div class="dropdown">
-                      <a href="#" class="my-auto dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="fas fa-user fa-2x"></i>
-                      </a>
-                      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                          @if(auth()->check())
-                              <!-- Hiển thị thông tin người dùng đã đăng nhập -->
-                              <li>
-                                  <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      {{ auth()->user()->name }}
-                                  </button>
-                                  <form action="{{ route('logout') }}" method="POST">
-                                      @csrf
-                                      <button type="submit" class="dropdown-item">Logout</button>
-                                  </form>
-                              </li>
-                          @else
-                              <!-- Hiển thị nút Login -->
-                              <li><a class="dropdown-item" href="{{ route('login') }}">Login</a></li>
-
-                              <!-- Hiển thị nút Register -->
-                              <li><a class="dropdown-item" href="{{ route('register') }}">Register</a></li>
-                          @endif
-                      </ul>
-                  </div>
-
-
-              <div class="d-flex align-items-center justify-content-between m-3">
+                <div class="navbar-nav mx-auto">
+                    <a href="/" class="nav-item nav-link active">Trang chủ</a>
+                    <a href="{{ route('shop') }}" class="nav-item nav-link">Shop</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu m-0 bg-secondary rounded-0">
+                            <a href="{{ route('cart.index') }}" class="dropdown-item">Cart</a>
+                            <a href="{{ route('checkout') }}" class="dropdown-item">Checkout</a>
+                            <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                            <a href="{{route('post')}}" class="dropdown-item">Post</a>
+                            <a href="" class="dropdown-item">404 Page</a>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <div class="d-flex m-3 me-0">
                     <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                     <div class="dropdown topbar-head-dropdown ms-1 header-item">
                         <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative my-auto cart-button" data-url="{{ route('cart.getCart') }}" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-cart-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
@@ -138,19 +104,23 @@
                         </div>
                     </div>
                     <div class="dropdown header-item topbar-user">
-                        @if (Auth::check())
+                        @if (auth()->check())
                             <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-user fa-2x"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
                                 <!-- item-->
-                                <h6 class="dropdown-header">Welcome Anna!</h6>
+                                <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}!</h6>
                                 <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Hồ sơ</span></a>
                                 <a class="dropdown-item" href="apps-chat.html"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Đơn hàng</span></a>
                                 <a class="dropdown-item" href="apps-tasks-kanban.html"><i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span></a>
                                 <a class="dropdown-item" href="pages-faqs.html"><i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span></a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ Auth::logout() }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng xuất</span></a>
+                                {{-- <a class="dropdown-item" href="{{ Auth::logout() }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng xuất</span></a> --}}
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                </form>
                             </div>
                         @else
                         <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -158,11 +128,10 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
                             <a class="dropdown-item" href="{{ route('login') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng nhập</span></a>
-                            <a class="dropdown-item" href="{{ route('login') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng ký</span></a>
+                            <a class="dropdown-item" href="{{ route('register') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng ký</span></a>
                         @endif
                     </div>
-
-              </div>
+                </div>
           </div>
       </nav>
   </div>

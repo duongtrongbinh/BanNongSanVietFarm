@@ -54,7 +54,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Comment::class, 'product_comments', 'product_id', 'comment_id');
 
-  
+    }
+    
     public function flashSaleProducts()
     {
         return $this->hasMany(FlashSaleProduct::class, 'product_id');

@@ -9,33 +9,6 @@ return [
                 'route' => 'dashboard',
             ],
             [
-
-                'title' => 'Supplier',
-                'icon' => 'bi bi-grid',
-                'route' => 'supplier.index',
-            ],
-            [
-                'title' => 'Purchase Receipt',
-                'icon' => 'bi bi-grid',
-                'route' => 'purchase_receipt.index',
-            ],
-            [
-                'title' => 'vouchers',
-                'icon' => 'ri-coupon-line',
-                'route' => 'vouchers.index',
-            ],
-            [
-                'title' => 'orders',
-                'icon' => 'ri-inbox-unarchive-line',
-                'route' => 'orders.index',
-            ],
-            [
-                'title' => 'flash-sale',
-                'icon' => 'ri-flashlight-line',
-                'route' => 'flash-sales.index',
-            ],
-
-            [
                 'title' => 'Brand',
                 'icon' => 'bi bi-award',
                 'route' => 'brands.index',
@@ -73,12 +46,22 @@ return [
             [
                 'title' => 'Orders',
                 'icon' => 'ri-inbox-unarchive-line',
-                'route' => 'order.index',
+                'route' => 'orders.index',
             ],
             [
-                'title' => 'Flash-sale',
+                'title' => 'Flash Sale',
                 'icon' => 'ri-flashlight-line',
                 'route' => 'flash-sales.index',
+            ],
+            [
+                'title' => 'User',
+                'icon' => 'bi bi-person-circle',
+                'route' => 'user.index',
+            ],
+            [
+                'title' => 'Comment',
+                'icon' => 'bi bi-chat-dots',
+                'route' => 'comment.index',
             ],
         ],
     ],

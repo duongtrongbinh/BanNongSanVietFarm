@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    const PATH_VIEW = 'admin.order.';
+    const PATH_VIEW = 'admin.orders.';
     public $orderRepository;
     public $voucherRepository;
 
@@ -37,16 +37,5 @@ class OrderController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('order'));
 
-    }
-
-    public function test()
-    {
-        $orders = $this->orderRepository->getLatestAllWithRelations(['user', 'order_details']);
-        $delivereds = Order::where('status', '3')->latest('id')->get();
-        $pickups = Order::where('status', '2')->latest('id')->get();
-        $returns = Order::where('status', '4')->latest('id')->get();
-        $cancelleds = Order::where('status', '5')->latest('id')->get();
-
-        return view('index', compact('orders', 'delivereds', 'pickups', 'returns', 'cancelleds'));
     }
 }

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
-    const PATH_VIEW = 'admin.auth.tags.';
+    const PATH_VIEW = 'admin.tags.';
     protected $tagRepository;
     protected $productRepository;
 

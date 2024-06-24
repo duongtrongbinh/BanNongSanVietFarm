@@ -22,9 +22,14 @@ class Order extends Model
         'before_total_amount',
         'shipping',
         'after_total_amount',
-        'note','status',
+        'note',
+        'status',
         'order_code',
     ];
+    public function user()
+    {
+        return $this->BelongsTo(User::class)->withTrashed();
+    }
 
     public function order_details()
     {
@@ -34,10 +39,5 @@ class Order extends Model
     public function voucher()
     {
         return $this->BelongsTo(Voucher::class, 'voucher_id')->withTrashed();
-    }
-
-    public function user()
-    {
-        return $this->BelongsTo(User::class, 'user_id')->withTrashed();
     }
 }

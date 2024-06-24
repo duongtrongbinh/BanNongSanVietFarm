@@ -89,7 +89,7 @@
                             let subtotal = 0;
                             const cartDrop = document.querySelector('.dropdown-menu-cart');
                             cartDrop.innerHTML = '';
-                            if (response.cart === null || response.cart.length == 0) {
+                            if (response.cart == null) {
                                 let cartEmpty = document.createElement('div');
                                 cartEmpty.classList.add('text-center', 'empty-cart');
                                 cartEmpty.id = 'empty-cart';
