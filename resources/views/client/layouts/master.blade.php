@@ -5,6 +5,7 @@
         <title>@yield('title')</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link href="{{ asset('client/assets/img/logo.jpg') }}" rel="icon">
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

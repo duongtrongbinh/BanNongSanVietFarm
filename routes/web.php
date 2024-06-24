@@ -83,6 +83,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('comment', CommentController::class);
     Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
         ->name('product.comment.destroy');
+
+     /* Route Rate */ 
+     Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
 });
 
 /* Route Client */

@@ -15,25 +15,17 @@
   </div>
   <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <a href="/" class="navbar-brand"><h1 class="text-primary display-6">Nông Sản Việt</h1></a>
+          <a href="{{ route('home') }}" class="navbar-brand"><h1 class="text-primary display-6">Nông Sản Việt</h1></a>
           <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
               <span class="fa fa-bars text-primary"></span>
           </button>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
-                    <a href="/" class="nav-item nav-link active">Trang chủ</a>
-                    <a href="{{ route('shop') }}" class="nav-item nav-link">Shop</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                            <a href="{{ route('cart.index') }}" class="dropdown-item">Cart</a>
-                            <a href="{{ route('checkout') }}" class="dropdown-item">Checkout</a>
-                            <a href="testimonial.html" class="dropdown-item">Testimonial</a>
-                            <a href="{{route('post')}}" class="dropdown-item">Post</a>
-                            <a href="" class="dropdown-item">404 Page</a>
-                        </div>
-                    </div>
-                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    <a href="{{ route('home') }}" class="nav-item nav-link active">Trang chủ</a>
+                    <a href="{{ route('shop') }}" class="nav-item nav-link">Cửa hàng</a>
+                    <a href="#" class="nav-item nav-link">Bài viết</a>
+                    <a href="#" class="nav-item nav-link">Liên hệ</a>
+                    <a href="#" class="nav-item nav-link">Chính sách</a>
                 </div>
                 <div class="d-flex m-3 me-0">
                     <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>

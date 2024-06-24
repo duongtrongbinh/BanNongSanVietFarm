@@ -60,7 +60,7 @@ class HomeController extends Controller
 
         $categories = $this->categoryRepository->getLatestAll();
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('categories', 'products'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('category', 'categories', 'products'));
     }
 
     public function post()

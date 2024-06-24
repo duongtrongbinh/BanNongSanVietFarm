@@ -25,7 +25,7 @@ class GoogleLoginController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = $this->socialite->stateless()->user();
+            $googleUser = $this->socialite->user();
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors(['login_failed' => 'Login failed, please try again.']);
         }
