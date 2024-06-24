@@ -35,7 +35,9 @@ class CartController extends Controller
                 'width' => 12,
                 'height' => 12,
                 'length' => 12,
-                'quantity' => $quantity
+                'quantity' => $quantity,
+                'price_regular'=> $quantity*$product['price'],
+                'price_sale'=> $quantity*$product['price'],
             ];
         }
 

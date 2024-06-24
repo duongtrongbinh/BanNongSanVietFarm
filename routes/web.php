@@ -8,16 +8,18 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Client\AuthController as AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Client\ShopController;
+use App\Http\Services\GHNService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\OrderController;
 use \App\Http\Controllers\Admin\FlashSaleController;
-use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PurchaseReceiptController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\ShopController;
+use App\Http\Controllers\Client\OrderController as ClientOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,7 @@ use App\Http\Controllers\Client\ShopController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 
 /* Route Admin */
 Route::group(['prefix' => 'admin'], function () {
@@ -131,4 +134,12 @@ Route::group(['prefix' => ''], function (){
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
         Route::get('/auth/google/callback', 'handleGoogleCallback');
     }); 
+
+    Route::get('/check-out',[ClientOrderController::class,'create'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+    Route::get('404', function () {
+        return view('client.layouts.404');
+    })->name('404');
 });
+
+Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');

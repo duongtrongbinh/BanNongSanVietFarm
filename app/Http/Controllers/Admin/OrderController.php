@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
 use App\Models\Order;
-use Illuminate\Http\Request;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -30,7 +31,7 @@ class OrderController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('orders', 'delivereds', 'pickups', 'returns', 'cancelleds'));
     }
-     
+
     public function show(Order $order)
     {
         $order = Order::with(['user', 'order_details'])->find($order->id);

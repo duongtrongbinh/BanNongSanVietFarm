@@ -29,6 +29,7 @@ class VoucherSeeder extends Seeder
                 'description' => 'Description for Voucher ' . ($i + 1),
                 'is_active' => rand(0, 1),
                 'type_unit' => $typeUnit,
+                'code' => fake()->uuid(),
             ]);
         }
     }
