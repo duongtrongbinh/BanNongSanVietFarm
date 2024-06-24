@@ -126,7 +126,7 @@
                                         <tr>
                                             <th scope="row">
                                                 <div class="d-flex align-items-center mt-2">
-                                                    <img src="{{ $item['image'] }}" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                                    <img src="{{ $item['image'] }}" class="img-fluid rounded-circle object-fit-cover" style="width: 90px; height: 90px;" alt="">
                                                 </div>
                                             </th>
                                             <td class="py-5" id="name">{{ $item['name'] }}</td>

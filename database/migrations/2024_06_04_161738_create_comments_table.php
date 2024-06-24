@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('content', 255);
             $table->integer('ratting')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

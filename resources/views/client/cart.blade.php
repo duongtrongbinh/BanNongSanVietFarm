@@ -72,7 +72,7 @@
                                     <p class="mb-0" id="subtotal">{{ number_format($total) }}đ</p>
                                 </div>
                             </div>
-                            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Checkout</button>
+                            <a href="{{ route('checkout') }}" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">Checkout</a>
                         </div>
                     </div>
                 </div>

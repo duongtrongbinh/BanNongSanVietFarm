@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Http\Repositories\BrandRepository;
 use App\Http\Repositories\CategoryRepository;
 use App\Http\Repositories\ProductImageRepository;
@@ -49,17 +50,17 @@ class HomeController extends Controller
         // Lấy bình luận của sản phẩm
         $comments = $product->comments()->with('user')->orderBy('created_at', 'desc')->get();
         $commentsCount = $comments->count();
-        return view(self::PATH_VIEW . __FUNCTION__, compact('product',  'products', 'categories','comments', 'commentsCount','comments'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product',  'products', 'categories','comments', 'commentsCount'));
     }
 
     public function category($id)
     {
         $category = $this->categoryRepository->findOrFail($id);
-        $products = Product::where('category_id', $category->id)->where('is_home', 1)->where('is_active', 1)->latest('id')->paginate(12);
+        $products = Product::where('category_id', $category->id)->where('is_active', 1)->latest('id')->paginate(12);
 
         $categories = $this->categoryRepository->getLatestAll();
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('categories', 'products'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('category', 'categories', 'products'));
     }
 
     public function post()

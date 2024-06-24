@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Http\Repositories\BrandRepository;
 use App\Http\Repositories\CategoryRepository;
 use App\Http\Repositories\ProductImageRepository;

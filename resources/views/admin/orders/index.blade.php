@@ -15,7 +15,7 @@
       <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-            <li class="breadcrumb-item active"><a href="{{ route('order.index') }}">Order</a></li>
+            <li class="breadcrumb-item active"><a href="{{ route('orders.index') }}">Order</a></li>
         </ol>
       </nav>
     </div>
@@ -176,7 +176,7 @@
                                             <td>
                                                 <ul class="list-inline hstack gap-2 mb-0">
                                                     <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('order.show', $order->id) }}" class="text-primary d-inline-block">
+                                                        <a href="{{ route('orders.show', $order->id) }}" class="text-primary d-inline-block">
                                                             <i class="ri-eye-fill fs-16"></i>
                                                         </a>
                                                     </li>
@@ -251,7 +251,7 @@
                                             <td>
                                                 <ul class="list-inline hstack gap-2 mb-0">
                                                     <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('order.show', $delivered->id) }}" class="text-primary d-inline-block">
+                                                        <a href="{{ route('orders.show', $delivered->id) }}" class="text-primary d-inline-block">
                                                             <i class="ri-eye-fill fs-16"></i>
                                                         </a>
                                                     </li>
@@ -327,7 +327,7 @@
                                             <td>
                                                 <ul class="list-inline hstack gap-2 mb-0">
                                                     <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('order.show', $pickup->id) }}" class="text-primary d-inline-block">
+                                                        <a href="{{ route('orders.show', $pickup->id) }}" class="text-primary d-inline-block">
                                                             <i class="ri-eye-fill fs-16"></i>
                                                         </a>
                                                     </li>
@@ -403,7 +403,7 @@
                                             <td>
                                                 <ul class="list-inline hstack gap-2 mb-0">
                                                     <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('order.show', $return->id) }}" class="text-primary d-inline-block">
+                                                        <a href="{{ route('orders.show', $return->id) }}" class="text-primary d-inline-block">
                                                             <i class="ri-eye-fill fs-16"></i>
                                                         </a>
                                                     </li>
@@ -479,7 +479,7 @@
                                             <td>
                                                 <ul class="list-inline hstack gap-2 mb-0">
                                                     <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('order.show', $cancelled->id) }}" class="text-primary d-inline-block">
+                                                        <a href="{{ route('orders.show', $cancelled->id) }}" class="text-primary d-inline-block">
                                                             <i class="ri-eye-fill fs-16"></i>
                                                         </a>
                                                     </li>

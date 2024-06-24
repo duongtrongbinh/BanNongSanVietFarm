@@ -5,6 +5,7 @@
         <title>@yield('title')</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link href="{{ asset('client/assets/img/logo.jpg') }}" rel="icon">
 
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,7 +90,7 @@
                             let subtotal = 0;
                             const cartDrop = document.querySelector('.dropdown-menu-cart');
                             cartDrop.innerHTML = '';
-                            if (response.cart === null || response.cart.length == 0) {
+                            if (response.cart == null) {
                                 let cartEmpty = document.createElement('div');
                                 cartEmpty.classList.add('text-center', 'empty-cart');
                                 cartEmpty.id = 'empty-cart';
