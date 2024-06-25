@@ -26,10 +26,6 @@ class Order extends Model
         'status',
         'order_code',
     ];
-    public function user()
-    {
-        return $this->BelongsTo(User::class)->withTrashed();
-    }
 
     public function order_details()
     {
@@ -39,5 +35,17 @@ class Order extends Model
     public function voucher()
     {
         return $this->BelongsTo(Voucher::class, 'voucher_id')->withTrashed();
+    }
+
+    public function user()
+    {
+        return $this->BelongsTo(User::class, 'user_id')->withTrashed();
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_details')
+                    ->withPivot('quantity', 'price_regular', 'price_sale', 'image', 'name')
+                    ->withTimestamps();
     }
 }

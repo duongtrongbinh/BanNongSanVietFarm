@@ -34,10 +34,8 @@ class AuthController extends Controller
 
     public function register(StoreUserRequest $request)
     {
-        // Đảm bảo đăng xuất người dùng hiện tại trước khi đăng ký mới
         Auth::guard('web')->logout();
 
-        // Tạo người dùng mới
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -56,4 +54,5 @@ class AuthController extends Controller
         request()->session()->regenerateToken();
         return redirect()->route('home');
     }
+
 }

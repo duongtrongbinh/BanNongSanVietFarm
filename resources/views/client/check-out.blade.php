@@ -10,97 +10,88 @@
             <li class="breadcrumb-item active text-white">Checkout</li>
         </ol>
     </div>
-    <!-- Single Page Header End -->
-
-    <!-- Checkout Page Start -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <h1 class="mb-4">Billing details</h1>
-            <form action="/check-out" method="post" >
+            <form action="{{ route('checkout.store') }}" method="post" >
                 @csrf
-                @method('POST')
-                @if (isset($user))
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                @else
-                    <input type="hidden" name="user_id" value="">
-                @endif
-                <input type="hidden" name="before_total_amount" value="12000">
-                <input type="hidden" name="shipping" value="12000">
-                <input type="hidden" name="after_total_amount" value="12000">
-                <input type="hidden" name="order_code" value="random1223">
                 <div class="row g-5">
                     <div class="col-md-12 col-lg-6 col-xl-7">
                         <div class="row">
                             <div class="col-md-12 col-lg-12">
                                 <div class="form-item w-100">
                                     <label class="form-label my-3">Full Name<sup>*</sup></label>
-                                    @if (isset($user))
-                                        <input type="text" class="form-control" name="name" value="{{ $user->name }}">
-                                        @error('name')
-                                            <small id="name" class="form-text text-danger">{{ $message }}</small>
-                                        @enderror
-                                    @else
-                                        <input type="text" class="form-control" name="name" value="{{ old('name') }}">
-                                    @endif
+                                    <input type="text" class="form-control" name="name" >
+                                    @error('name')
+                                    <small id="name" class="form-text text-danger">{{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3">Address <sup>*</sup></label>
-                            <input type="text" class="form-control" placeholder="House Number Street Name" name="address" value="{{ old('address') }}">
+                            <input type="text" class="form-control" placeholder="House Number Street Name" name="address">
                             @error('address')
-                                <small id="title" class="form-text text-danger">{{ $message }}</small>
+                            <small id="title" class="form-text text-danger">{{ $message }}</small>
                             @enderror
                         </div>
-                        <div class="form-item">
-                            <label class="form-label my-3">City<sup>*</sup></label>
-                            <input type="text" class="form-control" name="city" value="{{ old('city') }}">
-                            @error('city')
-                                <small id="title" class="form-text text-danger">{{ $message }}</small>
-                            @enderror
+
+                        <div class="row">
+                          <div class="col-xl-4">
+
+                              <div class="form-item">
+                                  <label class="form-label my-3">City<sup>*</sup></label>
+                                 <select class="form-control" id="province" name="province" data-url="{{ route('provinces.find') }}" style="background-color: aliceblue">
+                                     <option value="0" selected>Chọn tỉnh/Thành phố</option>
+                                     @foreach($provinces as $items)
+                                     <option value="{{ $items->id }} - {{ $items->name }}">{{ $items->name }}</option>
+                                     @endforeach
+                                 </select>
+                                  @error('city')
+                                  <small id="title" class="form-text text-danger">{{ $message }}</small>
+                                  @enderror
+                              </div>
+                          </div>
+                            <div class="col-xl-4">
+                                <div class="form-item">
+                                    <label class="form-label my-3">District<sup>*</sup></label>
+                                    <select class="form-control" id="district" name="district" data-url="{{ route('district.find') }}" >
+                                        <option value="0" selected>Chọn Quận/Huyện</option>
+                                    </select>
+                                    @error('district')
+                                    <small id="title" class="form-text text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-xl-4">
+                                <div class="form-item">
+                                    <label class="form-label my-3">Ward<sup>*</sup></label>
+                                    <select class="form-control" id="ward" name="ward" >
+                                        <option value="0" selected>Chọn Phường/Xã</option>
+                                    </select>
+                                    @error('ward')
+                                    <small id="title" class="form-text text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-item">
-                            <label class="form-label my-3">District<sup>*</sup></label>
-                            <input type="text" class="form-control" name="district" value="{{ old('district') }}">
-                            @error('district')
-                                <small id="title" class="form-text text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="form-item">
-                            <label class="form-label my-3">Ward<sup>*</sup></label>
-                            <input type="text" class="form-control" name="ward" value="{{ old('ward') }}">
-                            @error('ward')
-                                <small id="title" class="form-text text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
+
                         <div class="form-item">
                             <label class="form-label my-3">Mobile<sup>*</sup></label>
-                            @if (isset($user))
-                                <input type="tel" class="form-control" name="phone" value="{{ $user->phone }}">
-                                @error('phone')
-                                    <small id="phone" class="form-text text-danger">{{ $message }}</small>
-                                @enderror
-                            @else
-                                <input type="number" class="form-control" name="phone" value="{{ old('phone') }}">
-                            @endif
-                            
+                            <input type="tel" class="form-control" name="phone" >
+                            @error('phone')
+                            <small id="phone" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3">Email Address<sup>*</sup></label>
-                            @if (isset($user))
-                                <input type="email" class="form-control" name="email" value="{{ $user->email }}">
-                                @error('email')
-                                    <small id="email" class="form-text text-danger">{{ $message }}</small>
-                                @enderror
-                            @else
-                                <input type="email" class="form-control" name="email" value="{{ old('email') }}">
-                            @endif
-                        </div>
-                        <div class="form-check my-3">
-                            <input type="checkbox" class="form-check-input" id="Account-1" name="Accounts" value="Accounts">
-                            <label class="form-check-label" for="Account-1">Create an account?</label>
+                            <input type="email" class="form-control" name="email" >
+                            @error('email')
+                            <small id="email" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                         <hr>
+
                         <div class="form-item">
                             <textarea class="form-control" spellcheck="false" cols="30" rows="11" placeholder="Oreder Notes (Optional)" name="note"></textarea>
                         </div>
@@ -110,31 +101,28 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Sản phẩm</th>
-                                        <th scope="col">Tên</th>
-                                        <th scope="col">Giá</th>
-                                        <th scope="col">Số lượng</th>
-                                        <th scope="col">Thành tiền</th>
+                                        <th scope="col">Products</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Sale</th>
+                                        <th scope="col">Quantity</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php $total = 0 @endphp
-                                    @foreach((array) session('cart') as $id => $item)
-                                        @php $total += $item['price'] * $item['quantity'] @endphp
-                                    @endforeach
-                                    @foreach (session('cart') as $id => $item)
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="{{ $item['image'] }}" class="img-fluid rounded-circle object-fit-cover" style="width: 90px; height: 90px;" alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5" id="name">{{ $item['name'] }}</td>
-                                            <td class="py-5" id="price">{{ number_format($item['price']) }}</td>
-                                            <td class="py-5" id="quantity">{{ $item['quantity'] }}</td>
-                                            <td class="py-5" id="quantity">{{ number_format($item['quantity'] * $item['price']) }}</td>
-                                        </tr>
-                                    @endforeach
+                                  @foreach(session()->get('cart') as $items)
+                                    <tr>
+                                        <th scope="row">
+                                            <div class="d-flex align-items-center mt-2">
+                                                <img src="{{ asset('client/assets/img/vegetable-item-2.jpg') }}" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                            </div>
+                                        </th>
+                                        <td class="py-5" id="name">{{ $items['name'] }}</td>
+                                        <td class="py-5" id="price_regular">{{ $items['price_regular']}}</td>
+                                        <td class="py-5" id="price_sale">{{ $items['price_sale'] }}</td>
+                                        <td class="py-5" id="quantity">{{ $items['quantity']}}</td>
+                                    </tr>
+                                  @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -143,37 +131,19 @@
                                 <option value="{{ $items->id }}" selected>{{ $items->title }}</option>
                             @endforeach
                         </select>
-
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">
-                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer" value="Transfer">
-                                    <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
-                                </div>
-                                <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
-                            </div>
-                        </div>
-                        <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                            <div class="col-12">
-                                <div class="form-check text-start my-3">
-                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="Payments">
-                                    <label class="form-check-label" for="Payments-1">Check Payments</label>
+                                    <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="payment_method" value="2">
+                                    <label class="form-check-label" for="Delivery-1">Thanh toán khi nhận hàng</label>
                                 </div>
                             </div>
                         </div>
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">
-                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery" value="Delivery">
-                                    <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                            <div class="col-12">
-                                <div class="form-check text-start my-3">
-                                    <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal" value="Paypal">
-                                    <label class="form-check-label" for="Paypal-1">Paypal</label>
+                                    <input type="radio" class="form-check-input bg-primary border-0" id="2" name="payment_method" value="VNPAYQR">
+                                    <label class="form-check-label" for="Paypal-1">Thanh toán VNPAY</label>
                                 </div>
                             </div>
                         </div>
@@ -187,12 +157,78 @@
         @section('scripts')
             <script>
                 $(document).ready(function() {
-                    console.log('hello word');
+                    $("#province").on("change",function (){
+                        var url = $(this).data('url');
+                        var id = $(this).val();
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                province_id: id
+                            },
+                            dataType: 'json',
+                            success: function (response) {
+                                renderDistrictOptions(response.data);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                                alert('Có lỗi xảy ra khi lấy dữ liệu quận huyện!');
+                            }
+                        });
+                    })
+
+                    $("#district").on("change",function (){
+                        var url = $(this).data('url');
+                        var id = $(this).val();
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                district_id: id
+                            },
+                            dataType: 'json',
+                            success: function (response) {
+                                renderWardOptions(response.data);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                                alert('Có lỗi xảy ra khi lấy dữ liệu quận huyện!');
+                            }
+                        });
+                    })
+
+                    function renderDistrictOptions(data) {
+                        let optionsHtml = '';
+                        if (data != null) {
+                            var district = data.district
+                            district.forEach(function (item) {
+                                optionsHtml += `<option value="${item.id} - ${item.name}">${item.name}</option>`;
+                            });
+                            $('#district').html(optionsHtml);
+                        }else{
+                            $('#district').html(' <option value="0">Chọn Quận/Huyện</option>');
+                        }
+                    }
+
+                    function renderWardOptions(data) {
+                        let optionsHtml = '';
+                        var district = data.ward
+                        district.forEach(function (item) {
+                            optionsHtml += `<option value="${item.id} - ${ item.name }">${item.name}</option>`;
+                        });
+                        $('#ward').html(optionsHtml);
+                    }
+
                 })
             </script>
         @endsection
     </div>
-    <!-- Checkout Page End -->
 @endsection
 
 
