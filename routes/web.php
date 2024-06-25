@@ -19,7 +19,7 @@ use \App\Http\Controllers\Admin\FlashSaleController;
 use App\Http\Controllers\Admin\PurchaseReceiptController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\OrderController as ClientOrderController;
+use App\Http\Controllers\Client\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +76,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Order */ 
     Route::resource('orders',OrderController::class);
+    Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
 
     /* Route Post */ 
     Route::resource('post', PostController::class);
@@ -92,7 +93,7 @@ Route::group(['prefix' => 'admin'], function () {
 /* Route Client */
 /* Route Home */
 Route::group(['prefix' => ''], function (){
-    Route::controller(\App\Http\Controllers\Client\HomeController::class)->group(function () {
+    Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
         Route::get('/product/{id}', 'product')->name('product');
         Route::get('/category/{id}', 'category')->name('category');
@@ -118,6 +119,8 @@ Route::group(['prefix' => ''], function (){
     });
 
     /* Route Order */
+    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
@@ -134,12 +137,9 @@ Route::group(['prefix' => ''], function (){
         Route::get('/auth/google/callback', 'handleGoogleCallback');
     }); 
 
-    Route::get('/check-out',[ClientOrderController::class,'create'])->name('checkout');
-    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
     
+    /* Route 404 */
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
 });
-
-Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
