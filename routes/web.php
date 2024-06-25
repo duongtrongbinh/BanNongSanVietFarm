@@ -118,7 +118,6 @@ Route::group(['prefix' => ''], function (){
     });
 
     /* Route Order */
-    Route::get('/check-out',[OrderClientController::class, 'create'])->name('checkout');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
@@ -137,6 +136,7 @@ Route::group(['prefix' => ''], function (){
 
     Route::get('/check-out',[ClientOrderController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+    
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');

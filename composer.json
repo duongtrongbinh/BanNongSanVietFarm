@@ -20,6 +20,7 @@
         "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.0",
+        "spatie/laravel-permission": "^6.9",
         "tightenco/ziggy": "^2.0",
         "tinymce/tinymce": "^7.1",
         "unisharp/laravel-filemanager": "^2.9"

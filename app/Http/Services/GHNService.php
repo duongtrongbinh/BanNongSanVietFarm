@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Services;
 
-use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Models\Order;
 use App\Models\Product;
@@ -9,8 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\ErrorHandler\Debug;
 
 class GHNService
 {
@@ -39,7 +36,7 @@ class GHNService
             if($request['payment_method'] != 'VNPAYQR'){
                 $this->saveData($value, session('cart'));
                 session()->forget('cart');
-                return redirect()->route('page');
+                return redirect()->route('home');
             }else if ($request['payment_method'] == 'VNPAYQR'){
                 $this->saveData($value, session('cart'));
                 $url = $this->paymentVNPAY($value['after_total_amount'], $order_code);
@@ -72,7 +69,6 @@ class GHNService
         $data['province'] = $provinceParts[0];
         $data['district'] = $districtParts[0];
         $data['ward'] = $wardParts[0];
-
         foreach (session('cart') as $product) {
             $totalAmount += $product['quantity'] * intval($product['price_sale']);
         }
@@ -264,7 +260,7 @@ class GHNService
         $dd = $request->input('vnp_ResponseCode');
         $code = $request->input('vnp_OrderInfo');
         if($dd == "00" ){
-                return redirect()->route('page');
+                return redirect()->route('home');
         // }else{
         //     $re = $this->updateQuantityOrder($code,$signal = "huy");
         //     if($re){
