@@ -15,11 +15,9 @@ class OrderRepository extends Repository implements RepositoryInterface
         return $this->model->with($relations)->latest('id')->get();
     }
 
-    public function getLatestAllWithRelationsPaginate($relations  = [], $perPage)
+    public function getLatestAllWithRelationsPaginate($perPage, $relations  = [])
     {
         return $this->model->with($relations)->latest('id')->paginate($perPage);
     }
-
-    
 }
 

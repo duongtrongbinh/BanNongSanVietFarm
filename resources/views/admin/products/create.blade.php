@@ -1,15 +1,16 @@
 @extends('admin.layout.master')
-@section('title', 'Create Product')
+@section('title', 'Thêm mới sản phẩm')
 @section('css')
   <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
 @endsection
 @section('content')
     <div class="pagetitle">
-      <h1>Create Product</h1>
+      <h1>Thêm mới sản phẩm</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-          <li class="breadcrumb-item active"><a href="{{ route('products.index') }}">Product</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Sản phẩm</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('products.create') }}" class="active">Thêm mới</a></li>
         </ol>
       </nav>
     </div>
@@ -20,16 +21,16 @@
           @csrf
           <div class="row form-group mt-2">
             <div class="col-3 mt-2">
-              <label for="name">Name</label>
+              <label for="name">Tên sản phẩm</label>
               <input type="text" class="form-control" name="name" value="{{ old('name')}}">
               @error('name')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
-              <label for="name">Brand</label>
+              <label for="name">Thương hiệu</label>
               <select class="form-select" name="brand_id" aria-label="Default select example">
-                <option value="" selected>Open this select menu</option>
+                <option value="" selected>Mở menu chọn này</option>
                 @foreach ($brands as $brand)
                     <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                 @endforeach
@@ -39,9 +40,9 @@
               @enderror
             </div>
             <div class="col-3 mt-2">
-              <label for="name">Category</label>
+              <label for="name">Danh mục</label>
               <select class="form-select" name="category_id" aria-label="Default select example">
-                <option value="" selected>Open this select menu</option>
+                <option value="" selected>Mở menu chọn này</option>
                 @foreach ($categories as $category)
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
@@ -51,18 +52,18 @@
               @enderror
             </div>
             <div class="col-3 mt-2">
-              <label for="name">Quantity</label>
-              <input type="text" class="form-control" name="quantity">
+              <label for="name">Số lượng</label>
+              <input type="text" class="form-control" name="quantity" value="{{ old('quantity', 0)}}">
               @error('quantity')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-6 mt-2">
-              <label for="name">Product Image</label>
+              <label for="name">Ảnh</label>
               <div class="input-group">
                 <span class="input-group-btn">
                   <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary text-white">
-                    <i class="fa fa-picture-o"></i> Choose
+                    <i class="fa fa-picture-o"></i> Chọn
                   </a>
                 </span>
                 <input id="thumbnail" class="form-control" type="text" name="image[]" value="{{ old('image[]')}}">
@@ -73,26 +74,26 @@
               <div id="holder" style="margin-top:15px;"></div>
             </div>
             <div class="col-6 mt-2">
-              <label for="name">Tag</label>
-              <select class="select2-multiple form-control" name="tag[]" multiple="multiple" id="select2Multiple">
+              <label for="name">Nhãn</label>
+              <select class="select2-multiple form-control" name="tags[]" multiple="multiple" id="select2Multiple">
                 @foreach ($tags as $tag)
                   <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                 @endforeach         
               </select>
-              @error('tag')
+              @error('tags')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-4 mt-2">
-              <label for="name">Price Regular</label>
-              <input type="text" class="form-control" name="price_regular" value="{{ old('price_regular')}}">
+              <label for="name">Giá gốc (VNĐ)</label>
+              <input type="text" class="form-control" name="price_regular" value="{{ old('price_regular', 0)}}">
               @error('price_regular')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-4 mt-2">
-              <label for="name">Price Sale</label>
-              <input type="text" class="form-control" name="price_sale" value="{{ old('price_sale')}}">
+              <label for="name">Giá giảm (VNĐ)</label>
+              <input type="text" class="form-control" name="price_sale" value="{{ old('price_sale', 0)}}">
               @error('price_sale')
                 <div style="color: red">{{ $message }}</div>
               @enderror
@@ -101,20 +102,48 @@
               @enderror
             </div>
             <div class="col-4 mt-2">
-              <label for="name">Excerpt</label>
+              <label for="name">Loại trừ</label>
               <input type="text" class="form-control" name="excerpt" value="{{ old('excerpt')}}">
               @error('except')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
+            <div class="col-3 mt-2">
+              <label for="name">Chiều dài (Cm)</label>
+              <input type="text" class="form-control" name="length" value="{{ old('length', 0)}}">
+              @error('length')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="col-3 mt-2">
+              <label for="name">Chiều rộng (Cm)</label>
+              <input type="text" class="form-control" name="width" value="{{ old('width', 0)}}">
+              @error('width')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="col-3 mt-2">
+              <label for="name">Chiều cao (Cm)</label>
+              <input type="text" class="form-control" name="height" value="{{ old('height', 0)}}">
+              @error('height')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="col-3 mt-2">
+              <label for="name">Trọng lượng (Gram)</label>
+              <input type="text" class="form-control" name="weight" value="{{ old('weight', 0)}}">
+              @error('weight')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
             <div class="col-12 mt-2">
-              <label for="name">Description</label>
+              <label for="name">Mô tả</label>
               <textarea class="form-control" name="description">{{ old('description')}}</textarea>
               @error('description')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             <div class="col-12 mt-2">
-              <label for="name">Content</label>
+              <label for="name">Nội dung</label>
               <textarea class="form-control my-editor-tinymce4" name="content">{{ old('content')}}</textarea>
               @error('content')
                 <div style="color: red">{{ $message }}</div>
@@ -122,19 +151,19 @@
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_active" value="{{ old('is_active')}}" id="flexSwitchCheckChecked">
+                <input class="form-check-input" type="checkbox" value="is_active" value="{{ old('is_active')}}" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
               </div>
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_home" value="{{ old('is_home')}}" id="flexSwitchCheckChecked">
+                <input class="form-check-input" type="checkbox" value="is_home" value="{{ old('is_home')}}" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Home</label>
               </div>
             </div>
             <div class="text-center mt-5">
-              <button type="submit" class="btn btn-primary">Create</button>
-              <button type="reset" class="btn btn-secondary">Reset</button>
+              <button type="submit" class="btn btn-primary">Thêm mới</button>
+              <button type="reset" class="btn btn-secondary">Hoàn tác</button>
             </div>
           </div>
         </form>

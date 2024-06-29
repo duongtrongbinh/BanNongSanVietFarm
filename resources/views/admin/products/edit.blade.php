@@ -1,15 +1,16 @@
 @extends('admin.layout.master')
-@section('title', 'Edit Product')
+@section('title', 'Chỉnh sửa sản phẩm')
 @section('css')
   <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
 @endsection
 @section('content')
     <div class="pagetitle">
-      <h1>Edit Product</h1>
+      <h1>Chỉnh sửa sản phẩm</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Product</li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('products.index') }}">Sản phẩm</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('products.edit', $product->id) }}" class="active">Chỉnh sửa</a></li>
         </ol>
       </nav>
     </div>
@@ -21,16 +22,16 @@
           @method('PUT')
           <div class="row form-group">
             <div class="col-3 mt-2">
-              <label for="name">Name</label>
+              <label for="name">Tên sản phẩm</label>
               <input type="text" class="form-control" name="name" value="{{ $product->name}}">
               @error('name')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
-              <label for="name">Brand</label>
+              <label for="name">Thương hiệu</label>
               <select class="form-select" name="brand_id" aria-label="Default select example">
-                <option value="" selected>Open this select menu</option>
+                <option value="" selected>Mở menu chọn này</option>
                 @foreach ($brands as $brand)
                   @if ($product->brand_id == $brand->id)
                     <option selected value="{{ $product->brand_id }}">{{ $product->brand->name }}</option>
@@ -43,9 +44,9 @@
               @enderror
             </div>
             <div class="col-3 mt-2">
-              <label for="name">Category</label>
+              <label for="name">Danh mục</label>
               <select class="form-select" name="category_id" aria-label="Default select example">
-                <option value="" selected>Open this select menu</option>
+                <option value="" selected>Mở menu chọn này</option>
                 @foreach ($categories as $category)
                   @if ($product->category_id == $category->id)
                     <option selected value="{{ $product->category_id }}">{{ $product->category->name }}</option>
@@ -58,25 +59,22 @@
               @enderror
             </div>
             <div class="col-3 mt-2">
-              <label for="name">Quantity</label>
+              <label for="name">Số lượng</label>
               <input type="text" class="form-control" name="quantity" value="{{ $product->quantity}}">
               @error('quantity')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-6 mt-2">
-              <label for="name">Product Image</label>
+              <label for="name">Ảnh</label>
               <div class="input-group">
                 <span class="input-group-btn">
                   <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary text-white">
-                    <i class="fa fa-picture-o"></i> Choose
+                    <i class="fa fa-picture-o"></i> Chọn
                   </a>
                 </span>
-                <input id="thumbnail" class="form-control" type="text" name="image[]" value="{{ $product->image }},  
-                  @foreach ($product->product_images as $product_image) 
-                    {{ $product_image->image }}
-                  @endforeach
-                ">
+                <input id="thumbnail" class="form-control" type="text" name="image[]" 
+                      value="{{$product->image}}{{$product->product_images->isNotEmpty() ? ', ' . $product->product_images->pluck('image')->implode(', ') : ''}}">
               </div>
               @error('image')
                 <div style="color: red">{{ $message }}</div>
@@ -90,50 +88,86 @@
               <div id="holder" style="margin-top:15px;"></div>
             </div>
             <div class="col-6 mt-2">
-              <label for="name">Tag</label>
-              <select class="select2-multiple form-control" name="tag[]" multiple="multiple" id="select2Multiple">
+              <label for="name">Nhãn</label>
+              <select class="select2-multiple form-control" name="tags[]" multiple="multiple" id="select2Multiple">
                 @foreach ($tags as $tag)
+                  @php
+                      $isSelected = false;
+                  @endphp
                   @foreach ($product->tags as $product_tag)
                       @if ($product_tag->id == $tag->id)
-                        <option selected value="{{ $product_tag->id }}">{{ $product_tag->name }}</option>
+                          <option selected value="{{ $product_tag->id }}">{{ $tag->name }}</option>
+                          @php
+                              $isSelected = true;
+                          @endphp
                       @endif
                   @endforeach
-                  <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                @endforeach         
+                  @if (!$isSelected)
+                      <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                  @endif
+                @endforeach 
               </select>
-              @error('tag')
+              @error('tags')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-4 mt-2">
-              <label for="name">Price Regular</label>
-              <input type="text" class="form-control" name="price_regular" value="{{ $product->price_regular }}">
+              <label for="name">Giá gốc</label>
+              <input type="number" class="form-control" name="price_regular" value="{{ intval($product->price_regular) }}">
               @error('price_regular')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-4 mt-2">
-              <label for="name">Price Regular</label>
-              <input type="text" class="form-control" name="price_sale" value="{{ $product->price_sale }}">
+              <label for="name">Giá giảm</label>
+              <input type="number" class="form-control" name="price_sale" value="{{ intval($product->price_sale) }}">
               @error('price_sale')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-4 mt-2">
-              <label for="name">Excerpt</label>
+              <label for="name">Loại trừ</label>
               <input type="text" class="form-control" name="excerpt" value="{{ $product->excerpt }}">
               @error('except')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
+            <div class="col-3 mt-2">
+              <label for="name">Chiều dài (Cm)</label>
+              <input type="text" class="form-control" name="length" value="{{ $product->length }}">
+              @error('length')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="col-3 mt-2">
+              <label for="name">Chiều rộng (Cm)</label>
+              <input type="text" class="form-control" name="width" value="{{ $product->width }}">
+              @error('width')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="col-3 mt-2">
+              <label for="name">Chiều cao (Cm)</label>
+              <input type="text" class="form-control" name="height" value="{{ $product->height }}">
+              @error('height')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
+            <div class="col-3 mt-2">
+              <label for="name">Trọng lượng (Gram)</label>
+              <input type="text" class="form-control" name="weight" value="{{ $product->weight }}">
+              @error('weight')
+                <div style="color: red">{{ $message }}</div>
+              @enderror
+            </div>
             <div class="col-12 mt-2">
-              <label for="name">Description</label>
+              <label for="name">Mô tả</label>
               <textarea class="form-control" name="description">{{ $product->description }}</textarea>
               @error('description')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             <div class="col-12 mt-2">
-              <label for="name">Content</label>
+              <label for="name">Nội dung</label>
               <textarea class="form-control my-editor-tinymce4" name="content">{{ $product->content }}</textarea>
               @error('content')
                 <div style="color: red">{{ $message }}</div>
@@ -160,8 +194,8 @@
               </div>
             </div>
             <div class="text-center mt-5">
-              <button type="submit" class="btn btn-primary">Update</button>
-              <button type="reset" class="btn btn-secondary">Reset</button>
+              <button type="submit" class="btn btn-primary">Cập nhật</button>
+              <button type="reset" class="btn btn-secondary">Hoàn tác</button>
             </div>
           </div>
         </form>
@@ -181,7 +215,6 @@
         placeholder: "Select",
         allowClear: true
       });
-
     });
   </script>
 @endsection

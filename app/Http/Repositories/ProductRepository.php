@@ -21,17 +21,20 @@ class ProductRepository extends Repository
         return $this->model->with($relations)->latest('id')->get();
     }
 
-    public function getHomeLatestAllWithRelations($relations  = [])
+    public function getPaginateLatestAllWithRelations($perPage, $relations  = [])
     {
-        return $this->model->with($relations)->where('is_home', 1)->where('is_active', 1)->latest('id')->get();
+        return $this->model->with($relations)->latest('id')->paginate($perPage);
     }
 
-    public function getHomeLatestAllWithRelationsPaginate($relations  = [], $perPage)
+    public function getHomeLatestAllWithRelationsPaginate($perPage, $relations  = [])
     {
         return $this->model->with($relations)->where('is_home', 1)->where('is_active', 1)->latest('id')->paginate($perPage);
     }
 
-    
+    public function getHomeLatestAllWithRelations($relations  = [])
+    {
+        return $this->model->with($relations)->where('is_home', 1)->where('is_active', 1)->latest('id')->get();
+    }
 }
 
 

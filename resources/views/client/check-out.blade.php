@@ -30,7 +30,7 @@
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3">Address <sup>*</sup></label>
-                            <input type="text" class="form-control" placeholder="House Number Street Name" name="address">
+                            <input type="text" class="form-control" placeholder="House Number Street Name" name="specific_address">
                             @error('address')
                             <small id="title" class="form-text text-danger">{{ $message }}</small>
                             @enderror

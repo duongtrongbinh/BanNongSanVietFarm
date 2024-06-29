@@ -22,4 +22,17 @@ class Tag extends Model
     {
         return $this->belongsToMany(Tag::class, 'product_tags', 'tag_id', 'product_id')->withTrashed();
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($tag) {
+            $tag->slug = str()->slug($tag->name); 
+        });
+
+        static::updating(function ($tag) {
+            $tag->slug = str()->slug($tag->name); 
+        });
+    }
 }

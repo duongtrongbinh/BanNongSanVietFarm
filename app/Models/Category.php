@@ -22,4 +22,17 @@ class Category extends Model
     {
         return $this->hasMany(Product::class, 'category_id', 'id');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($category) {
+            $category->slug = str()->slug($category->name); 
+        });
+
+        static::updating(function ($category) {
+            $category->slug = str()->slug($category->name); 
+        });
+    }
 }

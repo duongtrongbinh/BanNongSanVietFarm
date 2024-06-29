@@ -15,4 +15,9 @@ class TagRepository extends Repository
     {
         return $this->model->query()->latest('id')->get();
     }
+
+    public function getLatestAllWithRelations($relations  = [])
+    {
+        return $this->model->with($relations)->latest('id')->get();
+    }
 }
