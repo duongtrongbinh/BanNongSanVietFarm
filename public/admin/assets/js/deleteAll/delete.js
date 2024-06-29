@@ -44,6 +44,10 @@ function actionDelete(e) {
     });
 }
 $(function () {
+    $(document).on("click", ".deleteBrand", actionDelete);
+    $(document).on("click", ".deleteCategory", actionDelete);
+    $(document).on("click", ".deleteTag", actionDelete);
+    $(document).on("click", ".deleteProduct", actionDelete);
     $(document).on("click", ".deleteSlide", actionDelete);
     $(document).on("click", ".deleteSupplier", actionDelete);
     $(document).on("click", ".deletepost", actionDelete);

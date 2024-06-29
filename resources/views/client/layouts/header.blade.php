@@ -23,7 +23,7 @@
                 <div class="navbar-nav mx-auto">
                     <a href="{{ route('home') }}" class="nav-item nav-link active">Trang chủ</a>
                     <a href="{{ route('shop') }}" class="nav-item nav-link">Cửa hàng</a>
-                    <a href="{{route('postclient.index')}}" class="nav-item nav-link">Bài viết</a>
+                    <a href="#" class="nav-item nav-link">Bài viết</a>
                     <a href="#" class="nav-item nav-link">Liên hệ</a>
                     <a href="#" class="nav-item nav-link">Chính sách</a>
                 </div>
@@ -98,7 +98,7 @@
                     <div class="dropdown header-item topbar-user">
                         @if (auth()->check())
                             <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                <i class="fas fa-user fa-2x"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
                                 <!-- item-->
@@ -112,32 +112,23 @@
                                     <span>Đơn hàng</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
+                                {{-- <a class="dropdown-item" href="{{ Auth::logout() }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng xuất</span></a> --}}
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="bi bi-box-arrow-right me-2"></i>
-                                        <span>Đăng Xuất</span>
-                                    </button>
+                                    <button type="submit" class="dropdown-item">Đăng xuất</button>
                                 </form>
                             </div>
                         @else
-                            <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-user fa-2x"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('login') }}">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                                    <span>Đăng nhập</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('register') }}">
-                                    <i class="bi bi-person-plus me-2"></i>
-                                    <span>Đăng ký</span>
-                                </a>
-                            </div>
+                        <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user fa-2x"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
+                            <a class="dropdown-item" href="{{ route('login') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng nhập</span></a>
+                            <a class="dropdown-item" href="{{ route('register') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng ký</span></a>
                         @endif
                     </div>
-
                 </div>
+          </div>
       </nav>
   </div>
 </div>

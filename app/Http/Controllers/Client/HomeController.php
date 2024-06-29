@@ -35,7 +35,9 @@ class HomeController extends Controller
 
     public function home()
     {
-        $products = $this->productRepository->getHomeLatestAllWithRelationsPaginate(['brand', 'category'], 8);
+
+        // dd(session('cart'));
+        $products = $this->productRepository->getHomeLatestAllWithRelationsPaginate(8, ['brand', 'category']);
         $brands = $this->brandRepository->getLatestAll();
         $categories = $this->categoryRepository->getLatestAll();
 
@@ -76,5 +78,3 @@ class HomeController extends Controller
         return redirect()->route('post');
     }
 }
-
-

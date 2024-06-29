@@ -78,7 +78,7 @@ class PostController extends Controller
         }
         // Xóa bài viết
         $post->delete();
-        return response()->json(true);
+        return redirect()->route('post.index')->with('thongbao', 'Bạn đã xóa thành công!');
     }
 
     public function destroyComment($postId, $commentId)

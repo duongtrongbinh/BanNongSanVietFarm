@@ -90,7 +90,7 @@
                             let subtotal = 0;
                             const cartDrop = document.querySelector('.dropdown-menu-cart');
                             cartDrop.innerHTML = '';
-                            if (response.cart == null) {
+                            if (response.cart == null || response.cart.length === 0) {
                                 let cartEmpty = document.createElement('div');
                                 cartEmpty.classList.add('text-center', 'empty-cart');
                                 cartEmpty.id = 'empty-cart';
@@ -128,7 +128,7 @@
                                         <div class="d-flex justify-content-between align-items-center pb-3">
                                             <h5 class="m-0 text-muted">Tổng: </h5>
                                             <div class="px-2">
-                                                <h5 class="m-0" id="cart-item-total">đ</h5>
+                                                <h5 class="m-0" id="cart-item-total"> VNĐ</h5>
                                             </div>
                                         </div>
                                         <div class="d-flex">
@@ -158,11 +158,11 @@
                                                         <p class="text-reset">${product.name}</p>
                                                     </h6>
                                                     <p class="mb-0 fs-12 text-muted">
-                                                        Số lượng: <span>${product.quantity} x ${formatNumber(product.price)}đ</span>
+                                                        SL: <span>${product.quantity} x ${formatNumber(product.price)} VNĐ</span>
                                                     </p>
                                                 </div>
                                                 <div class="px-2">
-                                                    <h5 class="m-0 fw-normal">${formatNumber(total)}<span class="cart-item-price">đ</span></h5>
+                                                    <h5 class="m-0" style="font-size: 1rem">${formatNumber(total)}<span class="cart-item-price"> VNĐ</span></h5>
                                                 </div>
                                                 <div class="ps-2">
                                                     <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary remove-cart" data-id="${product.id}" data-url="{{ route('cart.remove') }}">
@@ -178,7 +178,7 @@
 
                                 });
 
-                                $('#cart-item-total').text(subtotal + 'đ');
+                                $('#cart-item-total').text(subtotal + ' VNĐ');
                             }
                         }
                     });
@@ -251,17 +251,13 @@
 
                     var ele = $(this);
                     var id = ele.data("id");
-                    var name = ele.data("name");
-                    var image = ele.data("image");
-                    var price = ele.data("price");
                     var product = {
                         id: id,
-                        name: name,
-                        image: image,
-                        price: price
                     };
 
-                    addToCart(product, url);
+                    setTimeout(function() {
+                        addToCart(product, url);
+                    }, 100);
                 });
 
                 $(".cart-button").on("click", function() {
@@ -280,7 +276,6 @@
                     var total = formatNumber(totalPrice);
                     $tr.find('.total').text(total + 'đ');
 
-
                     updateToCart(url, id, quantity);
                 });
 
@@ -292,8 +287,6 @@
                     if(confirm("Bạn có chắc muốn xóa không?")) {
                         removeItemFromCart(url, id);
                     }
-
-
                 });
             });
         </script>

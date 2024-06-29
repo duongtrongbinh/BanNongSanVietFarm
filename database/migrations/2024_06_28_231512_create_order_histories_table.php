@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wards', function (Blueprint $table) {
+        Schema::create('order_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('district_id')->constrained()->onDelete('cascade');
-            $table->string('name', 255);
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->tinyInteger('status');
+            $table->string('warehouse');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wards');
+        Schema::dropIfExists('order_histories');
     }
 };

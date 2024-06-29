@@ -16,7 +16,7 @@ interface RepositoryInterface
     public function destroy(int|array $id): int;
     public function restore(int|array $id): bool;
     public function getAllWithRelations(array $relations): Collection;
-    public function getWithRelationId(int $id, $relations  = []): Collection;
+    public function getWithRelationId(int $id, $relations  = []);
     public function updateWithRelations($id, array $data, array $relations = []): Model;
     public function createWithRelations(array $data, array $relations = []): Model;
     

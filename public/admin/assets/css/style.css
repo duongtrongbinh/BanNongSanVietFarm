@@ -324,7 +324,7 @@ h6 {
   color: #899bbd;
 }
 
-.breadcrumb .active {
+.breadcrumb-item .active {
   color: #51678f;
   font-weight: 600;
 }

@@ -1,25 +1,25 @@
 <?php
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Client\AuthController as AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Client\ShopController;
+use App\Http\Services\GHNService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\OrderController;
 use \App\Http\Controllers\Admin\FlashSaleController;
-use App\Http\Controllers\Admin\PostController;
-use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PurchaseReceiptController;
-use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
-use App\Http\Controllers\Client\ShopController;
 use App\Http\Controllers\Admin\ProfileUserController;
 use App\Http\Controllers\client\ProfileUserController as ProfileUserClientController;
 use App\Http\Controllers\client\PostController as PostClientController;
@@ -64,12 +64,22 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('categories', CategoryController::class);
 
     /* Route Product */
+    Route::delete('categories/{id}', [CategoryController::class, 'delete'])
+        ->name('categories.delete');
+
+    /* Route Product */
     Route::resource('products', ProductController::class);
     Route::delete('products/{id}', [ProductController::class, 'delete'])
         ->name('products.delete');
+    Route::get('export', [ProductController::class, 'export'])
+        ->name('products.export');
+    Route::post('import', [ProductController::class, 'import'])
+        ->name('products.import');
 
     /* Route Tag */
     Route::resource('tags', TagController::class);
+    Route::delete('tags/{id}', [TagController::class, 'delete'])
+        ->name('tags.delete');
 
     /* Route Supplier */
     Route::resource('supplier', SupplierController::class);
@@ -89,6 +99,9 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Order */
     Route::resource('orders',OrderController::class);
+    Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->name('orders.cancel');
+    Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
 
     /* Route Post */
     Route::resource('post', PostController::class);
@@ -138,7 +151,8 @@ Route::group(['prefix' => ''], function (){
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
-    Route::get('/check-out',[OrderClientController::class, 'create'])->name('checkout');
+    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
@@ -157,5 +171,8 @@ Route::group(['prefix' => ''], function (){
 });
 
 
-
+    /* Route 404 */
+    Route::get('404', function () {
+        return view('client.layouts.404');
+    })->name('404');
 

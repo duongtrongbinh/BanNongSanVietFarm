@@ -11,7 +11,7 @@
             @php $isActive = false; @endphp
             <li class="nav-item">
                 @foreach ($item['subtitle'] as $value)
-                    @php if (route($value['route']) == url()->current()) $isActive = true; @endphp
+                    @php if (str_contains(url()->current(), $value['name'])) $isActive = true; @endphp
                 @endforeach
                 <a class="nav-link collapsed" data-bs-target="#{{ 'atttribute' . $key }}" data-bs-toggle="collapse" href="#">
                   <i class="{{ $item['icon'] }}"></i>
@@ -21,7 +21,7 @@
                 <ul id="{{ 'atttribute' . $key }}" class="nav-content collapse {{ $isActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                     @foreach ($item['subtitle'] as $value)
                         <li>
-                            <a href="{{ route($value['route']) }}" class="{{ route($value['route']) == url()->current() ? 'active' : '' }}">
+                            <a href="{{ route($value['route']) }}" class="{{ str_contains(url()->current(), $value['name']) ? 'active' : '' }}">
                                 <i class="{{ $value['icon'] }}" style="font-size: 15px; "></i>
                                 <span>{{ $value['title'] }}</span>
                             </a>

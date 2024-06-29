@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,50 +17,59 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(BrandSeeder::class);
-        $this->call(CategorySeeder::class);
-        $this->call(TagSeeder::class);
-        $this->call(ProductSeeder::class);
-        $this->call(ProductImageSeeder::class);
-        $this->call(VoucherSeeder::class);
-
+        /**
+         * Bước 1: Chạy đoạn seed thêm user, brand, category, tag trước và comment tất cả đoạn seed còn lại.
+        */
         $users = [
             [
                 'social_id' => '0',
-                'name' => 'John Doe',
-                'avatar' => 'https://example.com/avatar/johndoe.jpg',
-                'email' => 'admin@gmail.com',
-                'phone' => '123456789',
+                'name' => 'Ben',
+                'avatar' => 'https://images.sftcdn.net/images/t_app-icon-m/p/6291b348-9b32-11e6-bf94-00163ec9f5fa/1046016500/talking-ben-logo.png',
+                'email' => 'admin1@gmail.com',
+                'phone' => '0123456789',
                 'password' => bcrypt('12345678'),
                 'remember_token' => Str::random(10),
                 'user_code' => 'USER001',
                 'type_social' => 0,
                 'active' => 1,
                 'status' => true,
-                'address' => '123 Main St, Anytown USA',
+                'address' => 'Hà Nội',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'social_id' => '0',
-                'name' => 'Jane Smith',
-                'avatar' => 'https://example.com/avatar/janesmith.jpg',
-                'email' => 'janesmith@example.com',
-                'phone' => '987654321',
-                'password' => bcrypt('password456'),
+                'name' => 'Tom',
+                'avatar' => 'https://cdn.tgdd.vn/2020/03/GameApp/Untitled-5-200x200-2.jpg',
+                'email' => 'customer@gmail.com',
+                'phone' => '0987654321',
+                'password' => bcrypt('12345678'),
                 'remember_token' => Str::random(10),
                 'user_code' => 'USER002',
                 'type_social' => 0,
                 'active' => 1,
                 'status' => true,
-                'address' => '456 Oak Rd, Somewhere City',
+                'address' => 'Hồ Chí Minh',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ];
-        
         DB::table('users')->insert($users);
 
+        $this->call(BrandSeeder::class);
+        $this->call(CategorySeeder::class);
+        $this->call(TagSeeder::class);
+
+        /**
+         * Bước 2: Đăng nhập vào giao diện admin và vào import thêm sản phẩm.
+        */
+
+        /**
+         * Bước 3: Comment đoạn seed ở bước 1 lại và chạy đoạn seed còn lại
+        */
+        $this->call(ProductSeeder::class);
+        $this->call(ProductImageSeeder::class);
+        $this->call(VoucherSeeder::class);
         $this->call(OrderSeeder::class);
     }
 }

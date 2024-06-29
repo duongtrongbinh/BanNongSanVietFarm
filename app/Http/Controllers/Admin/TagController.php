@@ -23,7 +23,7 @@ class TagController extends Controller
 
     public function index()
     {
-        $tags = $this->tagRepository->getAll();
+        $tags = $this->tagRepository->getLatestAll();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('tags'));
     }
@@ -44,15 +44,11 @@ class TagController extends Controller
 
     public function show(Tag $tag)
     {
-        $this->tagRepository->findOrFail($tag->id);
-
         return view(self::PATH_VIEW . __FUNCTION__, compact('tag'));
     }
 
     public function edit(Tag $tag)
     {
-        $this->tagRepository->findOrFail($tag->id);
-
         return view(self::PATH_VIEW . __FUNCTION__, compact('tag'));
     }
 
