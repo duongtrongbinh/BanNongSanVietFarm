@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone');
             $table->string('email');
+            $table->boolean('payment_method')->default(0);
             $table->decimal('before_total_amount', 19, 4);
             $table->decimal('shipping', 19, 4);
             $table->decimal('after_total_amount', 19, 4);

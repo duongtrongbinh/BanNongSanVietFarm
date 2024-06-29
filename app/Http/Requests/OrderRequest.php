@@ -26,8 +26,10 @@ class OrderRequest extends FormRequest
             'name' => 'required|min:3',
             'email' => 'required|min:3',
             'address' => 'required|min:5',
-            'phone' => 'required|numeric',
-            'province' => 'required|exists:provinces,id',
+            'phone' => ['required', 'regex:/^(0[3|5|7|8|9])+([0-9]{8})$/'],
+            'province' => 'required',
+            'district' => 'required',
+            'ward' => 'required',
             'note' => 'nullable|string|max:1000',
             'payment_method'=> 'required'
         ];

@@ -151,6 +151,7 @@ Route::group(['prefix' => ''], function (){
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
+    Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
     Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
