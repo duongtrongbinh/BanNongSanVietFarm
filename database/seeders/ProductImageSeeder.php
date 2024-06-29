@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class ProductImageSeeder extends Seeder
 {
@@ -14,13 +16,22 @@ class ProductImageSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-        for ($i = 0; $i < 300; $i++) {
-            ProductImage::insert([
-               'product_id' => rand(1, 100), 
-                'image' => 'https://alokiddy.com.vn/Uploads/images/huong/tu-vung-tieng-anh-ve-cac-loai-rau-cu-qua.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
+        $products = Product::get();
+
+        foreach ($products as $product) {
+            DB::table('product_images')->insert([
+                [
+                    'product_id' => $product->id,
+                    'image' => 'http://127.0.0.1:8000/storage/photos/1/products/rau-cu-qua.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'product_id' => $product->id,
+                    'image' => 'http://127.0.0.1:8000/storage/photos/1/products/0QDG8alS9V.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
             ]);
         }
     }

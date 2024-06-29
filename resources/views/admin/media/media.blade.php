@@ -29,7 +29,7 @@
           <div id="holder" style="margin-top:15px;max-height:100px;"></div>
           
             @if($errors->has('image'))
-            <span class="text-danger">{{ $errors->first('image') }}</span>
+              <span class="text-danger">{{ $errors->first('image') }}</span>
             @endif
         </div>
     <iframe src="/filemanager?editor=photos&type=Images" style="width: 100%; height: 100vh; overflow: hidden; border: none;"></iframe>

@@ -30,7 +30,7 @@ class ShopController extends Controller
 
     public function shop()
     {
-        $products = $this->productRepository->getHomeLatestAllWithRelationsPaginate(['brand', 'category'], 12);
+        $products = $this->productRepository->getHomeLatestAllWithRelationsPaginate(12, ['brand', 'category']);
         $brands = $this->brandRepository->getLatestAll();
         $categories = $this->categoryRepository->getAllWithRelations('products');
 

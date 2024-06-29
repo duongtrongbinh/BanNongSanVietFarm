@@ -58,4 +58,10 @@ class Order extends Model
             $order->order_code = 'PH'.fake()->imei;
         });
     }
+  
+    public function order_histories()
+    {
+        return $this->hasMany(OrderHistory::class, 'order_id', 'id');
+    }
 }
+

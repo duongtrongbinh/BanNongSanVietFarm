@@ -22,9 +22,10 @@ class Product extends Model
         'price_regular',
         'price_sale',
         'quantity',
-        'description',
-        'is_active',
-        'is_home',
+        'length',
+        'width' ,
+        'height',
+        'weight',
         'description',
         'content',
     ];
@@ -49,6 +50,15 @@ class Product extends Model
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
 
+    public function product_related()
+    {
+        return $this->hasMany(Product::class, 'product_id', 'id');
+    }
+
+    public function product_groups()
+    {
+        return $this->hasMany(Product::class, 'product_id', 'id');
+    }
 
     public function comments()
     {
@@ -88,5 +98,18 @@ class Product extends Model
         return $this->belongsToMany(Order::class, 'order_details')
                     ->withPivot('name', 'image', 'price_regular', 'price_sale', 'quantity')
                     ->withTimestamps();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($product) {
+            $product->slug = str()->slug($product->name); 
+        });
+
+        static::updating(function ($product) {
+            $product->slug = str()->slug($product->name); 
+        });
     }
 }

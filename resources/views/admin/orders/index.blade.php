@@ -92,22 +92,22 @@
                                 All Orders
                             </button>
                         </li>
-        
+
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
-                                <i class="ri-checkbox-circle-line me-1 align-bottom"></i> 
+                                <i class="ri-checkbox-circle-line me-1 align-bottom"></i>
                                 Delivered
                             </button>
                         </li>
-        
+
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pickups">
-                                <i class="ri-truck-line me-1 align-bottom"></i> 
-                                Pickups 
+                                <i class="ri-truck-line me-1 align-bottom"></i>
+                                Pickups
                                 <span class="badge bg-danger align-middle ms-1">{{ count($pickups) }}</span>
                             </button>
                         </li>
-        
+
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returns">
                                 <i class="ri-arrow-left-right-fill me-1 align-bottom"></i>
@@ -116,7 +116,7 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
-                                <i class="ri-close-circle-line me-1 align-bottom"></i> 
+                                <i class="ri-close-circle-line me-1 align-bottom"></i>
                                 Cancelled
                             </button>
                         </li>
@@ -579,5 +579,5 @@
       $(function () {
         $(document).on("click", ".deleteSlide", actionDelete);
       });
-    </script> 
+    </script>
 @endsection

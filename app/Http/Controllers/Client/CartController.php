@@ -22,22 +22,23 @@ class CartController extends Controller
         $cart = session()->get('cart');
         $product = $request->input('product');
         $id = $product['id'];
-        $quantity = $request->input('quantity', 1);
-
+        $quantity = $request->input('quantity');
+        $productDT = Product::findOrFail($id);
         if(isset($cart[$id])) {
             $cart[$id]['quantity'] += $quantity;
         } else {
             $cart[$id] = [
                 'id' => $id,
-                'name' => $product['name'],
-                'image' => $product['image'],
-                'price' => $product['price'],
-                'width' => 12,
-                'height' => 12,
-                'length' => 12,
+                'name' => $productDT->name,
+                'image' => $productDT->image,
+                'price' => $productDT->price_sale,
+                'length' => $productDT->length,
+                'width' => $productDT->width,
+                'height' => $productDT->height,
+                'weight' => $productDT->weight,
                 'quantity' => $quantity,
-                'price_regular'=> $quantity*$product['price'],
-                'price_sale'=> $quantity*$product['price'],
+                'price_regular' => $productDT->price_regular,
+                'price_sale' => $productDT->price_sale,
             ];
         }
 

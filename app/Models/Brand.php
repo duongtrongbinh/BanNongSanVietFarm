@@ -22,4 +22,17 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class, 'brand_id', 'id');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($brand) {
+            $brand->slug = str()->slug($brand->name); 
+        });
+
+        static::updating(function ($brand) {
+            $brand->slug = str()->slug($brand->name); 
+        });
+    }
 }

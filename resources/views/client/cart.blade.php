@@ -42,7 +42,7 @@
                                         <p class="mb-0 mt-4">{{ $details['name'] }}</p>
                                     </td>
                                     <td>
-                                        <p class="mb-0 mt-4">{{ number_format($details['price']) }}đ</p>
+                                        <p class="mb-0 mt-4">{{ number_format($details['price']) }} VNĐ</p>
                                     </td>
                                     <td>
                                         <div class="input-group quantity mt-4" style="width: 100px;">
@@ -50,7 +50,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="mb-0 mt-4 total">{{ number_format($details['price'] * $details['quantity']) }}đ</p>
+                                        <p class="mb-0 mt-4 total">{{ number_format($details['price'] * $details['quantity']) }} VNĐ</p>
                                     </td>
                                     <td class="actions">
                                         <button class="btn btn-md rounded-circle bg-light border mt-4 remove-cart" data-id="{{ $id }}" data-url="{{ route('cart.remove') }}">

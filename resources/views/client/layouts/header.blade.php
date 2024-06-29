@@ -107,6 +107,14 @@
                                 <a class="dropdown-item" href="{{ route('order.index') }}"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Đơn hàng</span></a>
                                 <a class="dropdown-item" href="apps-tasks-kanban.html"><i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span></a>
                                 <a class="dropdown-item" href="pages-faqs.html"><i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span></a>
+                                <a class="dropdown-item" href="{{ route('user.profile') }}">
+                                    <i class="bi bi-person me-2"></i>
+                                    <span>Thông tin cá nhân</span>
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-cart-check"></i>
+                                    <span>Đơn hàng</span>
+                                </a>
                                 <div class="dropdown-divider"></div>
                                 {{-- <a class="dropdown-item" href="{{ Auth::logout() }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng xuất</span></a> --}}
                                 <form action="{{ route('logout') }}" method="POST">

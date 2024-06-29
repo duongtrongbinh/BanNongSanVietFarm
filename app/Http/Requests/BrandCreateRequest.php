@@ -22,7 +22,7 @@ class BrandCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
+            'name' => 'required|unique:brands,name|max:255',
             'image' => 'required',
         ];
     }

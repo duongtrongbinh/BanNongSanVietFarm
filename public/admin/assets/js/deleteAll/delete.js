@@ -22,7 +22,7 @@ function actionDelete(e) {
                 },
                 success: function (data) {
                     if (data.data == null) {
-                        that.parent().parent().remove();
+                        that.closest('tr').remove();
                         Swal.fire({
                             title: "Deleted!",
                             text: "Your file has been deleted.",
@@ -44,6 +44,12 @@ function actionDelete(e) {
     });
 }
 $(function () {
+    $(document).on("click", ".deleteBrand", actionDelete);
+    $(document).on("click", ".deleteCategory", actionDelete);
+    $(document).on("click", ".deleteTag", actionDelete);
+    $(document).on("click", ".deleteProduct", actionDelete);
     $(document).on("click", ".deleteSlide", actionDelete);
     $(document).on("click", ".deleteSupplier", actionDelete);
+    $(document).on("click", ".deletepost", actionDelete);
+    $(document).on("click", ".deleteuser", actionDelete);
 });
