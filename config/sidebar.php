@@ -30,7 +30,7 @@ return [
                 'route' => 'categories.index',
             ],
             [
-                'title' => 'Đánh giá',
+                'title' => 'Đánh giá sản phẩm',
                 'icon' => 'bi bi-chat-dots',
                 'route' => 'comment.index',
             ],
@@ -46,15 +46,17 @@ return [
         'icon' => 'bi bi-stickies',
         'subtitle' => [
             [
-                'title' => 'Danh sách bài viết',
-                'icon' => 'bi bi-file-earmark',
+                'title' => 'Đánh giá bài viết',
+                'icon' => 'bi bi-chat-dots',
                 'route' => 'post.index',
             ],
+
             [
-                'title' => 'Bình luận',
-                'icon' => 'bi bi-chat-dots',
-                'route' => 'rate.index',
+                'title' => 'Thêm mới bài viết',
+                'icon' => 'bi bi-file-earmark',
+                'route' => 'post.create',
             ],
+
         ],
     ],
     [

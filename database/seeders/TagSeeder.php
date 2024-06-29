@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class TagSeeder extends Seeder
 {
@@ -15,15 +16,67 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-        for ($i = 0; $i < 15; $i++) {
-            $name = $faker->sentence(2); 
-            Tag::create([
-               'name' => $name, 
-                'slug' => Str::slug($name),
+        DB::table('tags')->insert([
+            [
+                'name' => 'Rau xanh',
+                'slug' => 'rau-xanh',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-        }
+            ],
+            [
+                'name' => 'Rau má',
+                'slug' => 'rau-ma',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Rau muống',
+                'slug' => 'rau-muong',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Cà chua',
+                'slug' => 'ca-chua',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Khoai tây',
+                'slug' => 'khoai-tay',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Cà rốt',
+                'slug' => 'ca-rot',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Bí đỏ',
+                'slug' => 'bi-do',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Cam',
+                'slug' => 'cam',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Dưa hấu',
+                'slug' => 'dua-hau',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Táo',
+                'slug' => 'tao',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

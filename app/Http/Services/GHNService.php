@@ -90,7 +90,6 @@ class GHNService
         $data['after_total_amount'] = $totalAmount + $data['shipping'];
         $data['address_detail'] = $data['address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
         return $data;
-
     }
     public function createOrderGHN($data,$items)
     {
@@ -103,7 +102,7 @@ class GHNService
             "client_order_code" => '',
             "to_name" => $data['name'],
             "to_phone" => $data['phone'],
-            "to_address" => $data['address_detail'],
+            "to_address" => $data['address'],
             "to_ward_name" => $data['ward_name'],
             "to_district_name" => $data['district_name'],
             "to_province_name" => $data['province_name'],
@@ -146,6 +145,7 @@ class GHNService
             Log::debug($response);
             if ($response->successful()) {
                 $responseData = $response->json();
+
                 $orderCode = $responseData['data']['order_code'];
                 return $orderCode;
             }

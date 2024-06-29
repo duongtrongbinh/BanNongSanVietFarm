@@ -11,7 +11,7 @@
                         <h5 class="card-title">Sửa thông tin khách hàng</h5>
 
                         <!-- General Form Elements -->
-                        <form action="{{route('user.update',$user)}}" method="post" enctype="multipart/form-data">
+                        <form action="{{route('user.update',$user->id)}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="row mb-3">

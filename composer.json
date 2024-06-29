@@ -23,7 +23,7 @@
         "tinymce/tinymce": "^7.1",
         "unisharp/laravel-filemanager": "^2.9",
         "maatwebsite/excel": "^3.1.31",
-        "phpoffice/phpspreadsheet": "^1.18"
+        "phpoffice/phpspreadsheet": "^1.21"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",

@@ -324,7 +324,7 @@ h6 {
   color: #899bbd;
 }
 
-.breadcrumb .active {
+.breadcrumb-item .active {
   color: #51678f;
   font-weight: 600;
 }
@@ -1230,4 +1230,51 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+.comment-container {
+    display: flex;
+    align-items: flex-start;
+}
+
+.comment-avatar {
+    margin-right: 15px;
+}
+
+.comment-avatar img {
+    width: 100px;
+    height: 100px;
+    padding: 3px;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-content p {
+    margin-bottom: 8px;
+}
+
+.comment-content h5 {
+    margin-bottom: 0;
+}
+
+.fa-star,
+.fa-star-half-alt,
+.fa-star-o {
+    margin-right: 5px;
+}
+
+.fa-star-half-alt {
+    margin-left: 2px; /* Điều chỉnh khoảng cách giữa ngôi sao đầy và nửa */
+}
+
+.carousel-item img {
+    margin: 0 auto;
+    max-width: 100%;
+}
+.dropdown-header img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
 }

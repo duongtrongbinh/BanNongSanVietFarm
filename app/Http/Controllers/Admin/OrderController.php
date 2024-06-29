@@ -2,53 +2,77 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enum\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Repositories\OrderHistoryRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
+use App\Http\Requests\OrderUpdateStatusRequest;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class OrderController extends Controller
 {
     const PATH_VIEW = 'admin.orders.';
     public $orderRepository;
+    public $orderHistoryRepository;
     public $voucherRepository;
 
-    public function __construct(OrderRepository $orderRepository, VoucherRepository $voucherRepository)
+    public function __construct(OrderRepository $orderRepository, OrderHistoryRepository $orderHistoryRepository, VoucherRepository $voucherRepository)
     {
         $this->orderRepository = $orderRepository;
+        $this->orderHistoryRepository = $orderHistoryRepository;
         $this->voucherRepository = $voucherRepository;
     }
 
     public function index()
     {
         $orders = $this->orderRepository->getLatestAllWithRelations(['user', 'order_details']);
-        $delivereds = Order::where('status', '3')->latest('id')->get();
-        $pickups = Order::where('status', '2')->latest('id')->get();
-        $returns = Order::where('status', '4')->latest('id')->get();
-        $cancelleds = Order::where('status', '5')->latest('id')->get();
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('orders', 'delivereds', 'pickups', 'returns', 'cancelleds'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('orders'));
     }
 
     public function show(Order $order)
     {
+        $order = Order::with(['user', 'order_details', 'order_histories'])->find($order->id);
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('order'));
+    }
+
+    public function edit(Order $order)
+    {
         $order = Order::with(['user', 'order_details'])->find($order->id);
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('order'));
-
     }
 
-    public function test()
+    public function update(OrderUpdateStatusRequest $request, Order $order)
     {
-        $orders = $this->orderRepository->getLatestAllWithRelations(['user', 'order_details']);
-        $delivereds = Order::where('status', '3')->latest('id')->get();
-        $pickups = Order::where('status', '2')->latest('id')->get();
-        $returns = Order::where('status', '4')->latest('id')->get();
-        $cancelleds = Order::where('status', '5')->latest('id')->get();
+        $validatedData = $request->validated();
 
-        return view('index', compact('orders', 'delivereds', 'pickups', 'returns', 'cancelleds'));
-    }    
+        $order = $this->orderRepository->update($order->id, $validatedData);
+        $data = [
+            'order_id' => $order->id, 
+            'status' => $order->status, 
+            'warehouse' => 'Bưu cục'
+        ];
+        $this->orderHistoryRepository->create($data);
 
+        return redirect()->back()->with('status', 'Success');
+    }
+
+    public function cancel(Order $order)
+    {
+        $order = $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED]);
+        $data = [
+            'order_id' => $order->id, 
+            'status' => OrderStatus::CANCELLED, 
+            'warehouse' => 'Bưu cục'
+        ];
+        $this->orderHistoryRepository->create($data);
+
+        return redirect()->back()->with('status', 'Success');
+    }
 }

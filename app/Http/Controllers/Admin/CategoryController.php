@@ -69,7 +69,7 @@ class CategoryController extends Controller
         $this->categoryRepository->delete($category->id);
 
         return response()->json(true);
-        
+
     }
 
     public function destroy(Category $category)

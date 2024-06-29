@@ -1,12 +1,13 @@
 @extends('admin.layout.master')
-@section('title', 'Edit Category')
+@section('title', 'Chỉnh sửa danh mục')
 @section('content')
     <div class="pagetitle">
-      <h1>Edit Category</h1>
+      <h1>Chỉnh sửa danh mục</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-          <li class="breadcrumb-item active"><a href="{{ route('categories.index') }}">Category</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('categories.index') }}">Danh mục</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('categories.edit', $category->id) }}" class="active">Chỉnh sửa</a></li>
         </ol>
       </nav>
     </div>
@@ -21,7 +22,7 @@
                     @csrf
                     @method('PUT')
                     <div class="row mb-3 mt-4">
-                        <label for="name" class="col-sm-2 col-form-label">Name</label>
+                        <label for="name" class="col-sm-2 col-form-label">Tên danh mục</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="name" name="name" value="{{ $category->name }}">
                         </div>
@@ -30,7 +31,7 @@
                         <div style="color: red">{{ $message }}</div>
                     @enderror
                     <div class="row mb-3">
-                      <label for="name" class="col-sm-2 col-form-label">Description</label>
+                      <label for="name" class="col-sm-2 col-form-label">Ghi chú</label>
                       <div class="col-sm-10">
                         <textarea name="description" id="" cols="30" rows="10" class="form-control">{{ $category->description }}</textarea>
                       </div>
@@ -39,8 +40,8 @@
                         <div style="color: red">{{ $message }}</div>
                     @enderror
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                        <button type="reset" class="btn btn-secondary">Reset</button>
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <button type="reset" class="btn btn-secondary">Hoàn tác</button>
                     </div>
                 </form>
                 <!-- End Horizontal Form -->
