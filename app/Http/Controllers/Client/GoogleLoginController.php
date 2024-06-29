@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
@@ -30,9 +31,19 @@ class GoogleLoginController extends Controller
             return redirect()->route('login')->withErrors(['login_failed' => 'Login failed, please try again.']);
         }
 
-        // Proceed with finding or creating user and logging in
-        $authenticatedUser = User::findOrCreateByGoogle($googleUser);
+        // Check if a user with this Google ID already exists
+        $authenticatedUser = User::where('social_id', $googleUser->id)->first();
 
+        if (!$authenticatedUser) {
+            // If user does not exist, create a new user without a password
+            $authenticatedUser = User::create([
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'social_id' => $googleUser->id,
+            ]);
+        }
+
+        // Log in the authenticated user
         Auth::login($authenticatedUser, true);
 
         return redirect()->route('home');

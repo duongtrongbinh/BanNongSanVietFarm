@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Chi tiết bình luận sản phẩm')
+@section('title', 'Chi tiết bình luận bài viết')
 @section('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -8,12 +8,12 @@
 @section('content')
     <!-- Page Title and Breadcrumb -->
     <div class="pagetitle">
-        <h3 class="card-title flex-grow-1 mb-0">Chi tiết bình luận sản phẩm : #{{ $product->name }}</h3>
+        <h3 class="card-title flex-grow-1 mb-0">Chi tiết bình luận bài viết: #{{ $post->title }}</h3>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item active"><a href="{{ route('comment.index') }}">Đánh giá sản phẩm</a></li>
-                <li class="breadcrumb-item active">Chi tiết đánh giá sản phẩm</li>
+                <li class="breadcrumb-item active"><a href="{{ route('post.index') }}">Đánh giá bài viết</a></li>
+                <li class="breadcrumb-item active">Chi tiết bình luận</li>
             </ol>
         </nav>
     </div>
@@ -27,7 +27,7 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <a href="" class="btn btn-success btn-sm">
-                                    <i class="ri-download-2-fill align-middle me-1"></i> Tải bình luận sản phẩm
+                                    <i class="ri-download-2-fill align-middle me-1"></i> Tải bình luận bài viết
                                 </a>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($product->comments as $comment)
+                                @foreach($post->comments as $comment)
                                     <tr>
                                         <td>{{ $comment->id }}</td>
                                         <td>{{ $comment->user->name }}</td>
@@ -72,8 +72,8 @@
                                             </p>
                                         </td>
                                         <td class="text-center">
-                                            <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                <a data-url="{{ route('product.comment.destroy', ['productId' => $product->id, 'commentId' => $comment->id]) }}"
+                                            <li class="list-inline-item " data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                <a data-url="{{ route('post.comment.destroy', ['postId' => $post->id, 'commentId' => $comment->id]) }}"
                                                    class="btn btn-danger btn-sm deletepost">
                                                     <i class="ri-delete-bin-5-fill fs-16"></i>
                                                 </a>
@@ -81,7 +81,6 @@
                                         </td>
                                     </tr>
                                 @endforeach
-
                                 </tbody>
                             </table>
                         </div>
@@ -95,7 +94,6 @@
 
 @section('js')
     <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
-
     <!--Delete js-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection

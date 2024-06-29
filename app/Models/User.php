@@ -50,7 +50,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'user_id', 'id');
     }
-    
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -80,20 +80,17 @@ class User extends Authenticatable
     {
         // Try to find the user by social_id in your database
         $user = static::where('social_id', $googleUser->id)->first();
-
         // If the user exists, return that user
         if ($user) {
             return $user;
         }
-
         // Generate a random integer for user_code
         $userCode = rand(100000, 999999); // Generate a random integer between 100000 and 999999
-
         // Otherwise, create a new user in your database
         return static::create([
             'name' => $googleUser->name,
             'email' => $googleUser->email,
-            'social_id' => $googleUser->id,
+            'social_id' => 1, // Set social_id to 1
             'phone' => $googleUser->phone,
             'user_code' => $userCode,
             'password' => bcrypt('randompassword'),
