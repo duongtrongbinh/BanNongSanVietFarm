@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-8">
                     <div class="row">
-                        <div class="col-9" style=" justify-items: center">
+                        <div class="col-12" style=" justify-items: center">
                             <div class="form-group mb-3">
                                 <label for="select2Multiple" class="mb-1">Chọn sản phẩm</label>
                                 <select class="select2-multiple form-select" name="product_id[]" multiple="multiple" id="select2Multiple" class="pro">
@@ -31,12 +31,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-3 d-flex" style="justify-content: center; justify-items: center">
-                            <button type="button" class="btn btn-primary" style="margin: 18px" id="addProductButton">Add Product</button>
-                        </div>
+
                     </div>
                     <div class="row">
                         <div class="card" style="height: 100vh">
+                            <div class="card-header">
+                                <div class="d-flex" style=" justify-items: center">
+                                    <button type="button" class="btn btn-primary" style="margin: 5px 0" id="addProductButton">Add Product</button>
+                                </div>
+                            </div>
                             <div class="card-body mt-5">
                                 <table class="table table-striped datatableProduct" >
                                     <thead>

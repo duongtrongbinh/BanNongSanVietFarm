@@ -113,6 +113,8 @@ Route::group(['prefix' => 'admin'], function () {
 
      /* Route Rate */
      Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
+
+     Route::post('/orders/{order}/retry', 'OrderController@retryOrder')->name('orders.retry');
 });
 
 /* Route Client */

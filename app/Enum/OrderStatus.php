@@ -27,7 +27,7 @@ enum OrderStatus: int
     case EXCEPTION = 21;                  // Hàng ngoại lệ
     case LOST = 22;                       // Hàng thất lạc
     case DAMAGED = 23;                    // Hàng hư hỏng
-
+    case RETRY = 24;
     public static function values(): array
     {
         return array_column(self::cases(), 'name', 'value');

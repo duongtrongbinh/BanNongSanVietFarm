@@ -14,7 +14,6 @@
     <nav >
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-        <li class="breadcrumb-item">Suppliers</li>
         <li class="breadcrumb-item active">List Supplier</li>
       </ol>
     </nav>
