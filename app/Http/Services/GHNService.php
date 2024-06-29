@@ -1,48 +1,61 @@
 <?php
 namespace App\Http\Services;
 
+use App\Enums\OrderStatus;
+use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Models\Order;
 use App\Models\Product;
+use Barryvdh\Debugbar\Twig\Extension\Debug;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GHNService
 {
     protected $apiUrl;
     protected $shopId;
     protected $token;
+    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
 
     public function __construct()
     {
         $this->apiUrl = env('GHN_API_URL');
-        $this->shopId = env('GHN_SHOP_ID'); 
+        $this->shopId = env('GHN_SHOP_ID');
         $this->token = env('GHN_API_TOKEN');
     }
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $value = $this->fillterData($request->all());
-
+        $order_code = 200;
         $order_code = $this->createOrderGHN($value,session('cart'));
         if($order_code != 400) {
-
             $data = Order::where('order_code',$order_code)->first();
             $value['order_code'] = $order_code;
-            $value['user_id'] = 1;
+            $value['user_id'] = Auth::id();
             dispatch(new SendOrderConfirmation($value));
-
             if($request['payment_method'] != 'VNPAYQR'){
                 $this->saveData($value, session('cart'));
-                session()->forget('cart');
-                return redirect()->route('home');
-            }else if ($request['payment_method'] == 'VNPAYQR'){
-                $this->saveData($value, session('cart'));
-                $url = $this->paymentVNPAY($value['after_total_amount'], $order_code);
-                session()->forget('cart');
-                return redirect()->away($url);
+                $routeUrl = redirect()->route('home');
+            }else{
+                // payment save data
+                $value['payment_method'] = 1;
+                $order = $this->saveData($value,session('cart'));
+               if(isset($order)){
+                   $url = $this->paymentVNPAY($value['after_total_amount'],$order_code);
+                   $routeUrl = redirect()->away($url);
+               }else{
+                   $routeUrl = redirect()->route('home')->withErrors(['error'=>'error system']);
+               }
             }
+
+            session()->forget('cart');
+            return $routeUrl;
+    }else{
+            return redirect()->back()->with('error', 'Lỗi hệ thống,vui lòng đặt hàng lại sau.');
         }
     }
 
@@ -72,10 +85,9 @@ class GHNService
         foreach (session('cart') as $product) {
             $totalAmount += $product['quantity'] * intval($product['price_sale']);
         }
+        $data['shipping'] = session('service_fee');
         $data['before_total_amount'] = $totalAmount;
-        $data['after_total_amount'] = $totalAmount;
-        $data['shipping'] = 0;
-
+        $data['after_total_amount'] = $totalAmount + $data['shipping'];
         $data['address_detail'] = $data['address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
         return $data;
 
@@ -118,24 +130,22 @@ class GHNService
             $jsonData["cod_amount"] = 0;
         } else {
             $jsonData["payment_type_id"] = 2;
-            $jsonData["cod_amount"] = intval($data['after_total_amount']);
+            $jsonData["cod_amount"] = intval($data['after_total_amount'] + $data['shipping'] );
         }
 
 
         // Chuẩn bị header cho yêu cầu
         $headers = [
             'Content-Type' => 'application/json',
-            'ShopId'=>"4734816",
-            'token'=>'d4d4cd6f-8f70-11ee-96dc-de6f804954c9'
+            'ShopId'=>$this->shopId,
+            'token'=>$this->token,
         ];
             // Gửi yêu cầu POST tới GHN API
             $response = Http::withHeaders($headers)->post($this->apiUrl, $jsonData);
             // Xử lý phản hồi
-
-
+            Log::debug($response);
             if ($response->successful()) {
                 $responseData = $response->json();
-
                 $orderCode = $responseData['data']['order_code'];
                 return $orderCode;
             }
@@ -151,9 +161,9 @@ class GHNService
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = route('bill.return');
         $vnp_TmnCode = "2OYKK3KL";
-        $vnp_HashSecret = "TI27HBAXXZ868VL3QVAKOKU3ED6AK5EE"; 
+        $vnp_HashSecret = "TI27HBAXXZ868VL3QVAKOKU3ED6AK5EE";
 
-        $vnp_TxnRef = $order_code; 
+        $vnp_TxnRef = $order_code;
         $vnp_OrderInfo = 'Thanh toán hóa đơn';
         $vnp_OrderType = 'Nong San Viet Fam';
         $vnp_Amount = $after_total_amount * 100;
@@ -206,7 +216,6 @@ class GHNService
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
             $order = Order::create($data);
-
             $products = [];
             foreach ($dataProducts as $id => $item) {
                 $products[$id] = [
@@ -214,13 +223,24 @@ class GHNService
                     'image' => $item['image'],
                     'price_regular' => $item['price_regular'],
                     'price_sale' => $item['price_sale'],
-                    'quantity' => $item['quantity']
+                    'quantity' => $item['quantity'],
                 ];
             }
             $this->updateQuantityProduct($products);
             $order->products()->attach($products);
             return $order;
-        });    
+        });
+    }
+
+    public function UpdateStatusOrder($status,$code){
+        try {
+            $order = Order::query()->where('order_code',$code)->first();
+            $order->update([
+                'status' => $status,
+            ]);
+        }catch (\Exception $exception){
+            dd($exception);
+        }
     }
 
     private function updateQuantityProduct($products){
@@ -231,16 +251,16 @@ class GHNService
                 $product->save();
             }
         }
-    } 
+    }
     public function formatDataGHN($data){
         $items = [];
-
         foreach ($data as $key => $product) {
             $item = [
                 "name" => $product['name'],
                 "quantity" => (int) $product['quantity'],
-                "price" => intval($product['price']), 
-                "code" => $key.'ABC', 
+                "price" => intval($product['price']),
+                "code" => $key.'ABC',
+                "weight" => 100,
                 "length" => $product['length'],
                 "width" => $product['width'],
                 "height" => $product['height'],
@@ -248,45 +268,75 @@ class GHNService
                     "level1" => "Rau"
                 ],
             ];
-            
+
             $items[] = $item;
         }
         return $items;
-    } 
-    
-
+    }
 
     public function pay_return(Request $request){
         $dd = $request->input('vnp_ResponseCode');
-        $code = $request->input('vnp_OrderInfo');
+        $code = $request->input('vnp_TxnRef');
         if($dd == "00" ){
-                return redirect()->route('home');
-        // }else{
-        //     $re = $this->updateQuantityOrder($code,$signal = "huy");
-        //     if($re){
-        //         $headers = [
-        //             'Content-Type'=>'application/json',
-        //             'ShopId'=>"4734816",
-        //             'token'=>'d4d4cd6f-8f70-11ee-96dc-de6f804954c9'
-        //         ];
-        //         $data = [
-        //             "order_codes"=>["$code"]
-        //         ];
-                
-        //         $response = Http::withHeaders($headers)->post("https://online-gateway.ghn.vn/shiip/public-api/v2/switch-status/cancel", $data);
-        //         if ($response->successful()) {
-        //             // Xử lý phản hồi khi request thành công
-        //             $responseData = $response->json();
-        //             $data = OrderModel::where('code',$code)->first();
-        //             dispatch(new SendOrderConfirmationEmailJob($data,auth()->user()->email));
-        //             return redirect()->away(env('url_font_return'));
-    
-        //         } else {
-        //             // Xử lý phản hồi khi request không thành công
-        //         return redirect()->away(env('url_font_return'));
-        //         }
-            // }
-
+            $this->UpdateStatusOrder(OrderStatus::PREPARE,$code);
+            return redirect()->route('home');
+        }else{
+            return redirect()->route('home');
         }
     }
+
+    public function shippingFee(Request $request)
+    {
+
+        $value = $this->fillterDataShipping($request->all());
+        $product = $this->formatDataGHN(session('cart'));
+        $jsonData = [
+            "service_type_id" => $value["service_type_id"],
+            "to_district_id" => (int)$value["to_district_id"],
+            "to_ward_code" => $value['to_ward_code'],
+            "height" => $value['height'],
+            "length" => $value['length'],
+            "weight" => $value['weight'],
+            "insurance_value" => $value['insurance_value'],
+            "items" => $product,
+        ];
+        // Chuẩn bị header cho yêu cầu
+        $headers = [
+            'Content-Type' => 'application/json',
+            'ShopId'=> $this->shopId,
+            'token'=> $this->token,
+        ];
+
+        // Gửi yêu cầu POST tới GHN API
+        $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
+
+        Log::debug($response);
+        // Xử lý phản hồi
+        if ($response->successful()) {
+            $responseData = $response->json();
+            $total = $responseData['data']['total'];
+            // Kiểm tra và cập nhật session total_cart
+            session(['service_fee' => $total]);
+            return response()->json($responseData,200) ;
+        }
+        if ($response->failed()) {
+            $statusCode = $response->status();
+            $errorMessage = $response->json()['message'] ?? 'Unknown error';
+            return $response;
+        }
+    }
+
+    public function fillterDataShipping(array $data)
+    {
+        $data["service_type_id"] = 2;
+        $data["to_district_id"] = $data['district_id'];
+        $data['to_ward_code'] = $data['ward_code'];
+        $data['height'] = 20;
+        $data['length'] = 30;
+        $data['weight'] = 3000;
+        $data['width'] = 40;
+        $data['insurance_value'] = 0;
+        return $data;
+    }
+
 }
