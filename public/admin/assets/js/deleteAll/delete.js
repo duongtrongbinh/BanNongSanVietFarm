@@ -50,4 +50,6 @@ $(function () {
     $(document).on("click", ".deleteProduct", actionDelete);
     $(document).on("click", ".deleteSlide", actionDelete);
     $(document).on("click", ".deleteSupplier", actionDelete);
+    $(document).on("click", ".deletepost", actionDelete);
+    $(document).on("click", ".deleteuser", actionDelete);
 });

@@ -1,5 +1,50 @@
 @extends('client.layouts.master')
 @section('title', 'Product')
+
+    <style>
+    .comment-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .comment-avatar {
+        margin-right: 15px;
+    }
+
+    .comment-avatar img {
+        width: 100px;
+        height: 100px;
+        padding: 3px;
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-content p {
+        margin-bottom: 8px;
+    }
+
+    .comment-content h5 {
+        margin-bottom: 0;
+    }
+
+    .fa-star,
+    .fa-star-half-alt,
+    .fa-star-o {
+        margin-right: 5px;
+    }
+
+    .fa-star-half-alt {
+        margin-left: 2px; /* Điều chỉnh khoảng cách giữa ngôi sao đầy và nửa */
+    }
+
+    .carousel-item img {
+        margin: 0 auto;
+        max-width: 100%;
+    }
+
+</style>
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
@@ -22,23 +67,25 @@
                             <div class="border rounded">
                                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner">
-                                      <div class="carousel-item active">
-                                        <img src="{{ $product->image }}" class="d-block w-100" alt="...">
-                                      </div>
-                                      @foreach ($product->product_images as $product_image)
-                                        <div class="carousel-item">
-                                            <img src="{{ $product_image->image }}" class="d-block w-100" alt="...">
+                                        <div class="carousel-item active">
+                                            <img src="{{ $product->image }}" class="d-block w-100" alt="...">
                                         </div>
-                                      @endforeach
+                                        @foreach ($product->product_images as $product_image)
+                                            <div class="carousel-item">
+                                                <img src="{{ $product_image->image }}" class="d-block w-100" alt="...">
+                                            </div>
+                                        @endforeach
 
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                      <span class="visually-hidden">Previous</span>
+                                    <button class="carousel-control-prev" type="button"
+                                            data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
                                     </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                      <span class="visually-hidden">Next</span>
+                                    <button class="carousel-control-next" type="button"
+                                            data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
                                     </button>
                                   </div>
                             </div>
@@ -86,7 +133,7 @@
 
                             <div class="input-group quantity mb-5" style="width: 100px;">
                                 <div class="input-group-btn">
-                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
+                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border">
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
@@ -97,65 +144,101 @@
                                     </button>
                                 </div>
                             </div>
-                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart"
+                               data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}"
+                               data-name="{{ $product->name }}" data-image="{{ $product->image }}"
+                               data-price="{{ $product->price_sale }}" data-quantity="1">
+                                <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                 Add to cart
                             </a>
                         </div>
                         <div class="col-lg-12">
                             <nav>
                                 <div class="nav nav-tabs mb-3">
-                                    <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
-                                        id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
-                                        aria-controls="nav-about" aria-selected="true">Detail</button>
+                                    <button class="nav-link active border-white border-bottom-0" type="button"
+                                            role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Detail
+                                    </button>
                                     <button class="nav-link border-white border-bottom-0" type="button" role="tab"
-                                        id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
-                                        aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                            aria-controls="nav-mission" aria-selected="false">Reviews
+                                    </button>
                                 </div>
                             </nav>
                             <div class="tab-content mb-5">
-                                <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                <div class="tab-pane active" id="nav-about" role="tabpanel"
+                                     aria-labelledby="nav-about-tab">
                                     <div style="width: 966px;">
                                         {!!  $product->content !!}
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                <div class="tab-pane" id="nav-mission" role="tabpanel"
+                                     aria-labelledby="nav-mission-tab">
                                     <div class="container">
                                         <h4>{{ $commentsCount }} Bình luận</h4>
                                         @foreach($comments as $comment)
                                             <div class="d-flex mb-4">
-                                                <img src="{{ asset('client/assets/img/avatar.jpg') }}" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="{{ $comment->user->name }}">
-                                                <div class="">
+                                                <img src="{{ asset($comment->user->avatar) }}"
+                                                     class="img-fluid rounded-circle p-3"
+                                                     style="width: 100px; height: 100px;"
+                                                     alt="">
+                                                <div>
                                                     <p class="mb-2" style="font-size: 14px;">{{ $comment->created_at->format('F j, Y') }}</p>
                                                     <div class="d-flex justify-content-between">
                                                         <h5>{{ $comment->user->name }}</h5>
                                                         <div class="d-flex mb-3">
-                                                            @for ($i = 1; $i <= 5; $i++)
-                                                                <i class="fa fa-star {{ $i <= $comment->ratting ? 'text-warning' : 'text-secondary' }}"></i>
-                                                            @endfor
+                                                            @php
+                                                                // Tính toán số sao và điểm trung bình cho bình luận hiện tại
+                                                                $averageRatting = $comment->ratting;
+                                                                $fullStars = floor($averageRatting); // Số sao nguyên
+                                                                $halfStar = ($averageRatting - $fullStars) >= 0.5 ? 1 : 0; // Số sao nửa
+                                                                $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+                                                            @endphp
+                                                            <div class="d-flex align-items-center">
+                                                                @for ($i = 1; $i <= $fullStars; $i++)
+                                                                    <i class="fa fa-star text-warning" data-rating="{{ $i }}"></i>
+                                                                @endfor
+                                                                @if ($halfStar > 0)
+                                                                    <i class="fa fa-star-half-alt text-warning" data-rating="{{ $fullStars + 1 }}"></i>
+                                                                @endif
+                                                                @for ($j = 1; $j <= $emptyStars; $j++)
+                                                                    <i class="fa fa-star" data-rating="{{ $fullStars + $halfStar + $j }}"></i>
+                                                                @endfor
+                                                                <p class="mb-0">
+                                                                    {{ number_format($averageRatting, 1) }}
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <p>{{ $comment->content }}</p>
                                                 </div>
                                             </div>
                                         @endforeach
+
+
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="nav-vision" role="tabpanel">
-                                    <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
+                                    <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et
+                                        tempor sit. Aliqu diam
                                         amet diam et eos labore. 3</p>
-                                    <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos labore.
+                                    <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos
+                                        labore.
                                         Clita erat ipsum et lorem et sit</p>
                                 </div>
                             </div>
                         </div>
-                        <form id="comment-form" action="{{ route('rating', $product->id) }}" method="post" onsubmit="return validateForm()">
+                        <form id="comment-form" action="{{ route('rating', $product->id) }}" method="post"
+                              onsubmit="return validateForm()">
                             @csrf
                             <h4 class="mb-5 fw-bold">Comment bài viết</h4>
                             <div class="row g-4">
                                 <div class="col-lg-12">
                                     <div class="border-bottom rounded my-4">
-                                        <textarea name="comment" class="form-control border-0" id="comment" cols="30" rows="8" placeholder="Comment Bài Viết  *" spellcheck="false" required></textarea>
+                                        <textarea name="comment" class="form-control border-0" id="comment" cols="30"
+                                                  rows="8" placeholder="Comment Bài Viết  *" spellcheck="false"
+                                                  required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -172,8 +255,12 @@
                                         </div>
                                         <input type="hidden" name="ratting" id="ratting-input">
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="user_id" id="user_id" value="{{ auth()->check() ? auth()->user()->id : '' }}">
-                                        <button type="submit" class="btn border border-secondary text-primary rounded-pill px-4 py-3">Post Comment</button>
+                                        <input type="hidden" name="user_id" id="user_id"
+                                               value="{{ auth()->check() ? auth()->user()->id : '' }}">
+                                        <button type="submit"
+                                                class="btn border border-secondary text-primary rounded-pill px-4 py-3">
+                                            Post Comment
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -184,8 +271,10 @@
                     <div class="row g-4 fruite">
                         <div class="col-lg-12">
                             <div class="input-group w-100 mx-auto d-flex mb-4">
-                                <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
-                                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                                <input type="search" class="form-control p-3" placeholder="keywords"
+                                       aria-describedby="search-icon-1">
+                                <span id="search-icon-1" class="input-group-text p-3"><i
+                                        class="fa fa-search"></i></span>
                             </div>
                             <div class="mb-4">
                                 <h4>Categories</h4>
@@ -193,7 +282,8 @@
                                     @foreach ($categories as $category)
                                         <li>
                                             <div class="d-flex justify-content-between fruite-name">
-                                                <a href="{{ route('category', $category->id) }}"><i class="fas fa-apple-alt me-2"></i>{{ $category->name }}</a>
+                                                <a href="{{ route('category', $category->id) }}"><i
+                                                        class="fas fa-apple-alt me-2"></i>{{ $category->name }}</a>
                                                 <span>({{ count($category->products) }})</span>
                                             </div>
                                         </li>
@@ -205,7 +295,8 @@
                             <h4 class="mb-4">Featured products</h4>
                             <div class="d-flex align-items-center justify-content-start">
                                 <div class="rounded" style="width: 100px; height: 100px;">
-                                    <img src="{{ asset('client/assets/img/featur-1.jpg') }}" class="img-fluid rounded" alt="Image">
+                                    <img src="{{ asset('client/assets/img/featur-1.jpg') }}" class="img-fluid rounded"
+                                         alt="Image">
                                 </div>
                                 <div>
                                     <h6 class="mb-2">Big Banana</h6>
@@ -224,7 +315,8 @@
                             </div>
                             <div class="d-flex align-items-center justify-content-start">
                                 <div class="rounded" style="width: 100px; height: 100px;">
-                                    <img src="{{ asset('client/assets/img/featur-2.jpg') }}" class="img-fluid rounded" alt="">
+                                    <img src="{{ asset('client/assets/img/featur-2.jpg') }}" class="img-fluid rounded"
+                                         alt="">
                                 </div>
                                 <div>
                                     <h6 class="mb-2">Big Banana</h6>
@@ -243,7 +335,8 @@
                             </div>
                             <div class="d-flex align-items-center justify-content-start">
                                 <div class="rounded" style="width: 100px; height: 100px;">
-                                    <img src="{{ asset('client/assets/img/featur-3.jpg') }}" class="img-fluid rounded" alt="">
+                                    <img src="{{ asset('client/assets/img/featur-3.jpg') }}" class="img-fluid rounded"
+                                         alt="">
                                 </div>
                                 <div>
                                     <h6 class="mb-2">Big Banana</h6>
@@ -262,7 +355,8 @@
                             </div>
                             <div class="d-flex align-items-center justify-content-start">
                                 <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                    <img src="{{ asset('client/assets/img/vegetable-item-4.jpg') }}" class="img-fluid rounded" alt="">
+                                    <img src="{{ asset('client/assets/img/vegetable-item-4.jpg') }}"
+                                         class="img-fluid rounded" alt="">
                                 </div>
                                 <div>
                                     <h6 class="mb-2">Big Banana</h6>
@@ -281,7 +375,8 @@
                             </div>
                             <div class="d-flex align-items-center justify-content-start">
                                 <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                    <img src="{{ asset('client/assets/img/vegetable-item-5.jpg') }}" class="img-fluid rounded" alt="">
+                                    <img src="{{ asset('client/assets/img/vegetable-item-5.jpg') }}"
+                                         class="img-fluid rounded" alt="">
                                 </div>
                                 <div>
                                     <h6 class="mb-2">Big Banana</h6>
@@ -300,7 +395,8 @@
                             </div>
                             <div class="d-flex align-items-center justify-content-start">
                                 <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                    <img src="{{ asset('client/assets/img/vegetable-item-6.jpg') }}" class="img-fluid rounded" alt="">
+                                    <img src="{{ asset('client/assets/img/vegetable-item-6.jpg') }}"
+                                         class="img-fluid rounded" alt="">
                                 </div>
                                 <div>
                                     <h6 class="mb-2">Big Banana</h6>
@@ -352,9 +448,12 @@
                     </div>
                     <div class="border border-primary rounded position-relative vesitable-item">
                         <div class="vesitable-img">
-                            <img src="{{ asset('client/assets/img/vegetable-item-1.jpg') }}" class="img-fluid w-100 rounded-top" alt="">
+                            <img src="{{ asset('client/assets/img/vegetable-item-1.jpg') }}"
+                                 class="img-fluid w-100 rounded-top" alt="">
                         </div>
-                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">Vegetable</div>
+                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute"
+                             style="top: 10px; right: 10px;">Vegetable
+                        </div>
                         <div class="p-4 pb-0 rounded-bottom">
                             <h4>Parsely</h4>
                             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt</p>

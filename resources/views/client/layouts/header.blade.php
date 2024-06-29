@@ -64,11 +64,11 @@
                                                             <a class="text-reset name">{{ $item['name'] }}</a>
                                                         </h6>
                                                         <p class="mb-0 fs-12 text-muted">
-                                                            SL: <span class="quantity">{{ $item['quantity'] }} x {{number_format($item['price']) }} VNĐ</span>
+                                                            Số lượng: <span class="quantity">{{ $item['quantity'] }} x {{number_format($item['price']) }}đ</span>
                                                         </p>
                                                     </div>
                                                     <div class="px-2">
-                                                        <h5 class="m-0 total" style="font-size: 1rem">{{number_format($item['price'] * $item['quantity']) }}<span class="cart-item-price"> VNĐ</span></h5>
+                                                        <h5 class="m-0 fw-normal total">{{number_format($item['price'] * $item['quantity']) }}<span class="cart-item-price">đ</span></h5>
                                                     </div>
                                                     <div class="ps-2">
                                                         <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary remove-cart" data-id="{{ $id }}" data-url="{{ route('cart.remove', $id) }}">
@@ -84,7 +84,7 @@
                                     <div class="d-flex justify-content-between align-items-center pb-3">
                                         <h5 class="m-0 text-muted">Tổng: </h5>
                                         <div class="px-2">
-                                            <h5 class="m-0" id="cart-item-total">{{ number_format($total) }} VNĐ</h5>
+                                            <h5 class="m-0" id="cart-item-total">{{ number_format($total) }}đ</h5>
                                         </div>
                                     </div>
                                     <div class="d-flex">
@@ -102,12 +102,17 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
                                 <!-- item-->
-                                <h6 class="dropdown-header">Xin chào {{ auth()->user()->name }}!</h6>
-                                <a class="dropdown-item" href="pages-profile.html"><i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Hồ sơ</span></a>
-                                <a class="dropdown-item" href="apps-chat.html"><i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Đơn hàng</span></a>
-                                <a class="dropdown-item" href="apps-tasks-kanban.html"><i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Taskboard</span></a>
-                                <a class="dropdown-item" href="pages-faqs.html"><i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i> <span class="align-middle">Help</span></a>
+                                <h6 class="dropdown-header">Welcome {{ auth()->user()->name }}!</h6>
+                                <a class="dropdown-item" href="{{ route('user.profile') }}">
+                                    <i class="bi bi-person me-2"></i>
+                                    <span>Thông tin cá nhân</span>
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-cart-check"></i>
+                                    <span>Đơn hàng</span>
+                                </a>
                                 <div class="dropdown-divider"></div>
+                                {{-- <a class="dropdown-item" href="{{ Auth::logout() }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng xuất</span></a> --}}
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="dropdown-item">Đăng xuất</button>

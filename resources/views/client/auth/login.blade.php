@@ -1,72 +1,49 @@
-@extends('client.layouts.master')
 
-@section('title', 'Login')
-<style>
-    /* Điều chỉnh vị trí của form đăng nhập */
-    .login-form {
-        margin-top: 130px; /* Đảm bảo form đăng nhập không bị che bởi phần banner */
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Điều chỉnh vị trí của nút đăng nhập */
-    .login-btn {
-        margin-top: 20px; /* Điều chỉnh khoảng cách từ form đến nút */
-    }
-
-</style>
-@section('content')
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card login-form">
-                    <div class="card-header">{{ __('Login') }}</div>
-
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('login') }}">
-                            @csrf
-
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3 form-check">
-                                <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                                <label class="form-check-label" for="remember">
-                                    {{ __('Remember Me') }}
-                                </label>
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary login-btn">{{ __('Login') }}</button>
-                            </div>
-                        </form>
-                        <div class="d-grid mt-3">
-                            <a href="{{ route('auth.google') }}" class="btn btn-danger">{{ __('Login with Google') }}</a>
-                        </div>
-                    </div>
-                </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in/up Form</title>
+    <!-- Font Awesome -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('client/assets/css/auth.css') }}">
+</head>
+<body>  
+<div class="container" id="container">
+    <!-- Sign In Container -->
+    <div class="form-container sign-in-container">
+        <form action="{{ route('login') }}" method="post">
+            @csrf
+            <h1>Đăng nhập</h1>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                <a href="{{ route('auth.google') }}" class="social"><i class="fab fa-google-plus-g"></i></a>
+                <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <span>Sử dụng tài khoản của bạn</span>
+            <input type="email" placeholder="Email" name="email">
+                     {!! ShowError($errors, 'email') !!}
+            <input type="password" placeholder="Password" name="password">
+            {!! ShowError($errors, 'password') !!}
+            <a href="#">Quên mật khẩu?</a>
+            <button type="submit">Đăng Nhập</button>
+        </form>
+    </div>
+    <!-- Overlay Container for Transition -->
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+               <a href="{{route('register')}}">
+                   <button class="ghost" id="signUp">Đăng Ký</button>
+               </a>
             </div>
         </div>
     </div>
-@endsection
+</div>
+</body>
+</html>

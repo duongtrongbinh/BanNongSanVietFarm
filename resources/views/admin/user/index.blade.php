@@ -48,19 +48,22 @@
                                             </label>
                                         </div>
                                     </td>
-
                                     <td>
-                                        <a href="{{ route('user.edit', $row) }}" class="btn btn-primary btn-sm mr-1">
-                                            <i class="fas fa-edit"></i> Sửa
-                                        </a>
-                                        <form action="{{ route('user.destroy', $row) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                <i class="fas fa-trash"></i> Xóa
-                                            </button>
-                                        </form>
+                                        <ul class="list-inline hstack gap-2 mb-0">
+                                            <li class="list-inline-item edit" data-bs-toggle="tooltip"
+                                                data-bs-trigger="hover" data-bs-placement="top" title="Sửa">
+                                                <a href="{{ route('user.edit', $row->id) }}">
+                                                    <i class="ri-pencil-fill fs-16"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item" data-bs-toggle="tooltip"
+                                                data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                <a data-url="{{ route('user.destroy', $row->id) }}"
+                                                   class="btn btn-danger btn-sm deleteuser">
+                                                    <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                             @endforeach
@@ -71,6 +74,20 @@
             </div>
         </div>
     </section>
+    @section('js')
+        <!--datatable js-->
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
+        <!--Delete js-->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @endsection
 @endsection
-
-
