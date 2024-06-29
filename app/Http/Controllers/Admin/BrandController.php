@@ -40,7 +40,7 @@ class BrandController extends Controller
     }
 
     public function store(BrandCreateRequest $request)
-    {   
+    {
         $request['slug'] = Str::slug($request['name']);
         $this->brandRepository->create($request->all());
 
@@ -76,7 +76,7 @@ class BrandController extends Controller
         $this->brandRepository->delete($brand->id);
 
         return response()->json(true);
-        
+
     }
 
     public function destroy(Brand $brand)
