@@ -49,44 +49,44 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Category */
     Route::resource('categories', CategoryController::class);
-    
-    /* Route Product */ 
+
+    /* Route Product */
     Route::resource('products', ProductController::class);
     Route::delete('products/{id}', [ProductController::class, 'delete'])
         ->name('products.delete');
 
-    /* Route Tag */ 
+    /* Route Tag */
     Route::resource('tags', TagController::class);
 
-    /* Route Supplier */ 
+    /* Route Supplier */
     Route::resource('supplier', SupplierController::class);
 
-    /* Route Purchase Receipt */ 
+    /* Route Purchase Receipt */
     Route::resource('purchase_receipt', PurchaseReceiptController::class);
 
-    /* Route Voucher */ 
+    /* Route Voucher */
     Route::resource('vouchers',VoucherController::class);
     Route::get('adeleted/vouchers',[VoucherController::class,'deleted'])
         ->name('vouchers.deleted');
     Route::post('restore/vouchers/{id}',[VoucherController::class,'restore'])
         ->name('restore.vouchers');
 
-    /* Route Flash Sale */ 
+    /* Route Flash Sale */
     Route::resource('flash-sales',FlashSaleController::class);
 
-    /* Route Order */ 
+    /* Route Order */
     Route::resource('orders',OrderController::class);
     Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
 
-    /* Route Post */ 
+    /* Route Post */
     Route::resource('post', PostController::class);
 
-    /* Route Comment */ 
+    /* Route Comment */
     Route::resource('comment', CommentController::class);
     Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
         ->name('product.comment.destroy');
 
-     /* Route Rate */ 
+     /* Route Rate */
      Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
 });
 
@@ -119,6 +119,7 @@ Route::group(['prefix' => ''], function (){
     });
 
     /* Route Order */
+    Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
     Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
@@ -127,17 +128,17 @@ Route::group(['prefix' => ''], function (){
         Route::get('register', 'showRegistrationForm')->name('register.form');
         Route::post('register', 'register')->name('register');
         Route::get('login', 'showLoginForm')->name('login');
-        Route::post('login', 'login');   
+        Route::post('login', 'login');
         Route::post('logout', 'logout')->name('logout');
-    }); 
+    });
 
     /* Route Auth Google */
     Route::controller(GoogleLoginController::class)->group(function () {
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
         Route::get('/auth/google/callback', 'handleGoogleCallback');
-    }); 
+    });
 
-    
+
     /* Route 404 */
     Route::get('404', function () {
         return view('client.layouts.404');
