@@ -32,7 +32,6 @@ use App\Http\Controllers\Client\HomeController;
 |
 */
 
-
 /* Route Admin */
 Route::group(['prefix' => 'admin'], function () {
     /* Route Dashboard */
@@ -49,14 +48,22 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Category */
     Route::resource('categories', CategoryController::class);
+    Route::delete('categories/{id}', [CategoryController::class, 'delete'])
+        ->name('categories.delete');
     
     /* Route Product */ 
     Route::resource('products', ProductController::class);
     Route::delete('products/{id}', [ProductController::class, 'delete'])
         ->name('products.delete');
+    Route::get('export', [ProductController::class, 'export'])
+        ->name('products.export');
+    Route::post('import', [ProductController::class, 'import'])
+        ->name('products.import');
 
     /* Route Tag */ 
     Route::resource('tags', TagController::class);
+    Route::delete('tags/{id}', [TagController::class, 'delete'])
+        ->name('tags.delete');
 
     /* Route Supplier */ 
     Route::resource('supplier', SupplierController::class);
@@ -76,6 +83,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Order */ 
     Route::resource('orders',OrderController::class);
+    Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->name('orders.cancel');
     Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
 
     /* Route Post */ 
@@ -137,7 +146,6 @@ Route::group(['prefix' => ''], function (){
         Route::get('/auth/google/callback', 'handleGoogleCallback');
     }); 
 
-    
     /* Route 404 */
     Route::get('404', function () {
         return view('client.layouts.404');

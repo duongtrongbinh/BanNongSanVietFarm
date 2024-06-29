@@ -48,4 +48,9 @@ class Order extends Model
                     ->withPivot('quantity', 'price_regular', 'price_sale', 'image', 'name')
                     ->withTimestamps();
     }
+
+    public function order_histories()
+    {
+        return $this->hasMany(OrderHistory::class, 'order_id', 'id');
+    }
 }

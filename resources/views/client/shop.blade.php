@@ -178,7 +178,7 @@
                                                     <p class="text-truncate">{{ $product->description }}</p>
                                                     <div class="d-flex justify-content-between flex-lg-wrap">
                                                         <p class="text-dark fs-5 fw-bold mb-0">{{ number_format($product->price_sale) }} VNĐ</p>
-                                                        <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-name="{{ $product->name }}" data-image="{{ $product->image }}" data-price="{{ $product->price_sale }}" data-quantity="1">
+                                                        <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
                                                             <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
                                                         </a>
                                                     </div>

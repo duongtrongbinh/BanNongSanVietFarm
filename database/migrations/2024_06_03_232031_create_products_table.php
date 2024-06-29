@@ -22,6 +22,10 @@ return new class extends Migration
             $table->decimal('price_regular', 19, 4);
             $table->decimal('price_sale', 19, 4)->nullable();
             $table->integer('quantity');
+            $table->integer('length');
+            $table->integer('width');
+            $table->integer('height');
+            $table->integer('weight');
             $table->boolean('is_home')->default(true);
             $table->boolean('is_active')->default(true);
             $table->text('description')->nullable();

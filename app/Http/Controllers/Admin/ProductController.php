@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Excel\Exports\ProductsExport;
+use App\Excel\Imports\ProductsImport;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\BrandRepository;
 use App\Http\Repositories\CategoryRepository;
@@ -9,11 +11,14 @@ use App\Http\Repositories\ProductImageRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Repositories\TagRepository;
 use App\Http\Requests\ProductCreateRequest;
+use App\Http\Requests\ProductsImportRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Product;
 use App\Models\ProductImage;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -35,9 +40,9 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = $this->productRepository->getLatestAllWithRelations(['brand', 'category', 'tags', 'product_images']);
+        $products = $this->productRepository->getLatestAllWithRelations(['brand', 'category', 'tags']);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('products'));
+        return view(self::PATH_VIEW . 'index', compact('products'));
     }
 
     public function create()
@@ -51,7 +56,6 @@ class ProductController extends Controller
 
     public function store(ProductCreateRequest $request)
     {
-        $request['slug'] = Str::slug($request['name']);
         $image_ids = explode(',', $request->input('image')[0]);
         $image = array_shift($image_ids);
         $request['image'] = $image;
@@ -66,15 +70,9 @@ class ProductController extends Controller
             }
         }
 
-        $tag_ids = $request->input('tag', []);
-        if (!empty($tag_ids)) {
-            foreach ($tag_ids as $tag_id) {
-                DB::table('product_tags')->insert([
-                    'product_id' => $product->id,
-                    'tag_id' => $tag_id,
-                ]);
-            }
-        }
+        $tag_ids = $request->input('tags', []);
+        $product->tags()->attach($tag_ids);
+
 
         return redirect()
             ->route('products.index')
@@ -98,9 +96,8 @@ class ProductController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('product', 'brands', 'categories', 'tags'));
     }
 
-    public function update(ProductCreateRequest $request, Product $product)
+    public function update(ProductUpdateRequest $request, Product $product)
     {
-        $request['slug'] = Str::slug($request['name']);
         $request['is_active'] = $request->has('is_active');
         $request['is_home'] = $request->has('is_home');
         $image_ids = explode(',', $request->input('image')[0]);
@@ -123,11 +120,10 @@ class ProductController extends Controller
             }
         }
 
-        $tag_ids = $request->input('tag', []);
+        $tag_ids = $request->input('tags', []);
         $product->tags()->sync($tag_ids);
 
-        return back()
-            ->with('status', 'Success');
+        return redirect()->back()->with('status', 'Success');
     }
 
     public function delete(Product $product)
@@ -147,6 +143,19 @@ class ProductController extends Controller
         }
         DB::table('product_tags')->where('product_id', $product->id)->delete();
         $this->productRepository->destroy($product->id);
+        
         return response()->json(true);
+    }
+
+    public function export() 
+    {
+        return Excel::download(new ProductsExport, 'products.xlsx');
+    }
+
+    public function import(ProductsImportRequest $request) 
+    {
+        Excel::import(new ProductsImport, $request->file('product_file'));
+        
+        return redirect()->back()->with('success', 'Products imported successfully.');
     }
 }

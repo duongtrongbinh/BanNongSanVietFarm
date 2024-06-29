@@ -97,7 +97,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-name="{{ $product->name }}" data-image="{{ $product->image }}" data-price="{{ $product->price_sale }}" data-quantity="1">
+                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
                                 <i class="fa fa-shopping-bag me-2 text-primary"></i> 
                                 Add to cart
                             </a>
