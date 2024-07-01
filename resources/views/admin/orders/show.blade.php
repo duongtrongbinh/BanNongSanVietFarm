@@ -82,8 +82,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row border-top border-top-dashed d-flex justify-content-between mt-2 pt-1">
-                        <div class="col-4">
+                    <div class="row border-top border-top-dashed d-flex justify-content-between mt-2 pt-4">
+                        <div class="col-6">
                             <div class="d-flex justify-content-between">
                                 <p>Phương thức thanh toán:</p>
                                 <p><b>VNPAY</b></p>
@@ -93,7 +93,7 @@
                                 <p class="badge bg-warning-subtle text-warning text-uppercase">Đang xử lý</p>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-5">
                             <div class="d-flex justify-content-between">
                                 <p>Thành Tiền:</p>
                                 <p>{{ number_format($subtotal) }} VNĐ</p>
@@ -235,7 +235,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body pt-3">
                     <ul class="list-unstyled mb-0 vstack gap-3">
                         <li>
                             <div class="d-flex align-items-center">

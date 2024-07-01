@@ -6,6 +6,7 @@ enum OrderStatus: int
     case PENDING = 0;                     // Chờ xử lý
     case PREPARE = 1;                     // Đang chuẩn bị
     case PENDING_PAYMENT = 2;             // Chờ thanh toán
+    case SUCCESS_PAYMENT = 25;            // Thanh toán thành công
     case READY_TO_PICK = 3;               // Sẵn sàng lấy hàng
     case PICKING = 4;                     // Đang lấy hàng
     case PICKED = 5;                      // Đã lấy hàng

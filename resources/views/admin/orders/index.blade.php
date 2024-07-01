@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'List Order')
+@section('title', 'Danh sách đơn hàng')
 @section('css')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -11,11 +11,11 @@
 
 @section('content')
     <div class="pagetitle">
-      <h1>List Order</h1>
+      <h1>Danh sách đơn hàng</h1>
       <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-            <li class="breadcrumb-item active"><a href="{{ route('orders.index') }}">Order</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('orders.index') }}" class="active">Đơn hàng</a></li>
         </ol>
       </nav>
     </div>
@@ -28,8 +28,8 @@
                     <div class="row align-items-center gy-3">
                         <div class="col-sm-auto">
                             <div class="d-flex gap-1 flex-wrap">
-                                <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Create Order</button>
-                                <button type="button" class="btn btn-info"><i class="ri-file-download-line align-bottom me-1"></i> Import</button>
+                                <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a>
+                                <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up"></i> Xuất</a>
                             </div>
                         </div>
                     </div>
@@ -89,25 +89,25 @@
                         <li class="nav-item">
                             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#all-orders">
                                 <i class="ri-store-2-fill me-1 align-bottom"></i>
-                                All Orders
+                                Đơn hàng
                             </button>
                         </li>
-
+        
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
-                                <i class="ri-checkbox-circle-line me-1 align-bottom"></i>
+                                <i class="ri-checkbox-circle-line me-1 align-bottom"></i> 
                                 Delivered
                             </button>
                         </li>
-
+        
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pickups">
-                                <i class="ri-truck-line me-1 align-bottom"></i>
-                                Pickups
-                                <span class="badge bg-danger align-middle ms-1">{{ count($pickups) }}</span>
+                                <i class="ri-truck-line me-1 align-bottom"></i> 
+                                Pickups 
+                                <span class="badge bg-danger align-middle ms-1">{{ $orders->where('status', 2)->count() }}</span>
                             </button>
                         </li>
-
+        
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returns">
                                 <i class="ri-arrow-left-right-fill me-1 align-bottom"></i>
@@ -116,7 +116,7 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
-                                <i class="ri-close-circle-line me-1 align-bottom"></i>
+                                <i class="ri-close-circle-line me-1 align-bottom"></i> 
                                 Cancelled
                             </button>
                         </li>
@@ -124,7 +124,7 @@
                     <div class="tab-content pt-2">
                         <!-- All Orders -->
                         <div class="tab-pane fade show active all-orders" id="all-orders">
-                            <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th data-ordering="false">ID</th>
@@ -175,19 +175,19 @@
                                             </td>
                                             <td>
                                                 <ul class="list-inline hstack gap-2 mb-0">
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
+                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chi tiết">
                                                         <a href="{{ route('orders.show', $order->id) }}" class="text-primary d-inline-block">
                                                             <i class="ri-eye-fill fs-16"></i>
                                                         </a>
                                                     </li>
-                                                    <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                        <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                            <i class="ri-pencil-fill fs-16"></i>
+                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chỉnh sửa">
+                                                        <a href="{{ route('orders.edit', $order->id) }}" class="text-primary d-inline-block">
+                                                          <i class="ri-pencil-fill fs-16"></i>
                                                         </a>
                                                     </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                        <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                            <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
+                                                        <a data-url="" class="text-danger d-inline-block deleteSlide">
+                                                          <i class="ri-delete-bin-5-fill fs-16"></i>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -214,60 +214,62 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($delivereds as $key => $delivered)
-                                        <tr>
-                                            <td>
-                                                {{ $key }}
-                                            </td>
-                                            <td>
-                                                <a href="" class="fw-medium link-primary">{{ $delivered->order_code }}</a>
-                                            </td>
-                                            <td>
-                                                {{ $delivered->user->name }}
-                                            </td>
-                                            <td>
-                                                {{ count($delivered->order_details) }}
-                                            </td>
-                                            <td>
-                                                {{ $delivered->created_at }}
-                                            </td>
-                                            <td>{{ number_format($delivered->after_total_amount) }}đ</td>
-                                            <td>VNPAY</td>
-                                            <td>
-                                                @if ($delivered->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($delivered->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($delivered->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($delivered->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($delivered->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <ul class="list-inline hstack gap-2 mb-0">
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('orders.show', $delivered->id) }}" class="text-primary d-inline-block">
-                                                            <i class="ri-eye-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                        <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                            <i class="ri-pencil-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                        <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                            <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+                                    @foreach ($orders as $key => $delivered)
+                                        @if ($delivered->status == 3)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a class="fw-medium link-primary">{{ $delivered->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $delivered->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($delivered->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $delivered->created_at }}
+                                                </td>
+                                                <td>{{ number_format($delivered->after_total_amount) }}đ</td>
+                                                <td>VNPAY</td>
+                                                <td>
+                                                    @if ($delivered->status == 0)
+                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
+                                                    @elseif ($delivered->status == 1)
+                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
+                                                    @elseif ($delivered->status == 2)
+                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
+                                                    @elseif ($delivered->status == 3)
+                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
+                                                    @elseif ($delivered->status == 4)
+                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
+                                                    @else
+                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <ul class="list-inline hstack gap-2 mb-0">
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
+                                                            <a href="{{ route('orders.show', $delivered->id) }}" class="text-primary d-inline-block">
+                                                                <i class="ri-eye-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
+                                                                <i class="ri-pencil-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
+                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -290,60 +292,62 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($pickups as $key => $pickup)
-                                        <tr>
-                                            <td>
-                                                {{ $key }}
-                                            </td>
-                                            <td>
-                                                <a href="" class="fw-medium link-primary">{{ $pickup->order_code }}</a>
-                                            </td>
-                                            <td>
-                                                {{ $pickup->user->name }}
-                                            </td>
-                                            <td>
-                                                {{ count($pickup->order_details) }}
-                                            </td>
-                                            <td>
-                                                {{ $pickup->created_at }}
-                                            </td>
-                                            <td>{{ number_format($pickup->after_total_amount) }}đ</td>
-                                            <td>VNPAY</td>
-                                            <td>
-                                                @if ($pickup->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($pickup->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($pickup->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($pickup->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($pickup->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <ul class="list-inline hstack gap-2 mb-0">
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('orders.show', $pickup->id) }}" class="text-primary d-inline-block">
-                                                            <i class="ri-eye-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                        <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                            <i class="ri-pencil-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                        <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                            <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+                                    @foreach ($orders as $key => $pickup)
+                                        @if ($pickup->status == 2)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $pickup->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $pickup->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($pickup->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $pickup->created_at }}
+                                                </td>
+                                                <td>{{ number_format($pickup->after_total_amount) }}đ</td>
+                                                <td>VNPAY</td>
+                                                <td>
+                                                    @if ($pickup->status == 0)
+                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
+                                                    @elseif ($pickup->status == 1)
+                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
+                                                    @elseif ($pickup->status == 2)
+                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
+                                                    @elseif ($pickup->status == 3)
+                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
+                                                    @elseif ($pickup->status == 4)
+                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
+                                                    @else
+                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <ul class="list-inline hstack gap-2 mb-0">
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
+                                                            <a href="{{ route('orders.show', $pickup->id) }}" class="text-primary d-inline-block">
+                                                                <i class="ri-eye-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
+                                                                <i class="ri-pencil-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
+                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -366,60 +370,62 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($returns as $key => $return)
-                                        <tr>
-                                            <td>
-                                                {{ $key }}
-                                            </td>
-                                            <td>
-                                                <a href="" class="fw-medium link-primary">{{ $return->order_code }}</a>
-                                            </td>
-                                            <td>
-                                                {{ $return->user->name }}
-                                            </td>
-                                            <td>
-                                                {{ count($return->order_details) }}
-                                            </td>
-                                            <td>
-                                                {{ $return->created_at }}
-                                            </td>
-                                            <td>{{ number_format($return->after_total_amount) }}đ</td>
-                                            <td>VNPAY</td>
-                                            <td>
-                                                @if ($return->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($return->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($return->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($return->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($return->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <ul class="list-inline hstack gap-2 mb-0">
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('orders.show', $return->id) }}" class="text-primary d-inline-block">
-                                                            <i class="ri-eye-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                        <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                            <i class="ri-pencil-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                        <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                            <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+                                    @foreach ($orders as $key => $return)
+                                        @if ($return->status == 4)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $return->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $return->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($return->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $return->created_at }}
+                                                </td>
+                                                <td>{{ number_format($return->after_total_amount) }}đ</td>
+                                                <td>VNPAY</td>
+                                                <td>
+                                                    @if ($return->status == 0)
+                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
+                                                    @elseif ($return->status == 1)
+                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
+                                                    @elseif ($return->status == 2)
+                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
+                                                    @elseif ($return->status == 3)
+                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
+                                                    @elseif ($return->status == 4)
+                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
+                                                    @else
+                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <ul class="list-inline hstack gap-2 mb-0">
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
+                                                            <a href="{{ route('orders.show', $return->id) }}" class="text-primary d-inline-block">
+                                                                <i class="ri-eye-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
+                                                                <i class="ri-pencil-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
+                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -442,60 +448,62 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($cancelleds as $key => $cancelled)
-                                        <tr>
-                                            <td>
-                                                {{ $key }}
-                                            </td>
-                                            <td>
-                                                <a href="" class="fw-medium link-primary">{{ $cancelled->order_code }}</a>
-                                            </td>
-                                            <td>
-                                                {{ $cancelled->user->name }}
-                                            </td>
-                                            <td>
-                                                {{ count($cancelled->order_details) }}
-                                            </td>
-                                            <td>
-                                                {{ $cancelled->created_at }}
-                                            </td>
-                                            <td>{{ number_format($cancelled->after_total_amount) }}đ</td>
-                                            <td>VNPAY</td>
-                                            <td>
-                                                @if ($cancelled->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($cancelled->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($cancelled->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($cancelled->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($cancelled->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <ul class="list-inline hstack gap-2 mb-0">
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                        <a href="{{ route('orders.show', $cancelled->id) }}" class="text-primary d-inline-block">
-                                                            <i class="ri-eye-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                        <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                            <i class="ri-pencil-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                        <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                            <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
+                                    @foreach ($orders as $key => $cancelled)
+                                        @if ($cancelled->status == 5)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $cancelled->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $cancelled->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($cancelled->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $cancelled->created_at }}
+                                                </td>
+                                                <td>{{ number_format($cancelled->after_total_amount) }}đ</td>
+                                                <td>VNPAY</td>
+                                                <td>
+                                                    @if ($cancelled->status == 0)
+                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
+                                                    @elseif ($cancelled->status == 1)
+                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
+                                                    @elseif ($cancelled->status == 2)
+                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
+                                                    @elseif ($cancelled->status == 3)
+                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
+                                                    @elseif ($cancelled->status == 4)
+                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
+                                                    @else
+                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <ul class="list-inline hstack gap-2 mb-0">
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
+                                                            <a href="{{ route('orders.show', $cancelled->id) }}" class="text-primary d-inline-block">
+                                                                <i class="ri-eye-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
+                                                                <i class="ri-pencil-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
+                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -519,65 +527,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
     <!--Delete js-->
+    <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
+            $('#table0').DataTable();
             $('#table1').DataTable();
             $('#table2').DataTable();
             $('#table3').DataTable();
             $('#table4').DataTable();
-            // Khởi tạo cho các bảng khác nếu có
-        });
 
-      new DataTable("#example");
-      function actionDelete(e) {
-        e.preventDefault();
-        let urlRequest = $(this).data("url");
-        let that = $(this);
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "DELETE",
-                    url: urlRequest,
-                    data: {
-                        _token: '{{ csrf_token() }}' // CSRF token for security
-                    },
-                    success: function (data) {
-                        if (data == true) {
-                            that.closest('tr').remove();
-                            Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
-                                icon: "success",
-                            });
-                        }
-                    },
-                    error: function (data) {
-                        if (data == false) {
-                            Swal.fire({
-                                title: "Cancelled",
-                                text: "Your imaginary file is safe :)",
-                                icon: "error",
-                            });
-                        }
-                    },
-                });
-            }
+            $('#export').click(function() {
+                var table = document.getElementById("table0");
+                var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+                XLSX.writeFile(wb, "orders.xlsx");
+            });
         });
-      }
-      $(function () {
-        $(document).on("click", ".deleteSlide", actionDelete);
-      });
     </script>
 @endsection

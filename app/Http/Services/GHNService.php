@@ -9,13 +9,16 @@ use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GHNService
 {
     protected $apiUrl;
     protected $shopId;
     protected $token;
+    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
 
     public function __construct()
     {
@@ -38,24 +41,53 @@ class GHNService
                 $order->save();
 
                 $url = $this->paymentVNPAY($value['after_total_amount'], $order->order_code);
-                $route__Url = redirect()->away($url);
+                $routeUrl = redirect()->away($url);
             } else {
-                $order->status = OrderStatus::PENDING;
-                $order->expires_at = Carbon::now()->addDay();
-                $order->save();
-
                 SendOrderToGHN::dispatch($order, $value, session('cart'));
-                $route__Url = redirect()->route('home');
+                $routeUrl = redirect()->route('home');
             }
 
             DB::commit();
             session()->forget('cart');
-            return $route__Url;
+            return $routeUrl;
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo đơn hàng.');
         }
     }
+
+    //     public function store(Request $request)
+    // {
+    //     $value = $this->fillterData($request->all());
+    //     $order_code = 200;
+    //     $order_code = $this->createOrderGHN($value,session('cart'));
+    //     if($order_code != 400) {
+    //         $data = Order::where('order_code',$order_code)->first();
+    //         $value['order_code'] = $order_code;
+    //         $value['user_id'] = Auth::id();
+    //         // dispatch(new SendOrderConfirmation($value));
+    //         if($request['payment_method'] != 'VNPAYQR'){
+    //             $this->saveData($value, session('cart'));
+    //             $routeUrl = redirect()->route('home');
+    //         }else{
+    //             // payment save data
+    //             $value['payment_method'] = 1;
+    //             $order = $this->saveData($value,session('cart'));
+    //            if(isset($order)){
+    //                $url = $this->paymentVNPAY($value['after_total_amount'],$order_code);
+    //                $routeUrl = redirect()->away($url);
+    //            }else{
+    //                $routeUrl = redirect()->route('home')->withErrors(['error'=>'error system']);
+    //            }
+    //         }
+
+    //         session()->forget('cart');
+    //         return $routeUrl;
+    // }else{
+    //         return redirect()->back()->with('error', 'Lỗi hệ thống,vui lòng đặt hàng lại sau.');
+    //     }
+    // }
+
 
     private function fillterData(array $data){
         $totalAmount = 0;
@@ -91,76 +123,97 @@ class GHNService
 
         return $data;
     }
-    // public function createOrderGHN($data,$items)
-    // {
+    public function createOrderGHN($data,$items)
+    {
 
-    //     $product = $this->formatDataGHN($items);
+        $product = $this->formatDataGHN($items);
 
-    //     $jsonData = [
-    //         "note" => $data['note'] ?? 'No',
-    //         "required_note" => "KHONGCHOXEMHANG",
-    //         "client_order_code" => '',
-    //         "to_name" => $data['name'],
-    //         "to_phone" => $data['phone'],
-    //         "to_address" => $data['address'],
-    //         "to_ward_name" => $data['ward_name'],
-    //         "to_district_name" => $data['district_name'],
-    //         "to_province_name" => $data['province_name'],
-    //         "content" => "",
-    //         "weight" => 15,
-    //         "length" => 15,
-    //         "width" => 15,
-    //         "height" => 15,
-    //         "cod_failed_amount" => 0,
-    //         "pick_station_id" => null,
-    //         "deliver_station_id" => null,
-    //         "insurance_value" => 100000,
-    //         "service_id" => 0,
-    //         "service_type_id" => 2,
-    //         "coupon" => null,
-    //         "pickup_time" => Carbon::now()->timestamp,
-    //         "pick_shift" => [2],
-    //         "items" => $product,
-    //     ];
+        $jsonData = [
+            "note" => $data['note'] ?? 'No',
+            "required_note" => "KHONGCHOXEMHANG",
+            "client_order_code" => '',
+            "to_name" => $data['name'],
+            "to_phone" => $data['phone'],
+            "to_address" => $data['address'],
+            "to_ward_name" => $data['ward_name'],
+            "to_district_name" => $data['district_name'],
+            "to_province_name" => $data['province_name'],
+            "content" => "",
+            "weight" => 15,
+            "length" => 15,
+            "width" => 15,
+            "height" => 15,
+            "cod_failed_amount" => 0,
+            "pick_station_id" => null,
+            "deliver_station_id" => null,
+            "insurance_value" => 100000,
+            "service_id" => 0,
+            "service_type_id" => 2,
+            "coupon" => null,
+            "pickup_time" => Carbon::now()->timestamp,
+            "pick_shift" => [2],
+            "items" => $product,
+        ];
 
-    //     // Điều chỉnh loại thanh toán và COD
-    //     if ($data['payment_method'] == 'VNPAYQR') {
-    //         $jsonData["payment_type_id"] = 1;
-    //         $jsonData["cod_amount"] = 0;
-    //     } else {
-    //         $jsonData["payment_type_id"] = 2;
-    //         $jsonData["cod_amount"] = intval($data['after_total_amount']);
-    //     }
-
-
-    //     // Chuẩn bị header cho yêu cầu
-    //     $headers = [
-    //         'Content-Type' => 'application/json',
-    //         'ShopId'=>"4734816",
-    //         'token'=>'d4d4cd6f-8f70-11ee-96dc-de6f804954c9'
-    //     ];
-    //         // Gửi yêu cầu POST tới GHN API
-    //         $response = Http::withHeaders($headers)->post($this->apiUrl, $jsonData);
-    //         // Xử lý phản hồi
+        // Điều chỉnh loại thanh toán và COD
+        if ($data['payment_method'] == 'VNPAYQR') {
+            $jsonData["payment_type_id"] = 1;
+            $jsonData["cod_amount"] = 0;
+        } else {
+            $jsonData["payment_type_id"] = 2;
+            $jsonData["cod_amount"] = intval($data['after_total_amount']);
+        }
 
 
-    //         if ($response->successful()) {
-    //             $responseData = $response->json();
+        // Chuẩn bị header cho yêu cầu
+        $headers = [
+            'Content-Type' => 'application/json',
+            'ShopId'=>"4734816",
+            'token'=>'d4d4cd6f-8f70-11ee-96dc-de6f804954c9'
+        ];
+            // Gửi yêu cầu POST tới GHN API
+            $response = Http::withHeaders($headers)->post($this->apiUrl, $jsonData);
+            // Xử lý phản hồi
 
-    //             $orderCode = $responseData['data']['order_code'];
-    //             return $orderCode;
-    //         }
 
-    //         if ($response->failed()) {
-    //             $statusCode = $response->status();
-    //             $errorMessage = $response->json()['message'] ?? 'Unknown error';
-    //             return $statusCode;
-    //         }
+            if ($response->successful()) {
+                $responseData = $response->json();
 
-    //     // $data['address_detail'] = $data['address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
-    //     // return $data;
+                $orderCode = $responseData['data']['order_code'];
+                return $orderCode;
+            }
 
-    // }
+            if ($response->failed()) {
+                $statusCode = $response->status();
+                $errorMessage = $response->json()['message'] ?? 'Unknown error';
+                return $statusCode;
+            }
+
+        // $data['address_detail'] = $data['address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
+        // return $data;
+
+    }
+    public function formatDataGHN($data){
+        $items = [];
+        foreach ($data as $key => $product) {
+            $item = [
+                "name" => $product['name'],
+                "quantity" => (int) $product['quantity'],
+                "price" => intval($product['price']),
+                "code" => $key.'ABC',
+                "weight" => 100,
+                "length" => $product['length'],
+                "width" => $product['width'],
+                "height" => $product['height'],
+                "category" => [
+                    "level1" => "Rau"
+                ],
+            ];
+
+            $items[] = $item;
+        }
+        return $items;
+    }
     public function paymentVNPAY($after_total_amount, $order_code)
     {
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -238,6 +291,17 @@ class GHNService
         });    
     }
 
+    public function UpdateStatusOrder($status,$code){
+        try {
+            $order = Order::query()->where('order_code',$code)->first();
+            $order->update([
+                'status' => $status,
+            ]);
+        }catch (\Exception $exception){
+            dd($exception);
+        }
+    }
+
     private function updateQuantityProduct($products){
          foreach ($products as $id => $item) {
             $product = Product::find($id);
@@ -247,40 +311,7 @@ class GHNService
             }
         }
     } 
-    
-    public function pay_return(Request $request){
-        $dd = $request->input('vnp_ResponseCode');
-        $code = $request->input('vnp_OrderInfo');
-        if($dd == "00" ){
-                return redirect()->route('home');
-        // }else{
-        //     $re = $this->updateQuantityOrder($code,$signal = "huy");
-        //     if($re){
-        //         $headers = [
-        //             'Content-Type'=>'application/json',
-        //             'ShopId'=>"4734816",
-        //             'token'=>'d4d4cd6f-8f70-11ee-96dc-de6f804954c9'
-        //         ];
-        //         $data = [
-        //             "order_codes"=>["$code"]
-        //         ];
-                
-        //         $response = Http::withHeaders($headers)->post("https://online-gateway.ghn.vn/shiip/public-api/v2/switch-status/cancel", $data);
-        //         if ($response->successful()) {
-        //             // Xử lý phản hồi khi request thành công
-        //             $responseData = $response->json();
-        //             $data = OrderModel::where('code',$code)->first();
-        //             dispatch(new SendOrderConfirmationEmailJob($data,auth()->user()->email));
-        //             return redirect()->away(env('url_font_return'));
-    
-        //         } else {
-        //             // Xử lý phản hồi khi request không thành công
-        //         return redirect()->away(env('url_font_return'));
-        //         }
-            // }
 
-        }
-    }
 
     public function retryOrder(Order $order)
     {
@@ -299,4 +330,70 @@ class GHNService
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi thực hiện lại đơn hàng.');
         }
     }
+
+     public function pay_return(Request $request){
+        $dd = $request->input('vnp_ResponseCode');
+        $code = $request->input('vnp_TxnRef');
+        if($dd == "00" ){
+            $this->UpdateStatusOrder(OrderStatus::PREPARE,$code);
+            return redirect()->route('home');
+        }else{
+            return redirect()->route('home');
+        }
+    }
+
+    public function shippingFee(Request $request)
+    {
+
+        $value = $this->fillterDataShipping($request->all());
+        $product = $this->formatDataGHN(session('cart'));
+        $jsonData = [
+            "service_type_id" => $value["service_type_id"],
+            "to_district_id" => (int)$value["to_district_id"],
+            "to_ward_code" => $value['to_ward_code'],
+            "height" => $value['height'],
+            "length" => $value['length'],
+            "weight" => $value['weight'],
+            "insurance_value" => $value['insurance_value'],
+            "items" => $product,
+        ];
+        // Chuẩn bị header cho yêu cầu
+        $headers = [
+            'Content-Type' => 'application/json',
+            'ShopId'=> $this->shopId,
+            'token'=> $this->token,
+        ];
+
+        // Gửi yêu cầu POST tới GHN API
+        $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
+
+        Log::debug($response);
+        // Xử lý phản hồi
+        if ($response->successful()) {
+            $responseData = $response->json();
+            $total = $responseData['data']['total'];
+            // Kiểm tra và cập nhật session total_cart
+            session(['service_fee' => $total]);
+            return response()->json($responseData,200) ;
+        }
+        if ($response->failed()) {
+            $statusCode = $response->status();
+            $errorMessage = $response->json()['message'] ?? 'Unknown error';
+            return $response;
+        }
+    }
+
+    public function fillterDataShipping(array $data)
+    {
+        $data["service_type_id"] = 2;
+        $data["to_district_id"] = $data['district_id'];
+        $data['to_ward_code'] = $data['ward_code'];
+        $data['height'] = 20;
+        $data['length'] = 30;
+        $data['weight'] = 3000;
+        $data['width'] = 40;
+        $data['insurance_value'] = 0;
+        return $data;
+    }
+
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -21,7 +22,6 @@ class User extends Authenticatable
         'password',
         'avatar',
         'phone',
-        'user_code',
         'address',
         'social_id',
         'name_avatar',
@@ -85,6 +85,15 @@ class User extends Authenticatable
             'user_code' => $userCode,
             'password' => bcrypt('randompassword'),
         ]);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->user_code = fake()->uuid(); 
+        });
     }
 
 }

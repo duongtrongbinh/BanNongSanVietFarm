@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
@@ -48,10 +49,14 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+
+    Route::get('login', [AuthController::class, 'index'])->name('login');
+    Route::post('login', [AuthController::class, 'store'])->name('admin.login');
+
     /* Profile */
-    Route::put('/admin/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
-    Route::get('/admin/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
-    Route::get('/admin/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
+    Route::put('/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
+    Route::get('/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
+    Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
 
     Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
 
@@ -86,7 +91,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Purchase Receipt */
     Route::resource('purchase_receipt', PurchaseReceiptController::class);
-
+    Route::post('purchases/import', [PurchaseReceiptController::class, 'import'])
+        ->name('purchases.import');
     /* Route Voucher */
     Route::resource('vouchers',VoucherController::class);
     Route::get('adeleted/vouchers',[VoucherController::class,'deleted'])
@@ -178,4 +184,3 @@ Route::group(['prefix' => ''], function (){
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
-
