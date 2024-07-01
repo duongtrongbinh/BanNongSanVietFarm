@@ -9,9 +9,6 @@ use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
 use App\Http\Requests\OrderUpdateStatusRequest;
 use App\Models\Order;
-use App\Models\Product;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
 
 class OrderController extends Controller
 {

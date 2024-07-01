@@ -6,6 +6,7 @@ enum OrderStatus: int
     case PENDING = 0;                     // Chờ xử lý
     case PREPARE = 1;                     // Đang chuẩn bị
     case PENDING_PAYMENT = 2;             // Chờ thanh toán
+    case SUCCESS_PAYMENT = 25;            // Thanh toán thành công
     case READY_TO_PICK = 3;               // Sẵn sàng lấy hàng
     case PICKING = 4;                     // Đang lấy hàng
     case PICKED = 5;                      // Đã lấy hàng
@@ -27,7 +28,7 @@ enum OrderStatus: int
     case EXCEPTION = 21;                  // Hàng ngoại lệ
     case LOST = 22;                       // Hàng thất lạc
     case DAMAGED = 23;                    // Hàng hư hỏng
-
+    case RETRY = 24;
     public static function values(): array
     {
         return array_column(self::cases(), 'name', 'value');

@@ -73,7 +73,7 @@
                   </p>
                 </div>
 
-                <form class="row g-3 needs-validation" novalidate method="post" action="{{ route('login')}}">
+                <form class="row g-3 needs-validation" novalidate method="post" action="{{ route('admin.login')}}">
                   <div class="col-12">
                     @csrf
                     <label for="yourUsername" class="form-label"
