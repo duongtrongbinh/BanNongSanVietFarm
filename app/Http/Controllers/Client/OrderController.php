@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Enum\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
 use App\Models\District;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Provinces;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 
@@ -19,16 +23,42 @@ class OrderController extends Controller
 
    public $voucherRepository;
 
+   const token = '29ee235a-2fa2-11ef-8e53-0a00184fe694';
+   const url = 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province';
    public function __construct(OrderRepository $orderRepository, VoucherRepository $voucherRepository)
    {
          $this->orderRepository = $orderRepository;
          $this->voucherRepository = $voucherRepository;
    }
+
+
+   public function index()
+   {
+       $orders = Order::where('user_id',Auth::user()->id);
+       $orderAll = Order::where('user_id',Auth::user()->id)->get();
+       $delivereds = $orders->where('status',OrderStatus::PENDING->value)->get();
+       $pickups = Order::where('status', OrderStatus::PREPARE->value)->get();
+       $returns = Order::where('status', OrderStatus::READY_TO_PICK->value)->get();
+       $cancelleds = Order::where('status', OrderStatus::PICKING->value)->get();
+       return view('client.order', compact('orderAll', 'delivereds', 'pickups', 'returns', 'cancelleds'));
+   }
    public function create()
    {
-    //    $products = Product::inRandomOrder()->take(3)->get();
+       if(!session()->has('cart')){
+           return redirect()->back();
+       }
+       $headers = [
+           'Content-Type' => 'application/json',
+           'token'=>self::token,
+       ];
+       $response = Http::withHeaders($headers)->get(self::url);
+       if ($response->successful()) {
+           $provinces = $response->json();
+       }else{
+           $provinces = null;
+           dd('error system');
+       }
        $user = auth()->user();
-       $provinces = Provinces::all();
        $vouchers = $this->voucherRepository->getVoucherActive();
        return view('client.check-out',compact(['user','vouchers','provinces']));
    }
@@ -52,31 +82,5 @@ class OrderController extends Controller
        $detail = $request->input('address').','.$request->input('ward').','.  $request->input('district').','.$request->input('ward');
        $request->merge(['address' => $detail]);
        $create = $this->orderRepository->create($request->toArray());
-       // create thành công
-
-   }
-
-   public function provinces(Request $request)
-   {
-       $districts = Provinces::with('district.ward')->find($request->input('province_id'));
-
-       $array = [
-           'status' => true,
-           'data' => $districts,
-       ];
-       return response()->json($array,200);
-   }
-
-   public function district( Request $request)
-   {
-
-       $wards = District::with('ward')->find($request->input('district_id'));
-
-       $array = [
-           'status' => true,
-           'data' => $wards,
-       ];
-       return response()->json($array,200);
-
    }
 }

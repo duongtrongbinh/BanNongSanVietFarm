@@ -3,11 +3,14 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
 
 class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * @return bool
      */
     public function authorize(): bool
     {
@@ -17,32 +20,38 @@ class UpdateUserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array
      */
     public function rules(): array
     {
-        $userId = $this->route('user')->id; // Lấy ID của user từ route
+        // Retrieve the user model from the route parameters
+
         return [
-            'email' => 'required|email|unique:users,email,'.$userId.',id',
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
             'name' => 'required',
-            'phone' => 'required|unique:users,phone,'.$userId.',id',
-            'user_code' => 'required|unique:users,user_code,'.$userId.',id',
+            'phone' => 'required|unique:users,phone,'.$this->id.',id',
+            'user_code' => 'required|unique:users,user_code,'.$this->id.',id',
             'address' => 'required',
         ];
     }
-    public function messages()
+
+    /**
+     * Get custom error messages for validator errors.
+     *
+     * @return array
+     */
+    public function messages(): array
     {
         return [
-            'name.required' => 'Name không được để chống',
-            'name.main' => 'Name không được nhỏ hơn 4 ký tự',
-            'email.required' => 'email không được để chống',
-            'email.email' => 'email không đúng định dạng',
-            'email.unique' => 'email đã được tồn tại',
-            'phone.required' => 'phone không được để chống',
-            'phone.unique' => 'phone đã được tồn tại',
-            'address.required' => 'address không được để chống',
-            'user_code.required' => 'user code không được để chống',
-            'user_code.unique' => 'user code đã được tồn tại',
+            'name.required' => 'Tên không được để trống',
+            'email.required' => 'Email không được để trống',
+            'email.email' => 'Email không đúng định dạng',
+            'email.unique' => 'Email đã tồn tại',
+            'phone.required' => 'Số điện thoại không được để trống',
+            'phone.unique' => 'Số điện thoại đã tồn tại',
+            'address.required' => 'Địa chỉ không được để trống',
+            'user_code.required' => 'Mã người dùng không được để trống',
+            'user_code.unique' => 'Mã người dùng đã tồn tại',
         ];
     }
 }

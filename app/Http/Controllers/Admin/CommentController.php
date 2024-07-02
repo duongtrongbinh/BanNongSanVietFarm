@@ -35,7 +35,7 @@ class CommentController extends Controller
             ->firstOrFail();
         // Xóa bản ghi ProductComment
         $productComment->delete();
-        return redirect()->back()->with('success', 'Đã xóa bình luận thành công.');
+      return response()->json(true);
     }
     public function rating(Request $request)
     {

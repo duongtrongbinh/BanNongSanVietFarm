@@ -19,12 +19,20 @@ class Order extends Model
         'email',
         'phone',
         'address',
+        'payment_method',
         'before_total_amount',
         'shipping',
         'after_total_amount',
         'note',
         'status',
         'order_code',
+        'expires_at',
+    ];
+
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+        'status' => 'integer',
     ];
 
     public function order_details()
@@ -49,6 +57,15 @@ class Order extends Model
                     ->withTimestamps();
     }
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            $order->order_code = 'PH'.fake()->imei;
+        });
+    }
+  
     public function order_histories()
     {
         return $this->hasMany(OrderHistory::class, 'order_id', 'id');

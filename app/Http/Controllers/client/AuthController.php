@@ -5,18 +5,17 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
 class AuthController extends Controller
 {
     public function showLoginForm()
     {
         return view('client.auth.login');
     }
-
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $remember = $request->has('remember_token') ? true : false;
         if (Auth::guard('web')->attempt($request->only('email', 'password'), $remember)) {
@@ -26,22 +25,17 @@ class AuthController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
-
     public function showRegistrationForm()
     {
         return view('client.auth.register');
     }
-
-    public function register(StoreUserRequest $request)
+    public function register(RegisterRequest $request)
     {
         Auth::guard('web')->logout();
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
-            'user_code' => $request->user_code,
-            'address' => $request->address,
             'password' => Hash::make($request->password),
         ]);
         auth()->login($user);

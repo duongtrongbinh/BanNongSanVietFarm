@@ -14,11 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 // address order api
-Route::post('provinces',[App\Http\Controllers\Client\OrderController::class,'provinces'])->name('provinces.find');
-
-Route::post('district',[App\Http\Controllers\Client\OrderController::class,'district'])->name('district.find');
+Route::middleware(['web'])->post('/shipping-fee', [App\Http\Services\GHNService::class, 'shippingFee'])->name('shipping.check');

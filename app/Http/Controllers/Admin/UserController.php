@@ -41,16 +41,18 @@ class UserController extends Controller
         return redirect()->route('user.index')->with('thongbao','bạn đã thêm thành công !');
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
+        $user = User::findOrFail($id);
         return view('admin.user.edit',compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request,$id)
     {
+        $user = User::findOrFail($id);
         $data = $request->except('avatar');
         if ($request->input('avatar')) {
             if ($user->avatar) {
@@ -64,13 +66,14 @@ class UserController extends Controller
         $user->update($data);
         return redirect()->route('user.index')->with('thongbao', 'Bạn đã cập nhật thành công!');
     }
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::findOrFail($id);
         if ($user->avatar) {
             $oldImagePath = str_replace(url('storage'), 'public', $user->avatar);
             Storage::delete($oldImagePath);
         }
         $user->delete();
-        return redirect()->route('user.index')->with('thongbao', 'Bạn đã xóa thành công!');
+      return response()->json(true);
     }
 }

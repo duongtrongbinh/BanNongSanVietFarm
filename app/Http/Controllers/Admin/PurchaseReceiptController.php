@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enum\TypeUnitEnum;
+use App\Excel\Imports\PurchaseReceiptImport;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\PurchaseReceipt;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PurchaseReceiptController extends Controller
 {
@@ -34,12 +36,15 @@ class PurchaseReceiptController extends Controller
             $productId = $data['product_id'];
             $quantity = $data['quantity'];
             $typeUnit = TypeUnitEnum::CHAI;
+            $end_date = $data['end_date'];
 
             // Sử dụng attach để thêm dữ liệu vào bảng trung gian
             $supplier->products()->attach($productId, [
                 'reference_code' => $referenceCode,
                 'quantity' => $quantity,
                 'type_unit' => $typeUnit,
+                'end_date' =>  $end_date,
+                'start_date' => now(),
                 'order_code' => str()->uuid(),
                 'cost' => 10000,
                 'created_by' => auth()->user()->id,
@@ -58,6 +63,13 @@ class PurchaseReceiptController extends Controller
             ->paginate(10);
 
         return view('admin.purchase_receipt.index', compact('purchaseReceipts'));
+    }
+
+    public function import(Request $request) 
+    {
+        Excel::import(new PurchaseReceiptImport, $request->file('purchase_file'));
+        
+        return redirect()->back()->with('success', 'Purchases imported successfully.');
     }
 
 }
