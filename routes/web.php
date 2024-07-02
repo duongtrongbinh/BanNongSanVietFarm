@@ -104,8 +104,8 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => ''], function (){
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
-        Route::get('/product/{id}', 'product')->name('product');
-        Route::get('/category/{id}', 'category')->name('category');
+        Route::get('/product/{slug}', 'product')->name('product');
+        Route::get('/category/{slug}', 'category')->name('category');
         Route::get('/post', 'post')->name('post');
         Route::post('/post', 'store')->name('post.store');
     });

@@ -35,31 +35,29 @@ class HomeController extends Controller
 
     public function home()
     {
-
-        // dd(session('cart'));
         $products = $this->productRepository->getHomeLatestAllWithRelationsPaginate(8, ['brand', 'category']);
-        $brands = $this->brandRepository->getLatestAll();
-        $categories = $this->categoryRepository->getLatestAll();
+        $categories = $this->categoryRepository->getLatestAllWithRelations(['products']);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'brands', 'categories'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories'));
     }
 
-    public function product($id)
+    public function product($slug)
     {
-        $product = Product::with(['brand', 'category', 'tags', 'product_images'])->find($id);
-        $products = $this->productRepository->getHomeLatestAllWithRelations(['brand', 'category']);
-        $categories = $this->categoryRepository->getLatestAll();
-        // Lấy bình luận của sản phẩm
-        $comments = $product->comments()->with('user')->orderBy('created_at', 'desc')->get();
-        $commentsCount = $comments->count();
-        return view(self::PATH_VIEW . __FUNCTION__, compact('product',  'products', 'categories','comments', 'commentsCount'));
+        $product = Product::with(['brand', 'category', 'tags', 'product_images', 'comments'])
+                    ->where('slug', $slug)
+                    ->first();
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product'));
     }
 
-    public function category($id)
+    public function category($slug)
     {
-        $category = $this->categoryRepository->findOrFail($id);
-        $products = Product::where('category_id', $category->id)->where('is_active', 1)->latest('id')->paginate(12);
-
+        $category = Category::where('slug', $slug)
+                        ->first();
+        $products = Product::where('category_id', $category->id)
+                        ->where('is_active', 1)
+                        ->latest('id')
+                        ->paginate(12);
         $categories = $this->categoryRepository->getLatestAll();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('category', 'categories', 'products'));
@@ -68,6 +66,7 @@ class HomeController extends Controller
     public function post()
     {
         $posts = Post::query()->get();
+
         return view('client.post', compact('posts'));
     }
     public function store(StorePostRequest $request)
@@ -75,6 +74,7 @@ class HomeController extends Controller
         $data = $request->except('image');
         $data['image'] = $request->input('image');
         $post = Post::create($data);
+        
         return redirect()->route('post');
     }
 }

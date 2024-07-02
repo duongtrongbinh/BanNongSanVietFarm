@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
                 'social_id' => '0',
                 'name' => 'Ben',
                 'avatar' => 'https://images.sftcdn.net/images/t_app-icon-m/p/6291b348-9b32-11e6-bf94-00163ec9f5fa/1046016500/talking-ben-logo.png',
-                'email' => 'admin1@gmail.com',
+                'email' => 'admin@gmail.com',
                 'phone' => '0123456789',
                 'password' => bcrypt('12345678'),
                 'remember_token' => Str::random(10),
