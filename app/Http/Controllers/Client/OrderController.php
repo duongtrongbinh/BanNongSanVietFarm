@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Enums\OrderStatus;
+use App\Enum\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
@@ -82,31 +82,5 @@ class OrderController extends Controller
        $detail = $request->input('address').','.$request->input('ward').','.  $request->input('district').','.$request->input('ward');
        $request->merge(['address' => $detail]);
        $create = $this->orderRepository->create($request->toArray());
-       // create thành công
-
-   }
-
-   public function provinces(Request $request)
-   {
-       $districts = Provinces::with('district.ward')->find($request->input('province_id'));
-
-       $array = [
-           'status' => true,
-           'data' => $districts,
-       ];
-       return response()->json($array,200);
-   }
-
-   public function district( Request $request)
-   {
-
-       $wards = District::with('ward')->find($request->input('district_id'));
-
-       $array = [
-           'status' => true,
-           'data' => $wards,
-       ];
-       return response()->json($array,200);
-
    }
 }

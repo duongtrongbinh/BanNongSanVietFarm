@@ -6,11 +6,12 @@
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-        <li class="breadcrumb-item active">Add supplier</li>
+        <li class="breadcrumb-item"><a href="{{ route('supplier.index')}}">List Supplier</a></li>
+        <li class="breadcrumb-item active">Update supplier</li>
       </ol>
     </nav>
   </div>
-<div class="container-fuild" style="height: 100vh; padding: 15px 20px; background: #f8f5f5">
+<div class="container-fuild" style="height: 100vh; padding: 15px 20px; background: #fff;border: none;border-radius: 10px">
   <div class="row mb-5">
     <form method="POST" action="{{ route('supplier.update', $supplier->id)}}">  
       @csrf

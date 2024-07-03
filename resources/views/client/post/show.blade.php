@@ -43,6 +43,20 @@
         max-width: 100%;
     }
 </style>
+@php
+    $totalRatting = 0;
+    $totalCount = count($post->comments);
+
+    foreach ($post->comments as $comment) {
+        $totalRatting += $comment->ratting;
+    }
+    $averageRatting = $totalCount > 0 ? $totalRatting / $totalCount : 0;
+@endphp
+ @php
+    $fullStars = floor($averageRatting); // Số sao nguyên
+    $halfStar = ceil($averageRatting - $fullStars); // Số sao nửa
+    $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+@endphp
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
@@ -57,31 +71,15 @@
             <div class="row g-4 mb-5 justify-content-center">
                 <div class="col-lg-12">
                     <div class="col-lg-12 d-flex justify-content-center">
-                        <img src="{{ asset($post->image) }}" class="d-block w-100" alt="...">
+                        <img src="{{ $post->image }}" class="" alt="...">
                     </div>
                 </div>
                 <div class="col-lg-12">
                     <h1 class="fw-bold mb-3">{{ $post->title }}</h1>
-                    <div class="d-flex mb-4">
-                    </div>
-                    <h5 class="mb-4">{{ $post->description }}</h5>
-                    @php
-                        $totalRatting = 0;
-                        $totalCount = count($post->comments);
-
-                        foreach ($post->comments as $comment) {
-                            $totalRatting += $comment->ratting;
-                        }
-                        $averageRatting = $totalCount > 0 ? $totalRatting / $totalCount : 0;
-                    @endphp
+                    <div  class="mb-4">
+                        <h5>{{ $post->description }}</h5>
                     <div class="d-flex mb-4 align-items-center">
                         <div class="me-2">
-                            @php
-                                $fullStars = floor($averageRatting); // Số sao nguyên
-                                $halfStar = ceil($averageRatting - $fullStars); // Số sao nửa
-                                $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
-                            @endphp
-
                             @for ($i = 1; $i <= $fullStars; $i++)
                                 <i class="fa fa-star text-secondary" data-ratting="{{ $i }}"></i>
                             @endfor
@@ -96,6 +94,10 @@
                             @endfor
                         </div>
                         <p class="mb-0">{{ number_format($averageRatting, 1) }}</p>
+                    </div>
+                    </div>
+                    <div>
+                        {!! $post->content !!}
                     </div>
                 </div>
                 <div class="col-lg-12">

@@ -73,7 +73,6 @@ class ProductController extends Controller
         $tag_ids = $request->input('tags', []);
         $product->tags()->attach($tag_ids);
 
-
         return redirect()
             ->route('products.index')
             ->with('status', 'Success');

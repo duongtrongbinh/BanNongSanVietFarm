@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('note', 255)->nullable();
             $table->tinyInteger('status')->default(OrderStatus::PENDING);
             $table->string('order_code', 255);
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

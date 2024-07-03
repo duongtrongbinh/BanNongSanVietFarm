@@ -127,32 +127,6 @@
                                     </tr>
                                   @endforeach
                                 @endif
-
-{{--                                <tr>--}}
-{{--                                    <th scope="row">--}}
-{{--                                    </th>--}}
-{{--                                    <td class="py-5"></td>--}}
-{{--                                    <td class="py-5">--}}
-{{--                                        <p class="mb-0 text-dark py-3">Tạm tính</p>--}}
-{{--                                        <div class="py-3 border-bottom border-top">--}}
-{{--                                            <p class="mb-0 text-dark">{{ number_format($total) }}</p>--}}
-{{--                                        </div>--}}
-{{--                                    </td>--}}
-{{--                                    <td class="py-5">--}}
-{{--                                        <p class="mb-0 text-dark py-3">Phí vận chuyển</p>--}}
-{{--                                        <div class="py-3 border-bottom border-top">--}}
-{{--                                            <p class="mb-0 text-dark" id="service_fee">0đ</p>--}}
-{{--                                        </div>--}}
-{{--                                    </td>--}}
-{{--                                    <td class="py-5"></td>--}}
-{{--                                    <td class="py-5">--}}
-{{--                                        <p class="mb-0 text-dark py-3">Tổng tiền</p>--}}
-{{--                                        <div class="py-3 border-bottom border-top">--}}
-{{--                                            <p class="mb-0 text-dark" id="total_cart" data-total="{{ $total }}">{{ number_format($total) }}</p>--}}
-{{--                                        </div>--}}
-{{--                                    </td>--}}
-{{--                                </tr>--}}
-
                                 </tbody>
                             </table>
                         </div>
@@ -210,7 +184,6 @@
         </div>
         @section('scripts')
             <script>
-
                     document.addEventListener("DOMContentLoaded", function() {
                     @if(session('error'))
                     alert('{{ session('error') }}');

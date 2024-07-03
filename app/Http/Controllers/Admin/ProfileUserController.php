@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +14,7 @@ class ProfileUserController extends Controller
     {
         return view('admin.profile.index');
     }
+
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -30,10 +29,12 @@ class ProfileUserController extends Controller
         $user->update($data);
         return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');
     }
+
     public function showChangePasswordForm()
     {
         return view('admin.profile.change_password');
     }
+
     public function changePassword(Request $request)
     {
         $user = Auth::user();
