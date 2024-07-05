@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Services;
 
+use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
+use App\Jobs\SendOrderToGHN;
 use App\Models\Order;
 use App\Models\Product;
 use Carbon\Carbon;
@@ -10,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use App\Enums\OrderStatus;
 class GHNService
 {
     protected $apiUrl;
@@ -24,27 +26,22 @@ class GHNService
         $this->shopId = env('GHN_SHOP_ID');
         $this->token = env('GHN_API_TOKEN');
     }
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $value = $this->fillterData($request->all());
-
         DB::beginTransaction();
-
         try {
             $order = $this->saveData($value, session('cart'));
-
             if ($request['payment_method'] == 'VNPAYQR') {
                 $order->status = OrderStatus::PENDING_PAYMENT;
                 $order->expires_at = Carbon::now()->addDay();
                 $order->save();
-
                 $url = $this->paymentVNPAY($value['after_total_amount'], $order->order_code);
                 $routeUrl = redirect()->away($url);
             } else {
                 SendOrderToGHN::dispatch($order, $value, session('cart'));
                 $routeUrl = redirect()->route('home');
             }
-
             DB::commit();
             session()->forget('cart');
             return $routeUrl;
@@ -116,7 +113,7 @@ class GHNService
         $data['shipping'] = session('service_fee');
         $data['before_total_amount'] = $totalAmount;
         $data['after_total_amount'] = $totalAmount + $data['shipping'];
-        $data['address_detail'] = $data['address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
+        $data['address_detail'] = $data['specific_address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
         return $data;
     }
     public function createOrderGHN($data,$items)
@@ -268,6 +265,9 @@ class GHNService
 
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
+            $data['payment_method'] = $data['payment_method'] ? 1 : 2;
+            $data['user_id'] = Auth::user()->id;
+            $data['address'] = $data['address_detail'];
             $order = Order::create($data);
             $products = [];
             foreach ($dataProducts as $id => $item) {
@@ -330,9 +330,9 @@ class GHNService
         $code = $request->input('vnp_TxnRef');
         if($dd == "00" ){
             $this->UpdateStatusOrder(OrderStatus::PREPARE,$code);
-            return redirect()->route('home');
+            return redirect()->route('checkout.success',$code);
         }else{
-            return redirect()->route('home');
+            return redirect()->route('checkout.success',$code);
         }
     }
 

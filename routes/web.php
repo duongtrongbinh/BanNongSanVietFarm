@@ -160,8 +160,11 @@ Route::group(['prefix' => ''], function (){
 
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
+//    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
     Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+
+    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {

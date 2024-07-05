@@ -33,7 +33,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="card-title flex-grow-1 mb-0">Đơn hàng #{{ $order->order_code }}</h5>
                         <div class="flex-shrink-0">
-                            
+
                         </div>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                                 @csrf
                                 @method('PUT')
                                 <select class="align-items-center" name="status">
-                                    @php use App\Enum\OrderStatus; @endphp
+                                    @php use App\Enums\OrderStatus; @endphp
                                     @foreach ([
                                         OrderStatus::PENDING,
                                         OrderStatus::PREPARE,
@@ -142,7 +142,7 @@
                                         @endif
                                     @endforeach
                                 </select>
-                                @error('status')    
+                                @error('status')
                                     <div style="color: red">{{ $message }}</div>
                                 @enderror
                                 <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
@@ -155,8 +155,8 @@
                 <div class="card-body">
                     <div class="profile-timeline">
                         <div class="accordion accordion-flush" id="accordionFlushExample">
-                            @foreach($order->order_histories as $order_history) 
-                                @foreach (OrderStatus::cases() as $status) 
+                            @foreach($order->order_histories as $order_history)
+                                @foreach (OrderStatus::cases() as $status)
                                     @if($order_history->status == $status->value)
                                         <div class="accordion-item border-0">
                                             <div class="accordion-header" id="headingOne">

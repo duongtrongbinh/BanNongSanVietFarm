@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Enum\OrderStatus;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
@@ -34,13 +34,8 @@ class OrderController extends Controller
 
    public function index()
    {
-       $orders = Order::where('user_id',Auth::user()->id);
-       $orderAll = Order::where('user_id',Auth::user()->id)->get();
-       $delivereds = $orders->where('status',OrderStatus::PENDING->value)->get();
-       $pickups = Order::where('status', OrderStatus::PREPARE->value)->get();
-       $returns = Order::where('status', OrderStatus::READY_TO_PICK->value)->get();
-       $cancelleds = Order::where('status', OrderStatus::PICKING->value)->get();
-       return view('client.order', compact('orderAll', 'delivereds', 'pickups', 'returns', 'cancelleds'));
+       $orderAll = Order::With('order_details')->where('user_id',Auth::user()->id)->get();
+       return view('client.order', compact('orderAll'));
    }
    public function create()
    {
@@ -62,25 +57,14 @@ class OrderController extends Controller
        $vouchers = $this->voucherRepository->getVoucherActive();
        return view('client.check-out',compact(['user','vouchers','provinces']));
    }
-   public function store(Request $request)
+   public function detail(Order $order)
    {
-
-       $request->validate([
-           'user_id' => 'required|integer|exists:users,id',
-           'voucher_id' => 'nullable|integer|exists:vouchers,id',
-           'name'=>'required|min:3',
-           'address' => 'required|min:5',
-           'ward' => 'required',
-           'city' => 'required',
-           'district' => 'required',
-           'before_total_amount' => 'required|numeric|min:0',
-           'shipping' => 'required|numeric|min:0',
-           'after_total_amount' => 'required|numeric|min:0',
-           'note' => 'string|max:1000',
-           'order_code' => 'required|string',
-       ]);
-       $detail = $request->input('address').','.$request->input('ward').','.  $request->input('district').','.$request->input('ward');
-       $request->merge(['address' => $detail]);
-       $create = $this->orderRepository->create($request->toArray());
+       $order = Order::with(['user', 'order_details', 'order_histories'])->find($order->id);
+       return view('client.order-detail', compact('order'));
+   }
+   public function success(string $code)
+   {
+       $order = Order::with('order_details')->where('order_code',$code)->first();
+       return view('thankyou', compact('order'));
    }
 }

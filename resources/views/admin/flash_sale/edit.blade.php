@@ -3,6 +3,9 @@
 @section('css')
     <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
 @endsection
+@php
+    $updated = session('updated');
+@endphp
 @section('content')
     <form action="{{ route('flash-sales.update', $flash_sale->id) }}" method="post" id="form">
         @csrf
@@ -114,108 +117,119 @@
             </div>
         </div>
     </form>
-    @section('js')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
-        <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script>
-        <script>
-            $(document).ready(function() {
-                // Select2 Multiple
-                $('.select2-multiple').select2({
-                    placeholder: "Select",
-                    allowClear: true
-                });
+@endsection
+@section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Select2 Multiple
+            $('.select2-multiple').select2({
+                placeholder: "Select",
+                allowClear: true
+            });
 
-                var form =  $('#form');
-                // Custom validator method to check if start_date is after or equal to the current date and time
-                // Custom validator method to check if start_date is after or equal to the current date and time
-                $.validator.addMethod("notPastDate", function(value, element) {
-                    var now = new Date();
-                    var inputDate = new Date(value);
-                    return inputDate >= now;
-                }, 'Start date must be equal to or later than the current date and time.');
+            let status = @json($updated);
+            let title = 'Sửa';
+            let message = status;
+            let icon = 'success';
+            if (status) {
+                showMessage(title, message, icon);
+            }
 
-                // Custom validator method for comparing dates
-                $.validator.addMethod("greaterThan", function(value, element, params) {
-                    if (!/Invalid|NaN/.test(new Date(value))) {
-                        return new Date(value) > new Date($(params).val());
+            var form =  $('#form');
+            // Custom validator method to check if start_date is after or equal to the current date and time
+            // Custom validator method to check if start_date is after or equal to the current date and time
+            $.validator.addMethod("notPastDate", function(value, element) {
+                var now = new Date();
+                var inputDate = new Date(value);
+                return inputDate >= now;
+            }, 'Start date must be equal to or later than the current date and time.');
+
+            // Custom validator method for comparing dates
+            $.validator.addMethod("greaterThan", function(value, element, params) {
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date($(params).val());
+                }
+                return isNaN(value) && isNaN($(params).val()) || (Number(value) > Number($(params).val()));
+            }, 'End date must be after start date.');
+
+            // Custom validator method for minimum discount
+            $.validator.addMethod("minDiscount", function(value, element) {
+                return parseInt(value) >= 100;
+            }, 'Discount must be at least 100.');
+
+            // Initialize form validation
+            form.validate({
+                rules: {
+                    start_date: {
+                        required: true,
+                        date: true,
+                        notPastDate: true
+                    },
+                    end_date: {
+                        required: true,
+                        date: true,
+                        greaterThan: "#start_date" // Custom rule for date comparison
+                    },
+                    "product[]": {
+                        required: true
                     }
-                    return isNaN(value) && isNaN($(params).val()) || (Number(value) > Number($(params).val()));
-                }, 'End date must be after start date.');
-
-                // Custom validator method for minimum discount
-                $.validator.addMethod("minDiscount", function(value, element) {
-                    return parseInt(value) >= 100;
-                }, 'Discount must be at least 100.');
-
-                // Initialize form validation
-                form.validate({
-                    rules: {
-                        start_date: {
-                            required: true,
-                            date: true,
-                            notPastDate: true
-                        },
-                        end_date: {
-                            required: true,
-                            date: true,
-                            greaterThan: "#start_date" // Custom rule for date comparison
-                        },
-                        "product[]": {
-                            required: true
-                        }
+                },
+                messages: {
+                    start_date: {
+                        required: "Start date is required",
+                        date: "Please enter a valid date",
+                        notPastDate: "Start date must be equal to or later than the current date and time"
                     },
-                    messages: {
-                        start_date: {
-                            required: "Start date is required",
-                            date: "Please enter a valid date",
-                            notPastDate: "Start date must be equal to or later than the current date and time"
-                        },
-                        end_date: {
-                            required: "End date is required",
-                            date: "Please enter a valid date",
-                            greaterThan: "End date must be after start date"
-                        },
-                        "product[]": {
-                            required: "Please select at least one product"
-                        }
+                    end_date: {
+                        required: "End date is required",
+                        date: "Please enter a valid date",
+                        greaterThan: "End date must be after start date"
                     },
-                    errorElement: 'small',
-                    errorClass: 'form-text text-danger',
-                    highlight: function(element) {
-                        $(element).closest('.form-group').addClass('has-error');
-                    },
-                    unhighlight: function(element) {
-                        $(element).closest('.form-group').removeClass('has-error');
-                    },
-                    errorPlacement: function(error, element) {
-                        if (element.attr("name") == "product[]") {
-                            error.appendTo("#errorProducts");
-                        } else {
-                            error.insertAfter(element);
-                        }
-                    },
-                    submitHandler: function(form) {
-                        if ($('#card-2').children().length === 0) {
-                            alert('Please add at least one product.');
-                            return false;
-                        } else {
-                            form.submit();
-                        }
+                    "product[]": {
+                        required: "Please select at least one product"
                     }
-                });
+                },
+                errorElement: 'small',
+                errorClass: 'form-text text-danger',
+                highlight: function(element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function(element) {
+                    $(element).closest('.form-group').removeClass('has-error');
+                },
+                errorPlacement: function(error, element) {
+                    if (element.attr("name") == "product[]") {
+                        error.appendTo("#errorProducts");
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                submitHandler: function(form) {
+                    if ($('#card-2').children().length === 0) {
+                        alert('Please add at least one product.');
+                        return false;
+                    } else {
+                        form.submit();
+                    }
+                }
+            });
 
-                // Handle create_products button click
-                $('#create_products').on('click', function() {
-                    var selectedProducts = $('#products').val();
-                    if (selectedProducts && selectedProducts.length > 0) {
-                        $.each(selectedProducts, function(index, value) {
-                            var parts = value.split(' - ');
-                            var id = parts[0];
-                            var name = parts[1];
-                            // Remove option from select
-                            $(".op-"+id).remove();
-                            // Create and append product UI
-                            var ui = `
+            // Handle create_products button click
+            $('#create_products').on('click', function() {
+                var selectedProducts = $('#products').val();
+                if (selectedProducts && selectedProducts.length > 0) {
+                    $.each(selectedProducts, function(index, value) {
+                        var parts = value.split(' - ');
+                        var id = parts[0];
+                        var name = parts[1];
+                        // Remove option from select
+                        $(".op-"+id).remove();
+                        // Create and append product UI
+                        var ui = `
                         <div class="row mt-5" id="row-${id}">
                             <div class="col-xl-3">
                                 <div class="form-group">
@@ -249,27 +263,26 @@
                                 </button>
                             </div>
                         </div>`;
-                            $('#card-2').append(ui);
-                            // Initialize validation for dynamically added fields
-                            form.validate().element(`#discount-${id}`);
-                            form.validate().element(`#quantity-${id}`);
-                        });
-                    } else {
-                        $('#errorProducts').text('Please select at least one product.');
-                    }
-                });
-
-                // Handle rollback product button click
-                $(document).on('click', '.rollback_product', function() {
-                    var id = $(this).data('id');
-                    var name =  $(this).data('name');
-                    // Remove product row
-                    $("#row-" + id).remove();
-                    // Add option back to select
-                    var ui = `<option class="op-${id}" value="${id} - ${name}">${name}</option>`;
-                    $('#products').append(ui)
-                });
+                        $('#card-2').append(ui);
+                        // Initialize validation for dynamically added fields
+                        form.validate().element(`#discount-${id}`);
+                        form.validate().element(`#quantity-${id}`);
+                    });
+                } else {
+                    $('#errorProducts').text('Please select at least one product.');
+                }
             });
-        </script>
-    @endsection
+
+            // Handle rollback product button click
+            $(document).on('click', '.rollback_product', function() {
+                var id = $(this).data('id');
+                var name =  $(this).data('name');
+                // Remove product row
+                $("#row-" + id).remove();
+                // Add option back to select
+                var ui = `<option class="op-${id}" value="${id} - ${name}">${name}</option>`;
+                $('#products').append(ui)
+            });
+        });
+    </script>
 @endsection

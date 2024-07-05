@@ -1,8 +1,7 @@
 @extends('admin.layout.master')
-@section('js')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('admin/assets/js/deleteAll/deleteSoft.js') }}"></script>
-@endsection
+@php
+    $created = session('created');
+@endphp
 @section('content')
     <div class="pagetitle">
         <h1>Flash Sales</h1>
@@ -82,5 +81,23 @@
             </div>
         </div>
     </section>
-
 @endsection
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            let status = @json($created);
+            console.log(status);
+            let title = 'Thêm mới';
+            let message = status;
+            let icon = 'success';
+
+            if (status) {
+                showMessage(title, message, icon);
+            }
+        });
+    </script>
+@endsection
+
+
