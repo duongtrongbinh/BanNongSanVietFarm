@@ -41,7 +41,7 @@
             <div class="overlay-panel overlay-right">
                 <h1>Chào bạn!</h1>
                 <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
-                <a href="{{ route('login') }}">
+                <a href="{{ route('clientlogin') }}">
                     <button class="ghost" id="signUp">Đăng nhập</button>
                 </a>
             </div>
@@ -74,7 +74,7 @@
                         alertBox.style.color = 'green';
                         // Redirect to login or update UI accordingly
                         setTimeout(() => {
-                            window.location.href = '{{ route('login') }}';
+                            window.location.href = '{{ route('clientlogin') }}';
                         }, 2000);
                     } else {
                         alertBox.style.color = 'red';

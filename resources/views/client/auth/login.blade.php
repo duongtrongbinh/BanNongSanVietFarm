@@ -18,7 +18,7 @@
         $created = session('created');
     @endphp
     <div class="form-container sign-in-container">
-        <form id="loginForm" action="{{ route('login') }}" method="post">
+        <form id="loginForm" action="{{ route('clientlogin') }}" method="post">
             @csrf
             <h1>Đăng nhập</h1>
             <div class="social-container">

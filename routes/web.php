@@ -27,8 +27,9 @@ use App\Http\Controllers\Admin\ProfileUserController;
 //use App\Http\Controllers\Admin\B;
 use App\Http\Controllers\client\ProfileUserController as ProfileUserClientController;
 use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\client\PostController as PostClientController;
+use App\Http\Controllers\client\PostClientController;
 use App\Http\Controllers\client\ForgotPasswordController;
+use App\Http\Controllers\client\CommentClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +55,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-
+    /* Route Login Admin */
     Route::get('login', [AuthController::class, 'index'])->name('login');
     Route::post('login', [AuthController::class, 'store'])->name('admin.login');
 
@@ -137,10 +138,8 @@ Route::group(['prefix' => ''], function () {
         Route::get('/product/{id}', 'product')->name('product');
         Route::get('/category/{id}', 'category')->name('category');
     });
-
     /* Route Rating */
-    Route::post('/rating', [CommentController::class, 'rating'])->name('rating');
-
+    Route::post('/rating', [CommentClientController::class, 'rating'])->name('rating');
     /* Route Shop */
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'shop')->name('shop');
@@ -149,7 +148,7 @@ Route::group(['prefix' => ''], function () {
     Route::resource('postclient', PostClientController::class);
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
     /* Route Cart */
-        Route::controller(CartController::class)->group(function () {
+    Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'index')->name('cart.index');
         Route::post('/add', 'addToCart')->name('cart.add');
         Route::get('/get-cart', 'getCart')->name('cart.getCart');
@@ -170,9 +169,9 @@ Route::group(['prefix' => ''], function () {
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
-        Route::post('register', 'register')->name('register');
-        Route::post('login', 'login');
-        Route::get('login', 'showLoginForm')->name('login');
+        Route::post('register', 'register');
+        Route::post('login', 'login')->name('clientlogin');
+        Route::get('login', 'showLoginForm')->name('clientlogin');
         Route::post('logout', 'logout')->name('logout');
         Route::get('actived/{user}/{token}', 'activated')->name('user.activated');
     });

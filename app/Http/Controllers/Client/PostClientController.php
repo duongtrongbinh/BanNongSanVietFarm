@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
-class PostController extends Controller
+class PostClientController extends Controller
 {
     public function index()
     {
