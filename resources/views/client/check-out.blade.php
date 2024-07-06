@@ -153,11 +153,7 @@
                             </div>
                         </div>
 
-                        <select class="form-select mt-5" aria-label="Default select example" name="voucher_id">
-                            @foreach($vouchers as $items)
-                                <option value="{{ $items->id }}" selected>{{ $items->title }}</option>
-                            @endforeach
-                        </select>
+                       
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">

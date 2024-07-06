@@ -249,4 +249,3 @@ Route::group(['prefix' => ''], function () {
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
-
