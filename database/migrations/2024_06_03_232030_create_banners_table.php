@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('title');
             $table->string('image', 255);
             $table->timestamps();
+            $table->boolean('is_home')->default(true);
+            $table->boolean('is_active')->default(true);
+            $table->softDeletes();
         });
     }
 

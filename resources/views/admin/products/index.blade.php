@@ -178,7 +178,6 @@
     <!--Delete js-->
     <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script type="text/javascript">
       $(document).ready(function() {
         $('#example').DataTable({
@@ -207,5 +206,5 @@
           XLSX.writeFile(wb, "products.xlsx");
         });
       });
-    </script> 
+    </script>
 @endsection

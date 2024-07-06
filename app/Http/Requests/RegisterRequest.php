@@ -32,8 +32,8 @@ class RegisterRequest extends FormRequest
         return [
             'name.required' => 'Tên không được để chống!',
             'email.required'=> 'email không được để chống!',
-            'email.email'   => 'email không được để chống!',
-            'email.unique'  => 'email không đúng định dạng!',
+            'email.email'   => 'email không đúng định dạng!',
+            'email.unique'  => 'email đã được tồn tại!',
             'password.required' => 'password không được để chống!',
             'password.min'  => 'password không được nhỏ hơn 8 ký tự'
         ];
