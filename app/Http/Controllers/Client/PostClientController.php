@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
-class PostController extends Controller
+class PostClientController extends Controller
 {
     public function index()
     {
@@ -14,7 +14,10 @@ class PostController extends Controller
             ->withAvg('comments as average_ratting', 'ratting')
             ->orderByDesc('id')
             ->paginate(10);
-        return view('client.post.index',compact('post'));
+
+        // Tính tổng số bình luận
+        $totalComments = $post->sum('comment_count');
+        return view('client.post.index', compact('post', 'totalComments'));
     }
     public function show($id)
     {

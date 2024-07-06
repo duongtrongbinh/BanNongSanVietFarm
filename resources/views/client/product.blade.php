@@ -46,6 +46,11 @@
 
 </style>
 @section('content')
+    @if (session('error'))
+        <script>
+            alert("{{ session('error') }}");
+        </script>
+    @endif
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">{{ $product->name }}</h1>

@@ -18,12 +18,13 @@ return new class extends Migration
             $table->string('avatar', 255)->nullable();
             $table->string('email', 255);
             $table->string('phone', 20)->nullable();
-            $table->string('password', 255);
+            $table->string('password', 255)->nullable();
             $table->string('remember_token', 255)->nullable();
-            $table->string('user_code', 255);
+            $table->string('user_code', 255)->nullable();
             $table->tinyInteger('type_social')->default(0)->comment('0: Unsocial, 1: Google');
             $table->boolean('active')->default(0);
             $table->boolean('status')->default(false);
+            $table->string('token', 50)->nullable();
             $table->string('address', 255)->nullable();
             $table->foreignId('province_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('district_id')->nullable()->constrained()->onDelete('cascade');
