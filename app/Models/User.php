@@ -21,6 +21,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'phone',
+        'user_code',
         'address',
         'social_id',
         'name_avatar',
