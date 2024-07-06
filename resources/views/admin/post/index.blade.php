@@ -117,7 +117,7 @@
                                                     </li>
                                                     <li class="list-inline-item" data-bs-toggle="tooltip"
                                                         data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                        <a data-url="{{ route('post.destroy', $row) }}"
+                                                        <a data-url="{{ route('post.destroy', $row->id) }}"
                                                            class="btn btn-danger btn-sm deletepost">
                                                             <i class="ri-delete-bin-5-fill fs-16"></i>
                                                         </a>
@@ -147,8 +147,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
+
     <!--Delete js-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#table1').DataTable();
+            $('#table2').DataTable();
+            $('#table3').DataTable();
+            $('#table4').DataTable();
+        });
+        new DataTable("#example");
 
+    </script>
 @endsection

@@ -76,12 +76,13 @@
                                         </a>
                                         <input id="thumbnail" class="form-control" type="hidden" name="avatar" value="{{ old('avatar', $user->avatar) }}">
                                     </div>
-                                    <div id="holder" style="margin-top: 15px; max-height: 100px;"></div>
-
-                                    <!-- Kiểm tra và hiển thị lỗi cho image -->
-                                    @if($errors->has('avatar'))
-                                        <span class="text-danger">{{ $errors->first('avatar') }}</span>
-                                    @endif
+                                    <div class="input-group">
+                                        @if ($user->avatar)
+                                            <img src="{{ asset($user->avatar) }}" width="80px">
+                                        @else
+                                            <span class="text-muted">Không có ảnh</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 

@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-8">
                     <div class="row">
-                        <div class="col-9" style=" justify-items: center">
+                        <div class="col-12" style=" justify-items: center">
                             <div class="form-group mb-3">
                                 <label for="select2Multiple" class="mb-1">Chọn sản phẩm</label>
                                 <select class="select2-multiple form-select" name="product_id[]" multiple="multiple" id="select2Multiple" class="pro">
@@ -31,12 +31,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-3 d-flex" style="justify-content: center; justify-items: center">
-                            <button type="button" class="btn btn-primary" style="margin: 18px" id="addProductButton">Add Product</button>
-                        </div>
+
                     </div>
                     <div class="row">
                         <div class="card" style="height: 100vh">
+                            <div class="card-header">
+                                <div class="d-flex" style=" justify-items: center">
+                                    <button type="button" class="btn btn-primary" style="margin: 5px 0" id="addProductButton">Add Product</button>
+                                </div>
+                            </div>
                             <div class="card-body mt-5">
                                 <table class="table table-striped datatableProduct" >
                                     <thead>
@@ -48,22 +51,14 @@
                                             <th>Giá Vốn</th>
                                             <th>Quantity</th>
                                             <th>Đơn Giá</th>
+                                            <th>Ngày Hết Hạn</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="productTableBody">
-                                        <tr>
-                                            <td>1</td>
-                                            <td>
-                                                <img width="100px" src="/storage/photos/1/1651142929079.jpg" class="img-fluid" alt="">
-                                            </td>
-                                            <td>Name</td>
-                                            <td>ĐVT</td>
-                                            <td>Giá Vốn</td>
-                                            <td>Quantity</td>
-                                            <td>Đơn Giá</td>
-                                            <td>
-                                            <a  class='btn btn-danger btn-sm deleteSupplier'>Delete</a>
+                                        <tr class='text-center'>
+                                            <td colspan="9">
+                                                No Data
                                             </td>
                                         </tr>
                                     </tbody>
@@ -222,7 +217,17 @@ function formatCurrencyVND(amount) {
             });
             cellUnitPrice.appendChild(inputUnitPrice);
 
-            var cellAction = newRow.insertCell(7);
+            var cellDate = newRow.insertCell(7);
+            var inputDate = document.createElement('input');
+            inputDate.type = 'date';
+                    inputDate.addEventListener('change', function() {
+            productDataInput.value = getProductData();
+            });
+            inputDate.classList.add('form-control');
+            cellDate.appendChild(inputDate);
+
+
+            var cellAction = newRow.insertCell(8);
             var deleteButton = document.createElement('button');
             deleteButton.textContent = 'Delete';
             deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
@@ -247,7 +252,8 @@ function formatCurrencyVND(amount) {
             var productId = products.find(p => p.name === rows[i].cells[2].textContent).id;
             var quantity = Number(rows[i].cells[5].querySelector('input').value);
             var unit = rows[i].cells[3].textContent;
-            productData.push({ product_id: productId, quantity: quantity, type_unit: unit });
+            var date = rows[i].cells[7].querySelector('input').value;
+            productData.push({ product_id: productId, quantity: quantity, type_unit: unit, end_date: date });
         }
 
         return JSON.stringify(productData);

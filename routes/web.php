@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -7,7 +8,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Client\AuthController as AuthClientController;
+use App\Http\Controllers\Client\AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
@@ -22,8 +23,12 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\ProfileUserController;
+
+//use App\Http\Controllers\Admin\B;
 use App\Http\Controllers\client\ProfileUserController as ProfileUserClientController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\client\PostController as PostClientController;
+use App\Http\Controllers\client\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +62,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::put('/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
     Route::get('/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
     Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
+
     Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
 
     /* Route Brand */
@@ -70,7 +76,8 @@ Route::group(['prefix' => 'admin'], function () {
     /* Route Product */
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
-
+    /* Route Banner */
+    Route::resource('banners', BannerController::class);
     /* Route Product */
     Route::resource('products', ProductController::class);
     Route::delete('products/{id}', [ProductController::class, 'delete'])
@@ -93,20 +100,20 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('purchases/import', [PurchaseReceiptController::class, 'import'])
         ->name('purchases.import');
     /* Route Voucher */
-    Route::resource('vouchers',VoucherController::class);
-    Route::get('adeleted/vouchers',[VoucherController::class,'deleted'])
+    Route::resource('vouchers', VoucherController::class);
+    Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
         ->name('vouchers.deleted');
-    Route::post('restore/vouchers/{id}',[VoucherController::class,'restore'])
+    Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
         ->name('restore.vouchers');
 
     /* Route Flash Sale */
-    Route::resource('flash-sales',FlashSaleController::class);
+    Route::resource('flash-sales', FlashSaleController::class);
 
     /* Route Order */
-    Route::resource('orders',OrderController::class);
+    Route::resource('orders', OrderController::class);
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
-    Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
+    Route::get('/bill/return', [GHNService::class, 'pay_return'])->name('bill.return');
 
     /* Route Post */
     Route::resource('post', PostController::class);
@@ -124,13 +131,11 @@ Route::group(['prefix' => 'admin'], function () {
 
 /* Route Client */
 /* Route Home */
-Route::group(['prefix' => ''], function (){
+Route::group(['prefix' => ''], function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
         Route::get('/product/{id}', 'product')->name('product');
         Route::get('/category/{id}', 'category')->name('category');
-        Route::get('/post', 'post')->name('post');
-        Route::post('/post', 'store')->name('post.store');
     });
 
     /* Route Rating */
@@ -144,7 +149,7 @@ Route::group(['prefix' => ''], function (){
     Route::resource('postclient', PostClientController::class);
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
     /* Route Cart */
-    Route::controller(CartController::class)->group(function () {
+        Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'index')->name('cart.index');
         Route::post('/add', 'addToCart')->name('cart.add');
         Route::get('/get-cart', 'getCart')->name('cart.getCart');
@@ -158,19 +163,27 @@ Route::group(['prefix' => ''], function (){
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
-    Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
-    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
-    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+    Route::get('/order', [OrderClientController::class, 'index'])->name('order.index');
+    Route::get('/check-out', [OrderClientController::class, 'create'])->name('checkout');
+    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
         Route::post('register', 'register')->name('register');
-        Route::get('login', 'showLoginForm')->name('login');
         Route::post('login', 'login');
+        Route::get('login', 'showLoginForm')->name('login');
         Route::post('logout', 'logout')->name('logout');
+        Route::get('actived/{user}/{token}', 'activated')->name('user.activated');
     });
 
+    /*  Route ForgotPasswordController*/
+    Route::controller(ForgotPasswordController::class)->group(function () {
+        Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+        Route::get('reset-password/{user}/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('reset-password/{user}/{token}', [ForgotPasswordController::class, 'reset']);
+    });
     /* Route Auth Google */
     Route::controller(GoogleLoginController::class)->group(function () {
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');

@@ -82,10 +82,10 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                    <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle w-100" >
                       <thead>
                           <tr>
-                              <th>STT</th>
+                              <th>#</th>
                               <th>Ảnh</th>
                               <th>Tên</th>
                               <th>Thương hiệu</th>
@@ -157,7 +157,6 @@
                       </tbody>
                     </table>
                   </div>
-                    
                 </div>
             </div>
         </div><!--end col-->
@@ -173,13 +172,12 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.misn.j"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
     <!--Delete js-->
     <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script type="text/javascript">
       $(document).ready(function() {
         $('#example').DataTable({
@@ -208,5 +206,5 @@
           XLSX.writeFile(wb, "products.xlsx");
         });
       });
-    </script> 
+    </script>
 @endsection

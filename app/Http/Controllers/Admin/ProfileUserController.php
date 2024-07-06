@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +15,8 @@ class ProfileUserController extends Controller
     {
         return view('admin.profile.index');
     }
-    public function update(Request $request)
+
+    public function update(UpdateProfileRequest $request)
     {
         $user = Auth::user();
         $data = $request->except('avatar');
@@ -30,10 +30,12 @@ class ProfileUserController extends Controller
         $user->update($data);
         return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');
     }
+
     public function showChangePasswordForm()
     {
         return view('admin.profile.change_password');
     }
+
     public function changePassword(Request $request)
     {
         $user = Auth::user();

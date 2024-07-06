@@ -26,6 +26,13 @@ class Order extends Model
         'note',
         'status',
         'order_code',
+        'expires_at',
+    ];
+
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+        'status' => 'integer',
     ];
 
     public function order_details()
@@ -64,4 +71,3 @@ class Order extends Model
         return $this->hasMany(OrderHistory::class, 'order_id', 'id');
     }
 }
-

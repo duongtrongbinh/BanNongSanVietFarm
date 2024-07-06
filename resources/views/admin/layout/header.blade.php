@@ -165,7 +165,6 @@
           </ul><!-- End Messages Dropdown Items -->
 
         </li><!-- End Messages Nav -->
-
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                     <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="rounded-circle ">
@@ -182,7 +181,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.profile')}}">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -213,7 +212,6 @@
 
           </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
-
       </ul>
     </nav><!-- End Icons Navigation -->
 

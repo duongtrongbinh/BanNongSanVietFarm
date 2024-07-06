@@ -1,15 +1,23 @@
 <?php
 return [
-    // [
-    //     'title' => '',
-    //     'subtitle' => [
-    //         [
-    //             'title' => 'Vouchers',
-    //             'icon' => 'ri-coupon-line',
-    //             'route' => 'vouchers.index',
-    //         ],
-    //     ],
-    // ],
+    [
+        'title' => 'banners',
+        'icon' => 'bi bi-image-fill',
+        'subtitle' => [
+          [
+              'title' => 'Danh sách banners',
+              'icon' => 'bi bi-list-nested',
+              'route' => 'banners.index',
+              'name' => 'banners',
+          ],
+            [
+                'title' => 'Thêm banners',
+                'icon' => 'bi bi-building-add',
+                'route' => 'banners.create',
+                'name' => 'banners',
+            ],
+        ],
+    ],
     [
         'title' => 'Quản lý sản phẩm',
         'icon' => 'bi bi-box-seam',
@@ -18,26 +26,31 @@ return [
                 'title' => 'Danh sách sản phẩm',
                 'icon' => 'bi bi-card-list',
                 'route' => 'products.index',
+                'name' => 'products',
             ],
             [
                 'title' => 'Thương hiệu',
                 'icon' => 'bi bi-award',
                 'route' => 'brands.index',
+                'name' => 'brands',
             ],
             [
                 'title' => 'Danh mục',
                 'icon' => 'bi bi-list-task',
                 'route' => 'categories.index',
+                'name' => 'categories',
             ],
             [
-                'title' => 'Đánh giá sản phẩm',
+                'title' => 'Đánh giá',
                 'icon' => 'bi bi-chat-dots',
-                'route' => 'comment.index',
+                'route' => 'rate.index',
+                'name' => 'rate',
             ],
             [
                 'title' => 'Tag',
                 'icon' => 'bi bi-tag',
                 'route' => 'tags.index',
+                'name' => 'tags',
             ],
         ],
     ],
@@ -46,17 +59,23 @@ return [
         'icon' => 'bi bi-stickies',
         'subtitle' => [
             [
-                'title' => 'Đánh giá bài viết',
-                'icon' => 'bi bi-chat-dots',
-                'route' => 'post.index',
-            ],
-
-            [
-                'title' => 'Thêm mới bài viết',
+                'title' => 'Danh sách bài viết',
                 'icon' => 'bi bi-file-earmark',
-                'route' => 'post.create',
+                'route' => 'post.index',
+                'name' => 'post',
             ],
-
+            [
+                'title' => 'Tạo bài viết',
+                'icon' => 'bi bi-building-add',
+                'route' => 'post.create',
+                'name' => 'post',
+            ],
+            [
+                'title' => 'Bình luận',
+                'icon' => 'bi bi-chat-dots',
+                'route' => 'comment.index',
+                'name' => 'comment',
+            ],
         ],
     ],
     [
@@ -67,11 +86,13 @@ return [
                 'title' => 'Danh sách khách hàng',
                 'icon' => 'bi bi-people',
                 'route' => 'user.index',
+                'name' => 'user',
             ],
             [
                 'title' => 'Thêm khách hàng',
                 'icon' => 'bi bi-person-add',
                 'route' => 'user.create',
+                'name' => 'user',
             ],
         ],
     ],
@@ -83,11 +104,13 @@ return [
                 'title' => 'Nhà cung cấp',
                 'icon' => 'bi bi-house-add',
                 'route' => 'supplier.index',
+                'name' => 'supplier',
             ],
             [
                 'title' => 'Phiếu nhập hàng',
                 'icon' => 'bi bi-receipt',
                 'route' => 'purchase_receipt.index',
+                'name' => 'purchase_receipt',
             ],
         ],
     ],
@@ -99,6 +122,7 @@ return [
                 'title' => 'Danh sách đơn hàng',
                 'icon' => 'bi bi-inboxes',
                 'route' => 'orders.index',
+                'name' => 'orders',
             ],
         ],
     ],
@@ -110,6 +134,7 @@ return [
                 'title' => 'Danh sách Flash Sale',
                 'icon' => 'bi bi-activity',
                 'route' => 'flash-sales.index',
+                'name' => 'flash-sales',
             ],
         ],
     ],

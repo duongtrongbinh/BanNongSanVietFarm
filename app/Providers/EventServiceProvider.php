@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+          \Illuminate\Queue\Events\JobFailed::class => [
+        \App\Listeners\NotifyUserOfFailedJob::class,
+          ]
     ];
 
     /**

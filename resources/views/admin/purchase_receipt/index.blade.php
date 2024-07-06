@@ -6,9 +6,6 @@
 <div class="pagetitle">
     <div class="d-flex" style="justify-content: space-between">
       <h1>Dashboard</h1>
-        <div>
-            <a class="btn btn-outline-success pr-3" href="{{ route('purchase_receipt.create') }}">Add</a>  
-        </div>
     </div>
 
     <nav >
@@ -21,6 +18,40 @@
   </div>
 
 <div class="card" style="height: 100vh">
+                  <div class="card-header border-0 d-flex" >
+                    <div class="me-3">
+                        <a class="btn btn-outline-success pr-3" href="{{ route('purchase_receipt.create') }}">Add</a>  
+                    </div>
+                  <div class="row align-items-center gy-3">
+                      <div class="col-sm-auto">
+                          <div class="d-flex gap-1 flex-wrap">
+                              <!-- Basic Modal -->
+                              <button type="submit" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#basicModal">
+                                <i class="ri-file-download-line align-bottom me-1"></i> Nhập
+                              </button>
+                              <div class="modal fade" id="basicModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <form action="{{ route('purchases.import') }}" method="post" enctype="multipart/form-data">
+                                      @csrf
+                                      <div class="modal-header">
+                                        <h4>Nhập file nhập hàng</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <input type="file" name="purchase_file" >
+                                      </div>
+                                      <div class="modal-footer justify-content-center">
+                                        <button type="submit" class="btn btn-primary">Nhập</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
     <div class="card-body mt-5">
       <table class="table table-striped datatableProduct" >
         <thead>

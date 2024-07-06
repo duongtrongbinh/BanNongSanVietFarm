@@ -6,25 +6,33 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\District;
+use App\Models\Ward;
 class ProfileUserController extends Controller
 {
-    public function profile()
+    const token = '29ee235a-2fa2-11ef-8e53-0a00184fe694';
+    const url = 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province';
+    public function profile(Request $request)
     {
-        return view('client.profile.index');
+        $headers = [
+            'Content-Type' => 'application/json',
+            'token'=>self::token,
+        ];
+        $response = Http::withHeaders($headers)->get(self::url);
+        if ($response->successful()) {
+            $provinces = $response->json();
+        }else{
+            $provinces = null;
+            dd('error system');
+        }
+        return view('client.profile.index',compact('provinces'));
     }
     public function update(Request $request)
     {
         $user = Auth::user();
         $data = $request->except('avatar');
-        if ($request->input('avatar')) {
-            if ($user->avatar) {
-                $oldImagePath = str_replace(url('storage'), 'public', $user->avatar);
-                Storage::delete($oldImagePath);
-            }
-            $data['avatar'] = $request->input('avatar');
-        }
         $user->update($data);
         return redirect()->back()->with('success', 'Cập nhật hồ sơ thành công.');
     }
@@ -35,9 +43,7 @@ class ProfileUserController extends Controller
     public function changePassword(Request $request)
     {
         $user = Auth::user();
-
-        // Kiểm tra nếu người dùng đăng nhập bằng Google, không cho phép đổi mật khẩu
-        if ($user->social_id) { // Sử dụng social_id hoặc provider_id tùy vào cách bạn đã đặt
+        if ($user->social_id) {
             return redirect()->back()->with('error', 'Bạn không thể đổi mật khẩu khi đăng nhập bằng Google.');
         }
 
