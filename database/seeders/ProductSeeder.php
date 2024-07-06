@@ -26,6 +26,12 @@ class ProductSeeder extends Seeder
                     'tag_id' => rand(4, 6),
                 ],
             ]);
+
+            DB::table('related')->insert([
+                'product_id' => $product->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 }

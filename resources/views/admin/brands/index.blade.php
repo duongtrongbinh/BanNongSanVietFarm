@@ -8,6 +8,9 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 @endsection
+@php
+  $created = session('created');
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Danh sách thương hiệu</h1>
@@ -92,13 +95,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
   
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!--Delete js-->
   <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!--ShowMessage js-->
+  <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
 
   <script>
     $(document).ready(function() {
       $('#example').DataTable();
+
+      let status = @json($created);
+      let title = 'Thêm mới';
+      let message = status;
+      let icon = 'success';
+
+
+      if (status) {
+        showMessage(title, message, icon);
+      }
     });
   </script>
 @endsection

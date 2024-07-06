@@ -21,9 +21,9 @@
           </button>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
-                    <a href="{{ route('home') }}" class="nav-item nav-link active">Trang chủ</a>
-                    <a href="{{ route('shop') }}" class="nav-item nav-link">Cửa hàng</a>
-                    <a href="{{ route('postclient.index')}}" class="nav-item nav-link">Bài viết</a>
+                    <a href="{{ route('home') }}" class="nav-item nav-link @if(request()->routeIs('home')) active @endif">Trang chủ</a>
+                    <a href="{{ route('shop') }}" class="nav-item nav-link @if(request()->is('*category*') || request()->is('*product*') || request()->is('*shop*')) active @endif">Cửa hàng</a>
+                    <a href="#" class="nav-item nav-link">Bài viết</a>
                     <a href="#" class="nav-item nav-link">Liên hệ</a>
                     <a href="#" class="nav-item nav-link">Chính sách</a>
                 </div>

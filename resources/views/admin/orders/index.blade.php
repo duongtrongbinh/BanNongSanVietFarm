@@ -3,12 +3,26 @@
 @section('css')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-    <!--datatable responsive css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <style>
+        .update-status-div {
+            display: none; /* Ẩn phần tử ban đầu */
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-top: 1px solid #dee2e6;
+            justify-content: space-between; /* Flexbox alignment */
+            align-items: center; /* Flexbox alignment */
+            padding-left: 18%;
+            padding-right: 2%;
+        }
+    </style>
 @endsection
-
 @section('content')
     <div class="pagetitle">
       <h1>Danh sách đơn hàng</h1>
@@ -92,424 +106,213 @@
                                 Đơn hàng
                             </button>
                         </li>
-        
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
-                                <i class="ri-checkbox-circle-line me-1 align-bottom"></i> 
-                                Delivered
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">
+                                <i class="ri-loader-2-line me-1 align-bottom"></i> 
+                                Chờ xử lý
                             </button>
                         </li>
-        
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pickups">
-                                <i class="ri-truck-line me-1 align-bottom"></i> 
-                                Pickups 
-                                <span class="badge bg-danger align-middle ms-1">{{ $orders->where('status', 2)->count() }}</span>
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#prepare">
+                                <i class="ri-archive-2-fill me-1 align-bottom"></i> 
+                                Đang chuẩn bị
                             </button>
                         </li>
-        
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returns">
-                                <i class="ri-arrow-left-right-fill me-1 align-bottom"></i>
-                                Returns
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pendingPayment">
+                                <i class="ri-bank-card-fill me-1 align-bottom"></i> 
+                                Chờ thanh toán
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#successPayment">
+                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i> 
+                                Thanh toán thành công
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#readyToPick">
+                                <i class="ri-takeaway-fill me-1 align-bottom"></i> 
+                                Sẵn sàng lấy hàng
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
-                                <i class="ri-close-circle-line me-1 align-bottom"></i> 
-                                Cancelled
+                                <i class="ri-close-circle-fill me-1 align-bottom"></i> 
+                                Đơn hàng đã huỷ
                             </button>
                         </li>
                     </ul>
-                    <div class="tab-content pt-2">
-                        <!-- All Orders -->
-                        <div class="tab-pane fade show active all-orders" id="all-orders">
-                            <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th data-ordering="false">ID</th>
-                                        <th>Mã hóa đơn</th>
-                                        <th>Khách hàng</th>
-                                        <th>Số lượng sản phẩm</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Tổng tiền</th>
-                                        <th>Phương thức thanh toán</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chỉnh sửa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($orders as $key => $order)
+                    <form id="updateStatusForm" action="{{ route('orders.updateStatus') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                        <div class="tab-content pt-2">
+                            <!-- All Orders -->
+                            <div class="tab-pane fade show active all-orders" id="all-orders">
+                                <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%" 
+                                        data-url="{{ route('orders.all') }}">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                {{ $key }}
-                                            </td>
-                                            <td>
-                                                <a href="" class="fw-medium link-primary">{{ $order->order_code }}</a>
-                                            </td>
-                                            <td>
-                                                {{ $order->user->name }}
-                                            </td>
-                                            <td>
-                                                {{ count($order->order_details) }}
-                                            </td>
-                                            <td>
-                                                {{ $order->created_at }}
-                                            </td>
-                                            <td>{{ number_format($order->after_total_amount) }}đ</td>
-                                            <td>VNPAY</td>
-                                            <td>
-                                                @if ($order->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($order->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($order->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($order->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($order->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <ul class="list-inline hstack gap-2 mb-0">
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chi tiết">
-                                                        <a href="{{ route('orders.show', $order->id) }}" class="text-primary d-inline-block">
-                                                            <i class="ri-eye-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chỉnh sửa">
-                                                        <a href="{{ route('orders.edit', $order->id) }}" class="text-primary d-inline-block">
-                                                          <i class="ri-pencil-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-                                                        <a data-url="" class="text-danger d-inline-block deleteSlide">
-                                                          <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </td>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Số lượng sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Action</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Pending -->
+                            <div class="tab-pane fade pending pt-3" id="pending">
+                                <table id="table1" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.pending') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Prepare -->
+                            <div class="tab-pane fade prepare pt-3" id="prepare">
+                                <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.prepare') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Pending Payment -->
+                            <div class="tab-pane fade pendingPayment pt-3" id="pendingPayment">
+                                <table id="table3" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.pendingPayment') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Success Payment -->
+                            <div class="tab-pane fade successPayment pt-3" id="successPayment">
+                                <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.successPayment') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                             <!-- Ready To Pick -->
+                             <div class="tab-pane fade readyToPick pt-3" id="readyToPick">
+                                <table id="table5" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.readyToPick') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Cancelled -->
+                            <div class="tab-pane fade cancelled pt-3" id="cancelled">
+                                <table id="table6" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.cancelled') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
-                        <!-- Delivered -->
-                        <div class="tab-pane fade delivered pt-3" id="delivered">
-                            <table id="table1" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th data-ordering="false">ID</th>
-                                        <th>Mã hóa đơn</th>
-                                        <th>Khách hàng</th>
-                                        <th>Sản phẩm</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Tổng tiền</th>
-                                        <th>Phương thức thanh toán</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chỉnh sửa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($orders as $key => $delivered)
-                                        @if ($delivered->status == 3)
-                                            <tr>
-                                                <td>
-                                                    {{ $key }}
-                                                </td>
-                                                <td>
-                                                    <a class="fw-medium link-primary">{{ $delivered->order_code }}</a>
-                                                </td>
-                                                <td>
-                                                    {{ $delivered->user->name }}
-                                                </td>
-                                                <td>
-                                                    {{ count($delivered->order_details) }}
-                                                </td>
-                                                <td>
-                                                    {{ $delivered->created_at }}
-                                                </td>
-                                                <td>{{ number_format($delivered->after_total_amount) }}đ</td>
-                                                <td>VNPAY</td>
-                                                <td>
-                                                    @if ($delivered->status == 0)
-                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                    @elseif ($delivered->status == 1)
-                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                    @elseif ($delivered->status == 2)
-                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                    @elseif ($delivered->status == 3)
-                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                    @elseif ($delivered->status == 4)
-                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                    @else
-                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <ul class="list-inline hstack gap-2 mb-0">
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                            <a href="{{ route('orders.show', $delivered->id) }}" class="text-primary d-inline-block">
-                                                                <i class="ri-eye-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                                <i class="ri-pencil-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        <!-- End Bordered Tabs -->
+                        <div id="updateStatusDiv" class="update-status-div">
+                            <div>
+                                <p class="fw-bold">Đã chọn</p>
+                                <div class="d-flex align-items-center">
+                                    <p class="countOrders fs-3 fw-bold text-primary p-0"></p>
+                                    <p>đơn hàng</p>
+                                </div>
+                            </div>
+                            <button type="submit" id="updateStatusBtn" class="btn btn-primary" data-url="{{ route('orders.updateStatus') }}">Cập nhật trạng thái</button>
                         </div>
-
-                        <!-- Pickups -->
-                        <div class="tab-pane fade pickups pt-3" id="pickups">
-                            <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th data-ordering="false">ID</th>
-                                        <th>Mã hóa đơn</th>
-                                        <th>Khách hàng</th>
-                                        <th>Sản phẩm</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Tổng tiền</th>
-                                        <th>Phương thức thanh toán</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chỉnh sửa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($orders as $key => $pickup)
-                                        @if ($pickup->status == 2)
-                                            <tr>
-                                                <td>
-                                                    {{ $key }}
-                                                </td>
-                                                <td>
-                                                    <a href="" class="fw-medium link-primary">{{ $pickup->order_code }}</a>
-                                                </td>
-                                                <td>
-                                                    {{ $pickup->user->name }}
-                                                </td>
-                                                <td>
-                                                    {{ count($pickup->order_details) }}
-                                                </td>
-                                                <td>
-                                                    {{ $pickup->created_at }}
-                                                </td>
-                                                <td>{{ number_format($pickup->after_total_amount) }}đ</td>
-                                                <td>VNPAY</td>
-                                                <td>
-                                                    @if ($pickup->status == 0)
-                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                    @elseif ($pickup->status == 1)
-                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                    @elseif ($pickup->status == 2)
-                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                    @elseif ($pickup->status == 3)
-                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                    @elseif ($pickup->status == 4)
-                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                    @else
-                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <ul class="list-inline hstack gap-2 mb-0">
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                            <a href="{{ route('orders.show', $pickup->id) }}" class="text-primary d-inline-block">
-                                                                <i class="ri-eye-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                                <i class="ri-pencil-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Returns -->
-                        <div class="tab-pane fade returns pt-3" id="returns">
-                            <table id="table3" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th data-ordering="false">ID</th>
-                                        <th>Mã hóa đơn</th>
-                                        <th>Khách hàng</th>
-                                        <th>Sản phẩm</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Tổng tiền</th>
-                                        <th>Phương thức thanh toán</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chỉnh sửa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($orders as $key => $return)
-                                        @if ($return->status == 4)
-                                            <tr>
-                                                <td>
-                                                    {{ $key }}
-                                                </td>
-                                                <td>
-                                                    <a href="" class="fw-medium link-primary">{{ $return->order_code }}</a>
-                                                </td>
-                                                <td>
-                                                    {{ $return->user->name }}
-                                                </td>
-                                                <td>
-                                                    {{ count($return->order_details) }}
-                                                </td>
-                                                <td>
-                                                    {{ $return->created_at }}
-                                                </td>
-                                                <td>{{ number_format($return->after_total_amount) }}đ</td>
-                                                <td>VNPAY</td>
-                                                <td>
-                                                    @if ($return->status == 0)
-                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                    @elseif ($return->status == 1)
-                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                    @elseif ($return->status == 2)
-                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                    @elseif ($return->status == 3)
-                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                    @elseif ($return->status == 4)
-                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                    @else
-                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <ul class="list-inline hstack gap-2 mb-0">
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                            <a href="{{ route('orders.show', $return->id) }}" class="text-primary d-inline-block">
-                                                                <i class="ri-eye-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                                <i class="ri-pencil-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Cancelled -->
-                        <div class="tab-pane fade cancelled pt-3" id="cancelled">
-                            <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th data-ordering="false">ID</th>
-                                        <th>Mã hóa đơn</th>
-                                        <th>Khách hàng</th>
-                                        <th>Sản phẩm</th>
-                                        <th>Ngày đặt hàng</th>
-                                        <th>Tổng tiền</th>
-                                        <th>Phương thức thanh toán</th>
-                                        <th>Trạng thái</th>
-                                        <th>Chỉnh sửa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($orders as $key => $cancelled)
-                                        @if ($cancelled->status == 5)
-                                            <tr>
-                                                <td>
-                                                    {{ $key }}
-                                                </td>
-                                                <td>
-                                                    <a href="" class="fw-medium link-primary">{{ $cancelled->order_code }}</a>
-                                                </td>
-                                                <td>
-                                                    {{ $cancelled->user->name }}
-                                                </td>
-                                                <td>
-                                                    {{ count($cancelled->order_details) }}
-                                                </td>
-                                                <td>
-                                                    {{ $cancelled->created_at }}
-                                                </td>
-                                                <td>{{ number_format($cancelled->after_total_amount) }}đ</td>
-                                                <td>VNPAY</td>
-                                                <td>
-                                                    @if ($cancelled->status == 0)
-                                                        <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                    @elseif ($cancelled->status == 1)
-                                                        <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                    @elseif ($cancelled->status == 2)
-                                                        <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                    @elseif ($cancelled->status == 3)
-                                                        <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                    @elseif ($cancelled->status == 4)
-                                                        <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                    @else
-                                                        <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <ul class="list-inline hstack gap-2 mb-0">
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="View">
-                                                            <a href="{{ route('orders.show', $cancelled->id) }}" class="text-primary d-inline-block">
-                                                                <i class="ri-eye-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                                                            <a href="#showModal" data-bs-toggle="modal" class="text-primary d-inline-block edit-item-btn">
-                                                                <i class="ri-pencil-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                                                            <a class="text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder">
-                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- End Bordered Tabs -->
+                    </form>
                 </div>
             </div>
         </div><!--end col-->
@@ -524,22 +327,205 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!--Delete js-->
     <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--ShowMessage js-->
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
 
     <script>
         $(document).ready(function() {
-            $('#table0').DataTable();
-            $('#table1').DataTable();
-            $('#table2').DataTable();
-            $('#table3').DataTable();
-            $('#table4').DataTable();
+            var order_ids = [];
+            var selectedIds = {};
+            
+            function initializeDataTable(tableId) {
+                var table = $('#' + tableId).DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: $('#' + tableId).data('url'),
+                    autoWidth: false,
+                    columns: [
+                        { data: 'checked', name: 'checked', orderable: false, searchable: false },
+                        { data: 'stt', name: 'stt' },
+                        { data: 'order_code', name: 'order_code' },
+                        { data: 'user_name', name: 'user_name' },
+                        { data: 'order_details', name: 'order_details' },
+                        { data: 'created_at', name: 'created_at' },
+                        { data: 'after_total_amount', name: 'after_total_amount' },
+                        { data: 'payment', name: 'payment' },
+                        { data: 'status', name: 'status' },
+                        { data: 'action', name: 'action', orderable: false, searchable: false }
+                    ],
+                    drawCallback: function(settings) {
+                        var checkboxes = $('input[type="checkbox"]', '#' + tableId);
+                        checkboxes.each(function() {
+                            var checkbox = $(this);
+                            var id = checkbox.val();
+                            if (selectedIds[tableId] && selectedIds[tableId].indexOf(id) !== -1) {
+                                checkbox.prop('checked', true);
+                            }
+                        });
+
+                        $('#' + tableId + ' th:eq(0)').removeClass('sorting_asc');
+                    }
+                });
+
+                order_ids = [];
+                selectedIds[tableId] = [];
+
+                $('#' + tableId + ' .selectAll').on('click', function() {
+                    $('.selectAll').not(this).prop('checked', false);
+
+                    for (var key in selectedIds) {
+                        if (key !== tableId) {
+                            selectedIds[key] = [];
+                            $('input[type="checkbox"]', '#' + key).prop('checked', false);
+                        }
+                    }
+
+                    var checkboxes = $('input[type="checkbox"]', '#' + tableId).not(this);
+                    checkboxes.prop('checked', this.checked);
+                    updateSelectedIds(tableId);
+
+                    if (selectedIds[tableId].length > 0) {
+                        document.getElementById('updateStatusDiv').style.display = 'flex';
+                        $('.countOrders').text(selectedIds[tableId].length);
+                    } else {
+                        $('#updateStatusDiv').hide();
+                    }
+                });
+
+                $('#' + tableId + ' tbody').on('change', 'input[type="checkbox"]', function() {
+                    var checkbox = $(this);
+                    var isChecked = checkbox.prop('checked');
+                    var id = checkbox.val();
+
+                    if (!selectedIds[tableId]) {
+                        selectedIds[tableId] = [];
+                    }
+
+                    for (var key in selectedIds) {
+                        if (key !== tableId) {
+                            selectedIds[key] = [];
+                            $('input[type="checkbox"]', '#' + key).prop('checked', false);
+                        }
+                    }
+
+                    if (isChecked && selectedIds[tableId].indexOf(id) === -1) {
+                        selectedIds[tableId].push(id); 
+                        order_ids.push(id); 
+                    } else if (!isChecked && selectedIds[tableId].indexOf(id) !== -1) {
+                        // selectedIds[tableId].splice(selectedIds[tableId].indexOf(id), 1);
+                        // order_ids.splice(order_ids.indexOf(id), 1);
+                        var index = selectedIds[tableId].indexOf(id);
+                        if (index !== -1) {
+                            selectedIds[tableId].splice(index, 1);
+                        }
+                        order_ids.splice(order_ids.indexOf(id), 1);
+                    }
+
+                    if (selectedIds[tableId].length > 0) {
+                        document.getElementById('updateStatusDiv').style.display = 'flex';
+                        $('.countOrders').text(order_ids.length);
+                    } else {
+                        $('#updateStatusDiv').hide();
+                    }
+                });
+
+                function updateSelectedIds(tableId) {
+                    selectedIds[tableId] = [];
+                    order_ids = [];
+                    var checkboxes = $('input[type="checkbox"]:checked', '#' + tableId).not('.selectAll');
+                    checkboxes.each(function() {
+                        selectedIds[tableId].push($(this).val());
+                        order_ids.push($(this).val());
+                    });
+
+                    var uncheckedCheckboxes = $('input[type="checkbox"]:not(:checked)', '#' + tableId).not('.selectAll');
+                    uncheckedCheckboxes.each(function() {
+                        var idToRemove = $(this).val();
+                        var index = selectedIds[tableId].indexOf(idToRemove);
+                        if (index !== -1) {
+                            selectedIds[tableId].splice(index, 1); // Xóa ID khỏi selectedIds[tableId]
+                            order_ids.splice(order_ids.indexOf(idToRemove), 1); // Xóa ID khỏi order_ids
+                        }
+                    });
+                }
+            }
+
+            function reloadData(table) {
+                table.DataTable().ajax.reload(function() {
+                    $('.dataTables_paginate .paginate_button').each(function() {
+                        $(this).addClass('current');
+
+                        return false;
+                    });
+                }, false);
+            }
+
+            $('#updateStatusBtn').on('click', function() {
+                var form = document.getElementById('updateStatusForm');
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'order_ids';
+                input.value = JSON.stringify(order_ids);
+                form.appendChild(input);
+
+                let url = $(this).data("url");
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    data: {
+                        order_ids: JSON.stringify(order_ids)
+                    },
+                    success: function(response) {
+                        order_ids = [];
+                        selectedIds = {};
+
+                        $('.selectAll').prop('checked', false);
+                        $('#updateStatusDiv').hide();
+
+                        let title = 'Cập nhật';
+                        let message = response.message;
+                        let icon = 'success';
+                        showMessage(title, message, icon);
+
+                        var allTables = $.fn.dataTable.tables();
+
+                        for (let i = 0; i < allTables.length; i++) {
+                            reloadData($(allTables[i]));
+                        }
+                    },
+                    error: function(response) {
+                        let title = 'Lỗi';
+                        let message = 'Cập nhật trạng thái đơn hàng không thành công!';
+                        let icon = 'error';
+                        showMessage(title, message, icon);
+                    }
+                });
+
+                return false;
+            });
+
+            initializeDataTable('table0');
+            initializeDataTable('table1');
+            initializeDataTable('table2');
+            initializeDataTable('table3');
+            initializeDataTable('table4');
+            initializeDataTable('table5');
+            initializeDataTable('table6');
 
             $('#export').click(function() {
                 var table = document.getElementById("table0");

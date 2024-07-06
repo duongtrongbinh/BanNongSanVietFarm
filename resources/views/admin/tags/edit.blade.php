@@ -1,5 +1,8 @@
 @extends('admin.layout.master')
 @section('title', 'Chỉnh sửa nhãn')
+@php
+  $updated = session('updated');
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Chỉnh sửa nhãn</h1>
@@ -41,4 +44,23 @@
           </div>
         </div>
       </section>
+@endsection
+@section('js')
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!--ShowMessage js-->
+  <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
+  <script>
+    $(document).ready(function() {
+      let status = @json($updated);
+      let title = 'Cập nhật';
+      let message = status;
+      let icon = 'success';
+
+      if (status) {
+        showMessage(title, message, icon);
+      }
+    });
+  </script>
 @endsection

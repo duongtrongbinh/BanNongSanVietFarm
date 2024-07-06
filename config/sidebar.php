@@ -38,6 +38,12 @@ return [
                 'route' => 'products.index',
             ],
             [
+                'title' => 'Nhóm sản phẩm',
+                'icon' => 'bi bi-collection',
+                'route' => 'groups.index',
+                'name' => 'groups',
+            ],
+            [
                 'title' => 'Thương hiệu',
                 'icon' => 'bi bi-award',
                 'route' => 'brands.index',

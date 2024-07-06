@@ -1,5 +1,8 @@
 @extends('admin.layout.master')
 @section('title', 'Chỉnh sửa thương hiệu')
+@php
+  $updated = session('updated');
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Chỉnh sửa thương hiệu</h1>
@@ -65,7 +68,22 @@
 
 @section('js')
   <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
-  <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script> 
   <script src="{{ asset('admin/assets/js/product/addProduct.js')}}"></script>
-  <script src="/path-to-your-tinymce/tinymce.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!--ShowMessage js-->
+  <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
+  <script>
+    $(document).ready(function() {
+      let status = @json($updated);
+      let title = 'Cập nhật';
+      let message = status;
+      let icon = 'success';
+
+      if (status) {
+        showMessage(title, message, icon);
+      }
+    });
+  </script>
 @endsection

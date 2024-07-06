@@ -39,7 +39,7 @@ class TagController extends Controller
 
         return redirect()
             ->route('tags.index')
-            ->with('status', 'Success');
+            ->with('created', 'Thêm mới nhãn thành công!');
     }
 
     public function show(Tag $tag)
@@ -57,7 +57,7 @@ class TagController extends Controller
         $this->tagRepository->update($tag->id, $request->validated());
 
         return back()
-            ->with('status', 'Success');
+            ->with('updated', 'Cập nhật nhãn thành công!');
     }
 
     public function delete(Tag $tag)

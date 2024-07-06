@@ -86,17 +86,6 @@ class ProductsImport implements ToCollection, WithHeadingRow, WithChunkReading, 
         ];
     }
 
-    public function onFailure(Failure ...$failures)
-    {
-        foreach ($failures as $failure) {
-            $rowIndex = $failure->row();
-            $errors = $failure->errors();
-
-            Log::error('Row ' . $rowIndex . ' import failed: ' . json_encode($errors));
-            // Lưu lỗi để hiển thị sau này nếu cần thiết
-        }
-    }
-
     public function getErrors()
     {
         return $this->errors;
