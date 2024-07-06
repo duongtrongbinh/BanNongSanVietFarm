@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Repositories\CategoryRepository;
 use App\Http\Requests\CategoryCreateRequest;
 use App\Models\Category;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -37,7 +35,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('categories.index')
-            ->with('status', 'Success');
+            ->with('created', 'Thêm mới danh mục thành công');
     }
 
     public function show(Category $category)
@@ -55,7 +53,7 @@ class CategoryController extends Controller
         $this->categoryRepository->update($category->id, $request->all());
 
         return back()
-            ->with('status', 'Success');
+            ->with('updated', 'Cập nhật danh mục thành công');
     }
 
     public function delete(Category $category)

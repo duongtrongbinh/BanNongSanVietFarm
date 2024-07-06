@@ -151,13 +151,13 @@
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_active" value="{{ old('is_active')}}" id="flexSwitchCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" value="{{ old('is_active')}}" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
               </div>
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_home" value="{{ old('is_home')}}" id="flexSwitchCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" value="{{ old('is_home')}}" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Home</label>
               </div>
             </div>
@@ -174,16 +174,15 @@
   <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
   <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script> 
   <script src="{{ asset('admin/assets/js/product/addProduct.js')}}"></script>
-  <script src="path-to-your-tinymce/tinymce.min.js"></script>
+
   <script>
     $(document).ready(function() {
       // Select2 Multiple
-      $('.select2-multiple').select2({
+      $('#select2Multiple').select2({
         them: 'bootstrap-5',
-        placeholder: "Select",
+        placeholder: "Chọn sản phẩm",
         allowClear: true
       });
-
     });
   </script>
 @endsection

@@ -56,9 +56,9 @@ class DatabaseSeeder extends Seeder
         ];
         DB::table('users')->insert($users);
 
-        // $this->call(BrandSeeder::class);
-        // $this->call(CategorySeeder::class);
-        // $this->call(TagSeeder::class);
+        $this->call(BrandSeeder::class);
+        $this->call(CategorySeeder::class);
+        $this->call(TagSeeder::class);
 
         /**
          * Bước 2: Đăng nhập vào giao diện admin và vào import thêm sản phẩm.
@@ -67,9 +67,9 @@ class DatabaseSeeder extends Seeder
         /**
          * Bước 3: Comment đoạn seed ở bước 1 lại và chạy đoạn seed còn lại
         */
-            $this->call(ProductSeeder::class);
-            $this->call(ProductImageSeeder::class);
-            $this->call(VoucherSeeder::class);
-            $this->call(OrderSeeder::class);
+            // $this->call(ProductSeeder::class);
+            // $this->call(ProductImageSeeder::class);
+            // $this->call(VoucherSeeder::class);
+            // $this->call(OrderSeeder::class);
     }
 }

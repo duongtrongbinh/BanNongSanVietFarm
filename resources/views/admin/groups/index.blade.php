@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'Danh sách danh mục')
+@section('title', 'Nhóm sản phẩm')
 @section('css')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -12,11 +12,11 @@
 @endphp
 @section('content')
     <div class="pagetitle">
-      <h1>Danh sách danh mục</h1>
+      <h1>Danh sách nhóm sản phẩm</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
-          <li class="breadcrumb-item"><a href="{{ route('categories.index') }}" class="active">Danh mục</a></li>
+          <li class="breadcrumb-item"><a href="{{ route('groups.index') }}" class="active">Nhóm sản phẩm</a></li>
         </ol>
       </nav>
     </div>
@@ -29,7 +29,7 @@
               <div class="row align-items-center gy-3">
                   <div class="col-sm-auto">
                       <div class="d-flex gap-1 flex-wrap">
-                          <a href="{{ route('categories.create') }}" class="btn btn-success"><i class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
+                          <a href="{{ route('groups.create') }}" class="btn btn-success"><i class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
                       </div>
                   </div>
               </div>
@@ -40,28 +40,26 @@
                 <thead>
                   <tr>
                     <th>STT</th>
-                    <th>Tên</th>
-                    <th>Ghi chú</th>
-                    <th>Slug</th>
+                    <th>Tên nhóm</th>
+                    <th>Số lượng sản phẩm</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($categories as $key => $category)
+                  @foreach ($groups as $key => $group)
                     <tr>
                       <td>{{ $key + 1 }}</td>
-                      <td>{{ $category->name }}</td>
-                      <td>{{ $category->description }}</td>
-                      <td>{{ $category->slug }}</td>
+                      <td>{{ $group->name }}</td>
+                      <td>{{ count($group->products) }}</td>
                       <td>
                         <ul class="list-inline hstack gap-2 mb-0">
                           <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chỉnh sửa">
-                              <a href="{{ route('categories.edit', $category->id) }}" class="text-primary d-inline-block">
+                              <a href="{{ route('groups.edit', $group) }}" class="text-primary d-inline-block">
                                 <i class="ri-pencil-fill fs-16"></i>
                               </a>
                           </li>
                           <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-                              <a data-url="{{ route('categories.delete', $category->id) }}" class="text-danger d-inline-block deleteCategory">
+                              <a data-url="{{ route('groups.delete', $group) }}" class="text-danger d-inline-block deleteGroup">
                                 <i class="ri-delete-bin-5-fill fs-16"></i>
                               </a>
                           </li>
@@ -89,9 +87,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!--Delete js-->
   <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
 
@@ -111,5 +109,5 @@
         showMessage(title, message, icon);
       }
     });
-</script>
+  </script>
 @endsection

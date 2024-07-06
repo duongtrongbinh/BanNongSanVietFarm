@@ -69,6 +69,7 @@ class HomeController extends Controller
 
         return view('client.post', compact('posts'));
     }
+    
     public function store(StorePostRequest $request)
     {
         $data = $request->except('image');

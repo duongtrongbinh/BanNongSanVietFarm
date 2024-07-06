@@ -3,6 +3,9 @@
 @section('css')
   <link rel="stylesheet" href="{{ asset('admin/assets/vendor/select2/index.min.css')}}">
 @endsection
+@php
+  $updated = session('updated');
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Chỉnh sửa sản phẩm</h1>
@@ -196,6 +199,7 @@
             <div class="text-center mt-5">
               <button type="submit" class="btn btn-primary">Cập nhật</button>
               <button type="reset" class="btn btn-secondary">Hoàn tác</button>
+              <a href="{{ route('related.index', $product->id) }}" class="btn btn-success">Thêm sản phẩm liên quan</a>
             </div>
           </div>
         </form>
@@ -206,7 +210,11 @@
   <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
   <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script> 
   <script src="{{ asset('admin/assets/js/product/addProduct.js')}}"></script>
-  <script src="path-to-your-tinymce/tinymce.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!--ShowMessage js-->
+  <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
   <script>
     $(document).ready(function() {
       // Select2 Multiple
@@ -215,6 +223,15 @@
         placeholder: "Select",
         allowClear: true
       });
+
+      let status = @json($updated);
+      let title = 'Cập nhật';
+      let message = status;
+      let icon = 'success';
+
+      if (status) {
+        showMessage(title, message, icon);
+      }
     });
   </script>
 @endsection
