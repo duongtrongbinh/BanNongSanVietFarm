@@ -118,6 +118,10 @@
             });
 
         });
-
     </script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
+
+
 @endsection

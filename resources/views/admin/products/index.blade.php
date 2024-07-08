@@ -113,9 +113,9 @@
     <!--Delete js-->
     <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
 
+
     <!--ShowMessage js-->
     <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
-
     <script type="text/javascript">
       $(document).ready(function() {
         $('#productTable').DataTable({
@@ -185,3 +185,4 @@
       </script>
     @endif
 @endsection
+

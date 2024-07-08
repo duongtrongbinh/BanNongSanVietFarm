@@ -27,6 +27,7 @@ class StoreUserRequest extends FormRequest
             'password' => 'required|min:8',
             'phone' => 'required|unique:users,phone',
             'address' => 'required',
+            'avatar' => 'required|max:2048',
             'user_code'=> 'required|unique:users,user_code',
         ];
     }
@@ -46,6 +47,8 @@ class StoreUserRequest extends FormRequest
             'address.required' => 'address không được để chống',
             'user_code.required' => 'user code không được để chống',
             'user_code.unique' => 'user code đã được tồn tại',
+            'avatar.required' => 'Vui lòng chọn một hình ảnh.',
+            'avatar.max' => 'Hình ảnh không được lớn hơn 2MB.',
         ];
     }
 }

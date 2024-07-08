@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\User;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -12,9 +11,9 @@ class UpdateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        return true; // Ensure you have the appropriate authorization logic here
     }
 
     /**
@@ -22,15 +21,16 @@ class UpdateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         // Retrieve the user model from the route parameters
+        $userId = $this->user()->id;
 
         return [
-            'email' => 'required|email|unique:users,email,'.$this->id.',id',
             'name' => 'required',
-            'phone' => 'required|unique:users,phone,'.$this->id.',id',
-            'user_code' => 'required|unique:users,user_code,'.$this->id.',id',
+            'email' => 'required|email|unique:users,email,'.$userId,
+            'phone' => 'required|unique:users,phone,'.$userId,
+            'avatar' => 'nullable|max:2048',
             'address' => 'required',
         ];
     }
@@ -40,18 +40,17 @@ class UpdateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function messages(): array
+    public function messages()
     {
         return [
-            'name.required' => 'Tên không được để trống',
-            'email.required' => 'Email không được để trống',
-            'email.email' => 'Email không đúng định dạng',
-            'email.unique' => 'Email đã tồn tại',
-            'phone.required' => 'Số điện thoại không được để trống',
-            'phone.unique' => 'Số điện thoại đã tồn tại',
-            'address.required' => 'Địa chỉ không được để trống',
-            'user_code.required' => 'Mã người dùng không được để trống',
-            'user_code.unique' => 'Mã người dùng đã tồn tại',
+            'name.required' => 'Tên không được để trống.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã tồn tại.',
+            'phone.required' => 'Số điện thoại không được để trống.',
+            'phone.unique' => 'Số điện thoại đã tồn tại.',
+            'avatar.max' => 'Dung lượng của avatar không được lớn hơn 2MB.',
+            'address.required' => 'Địa chỉ không được để trống.',
         ];
     }
 }

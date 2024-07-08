@@ -70,17 +70,16 @@ class PostController extends Controller
 
         return redirect()->route('post.show', $post->id);
     }
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        // Kiểm tra và xóa hình ảnh nếu tồn tại
-        if ($post->image && Storage::exists($post->image)) {
-            Storage::delete($post->image);
+        $post = Post::findOrFail($id);
+        if ($post->image) {
+            $oldImagePath = str_replace(url('storage'), 'public', $post->image);
+            Storage::delete($oldImagePath);
         }
-        // Xóa bài viết
         $post->delete();
-        return redirect()->route('post.index')->with('thongbao', 'Bạn đã xóa thành công!');
+        return response()->json(true);
     }
-
     public function destroyComment($postId, $commentId)
     {
         $post = Post::findOrFail($postId);

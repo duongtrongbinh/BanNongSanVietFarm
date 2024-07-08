@@ -33,11 +33,13 @@
                                 <label for="name">Tên</label>
                                 <input type="text" name="name" id="name" class="form-control"
                                        value="{{ auth()->user()->name }}">
+                                {!! ShowError($errors,'name') !!}
                             </div>
                             <div class="form-group mb-3">
                                 <label for="email">Email</label>
                                 <input type="email" name="email" id="email" class="form-control"
                                        value="{{ auth()->user()->email }}">
+                                {!! ShowError($errors,'email') !!}
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label">Avatar</label>
@@ -51,8 +53,9 @@
                                 </div>
                                 <div id="holder" style="margin-top:15px;max-height:100px;">
                                     <img src="{{ auth()->user()->avatar }}" alt="Current Avatar" class="img-thumbnail"
-                                         style="max-height: 100px;">
+                                         style="max-height: 100px;" name="avatar">
                                 </div>
+                                {!! ShowError($errors,'avatar') !!}
                             </div>
                             <button type="submit" class="btn btn-primary">Cập Nhật Hồ Sơ</button>
                         </form>
