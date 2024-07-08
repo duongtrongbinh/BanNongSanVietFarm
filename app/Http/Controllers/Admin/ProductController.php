@@ -9,13 +9,15 @@ use App\Http\Repositories\BrandRepository;
 use App\Http\Repositories\CategoryRepository;
 use App\Http\Repositories\ProductImageRepository;
 use App\Http\Repositories\ProductRepository;
-use App\Http\Repositories\RelatedRepository;
+use App\Http\Repositories\ProductRelatedRepository;
 use App\Http\Repositories\TagRepository;
 use App\Http\Requests\ProductCreateRequest;
 use App\Http\Requests\ProductsImportRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductRelated;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -28,16 +30,16 @@ class ProductController extends Controller
     protected $categoryRepository;
     protected $tagRepository;
     protected $productImageRepository;
-    protected $relatedRepository;
+    protected $productRelatedRepository;
 
-    public function __construct(ProductRepository $productRepository, BrandRepository $brandRepository, CategoryRepository $categoryRepository, TagRepository $tagRepository, ProductImageRepository $productImageRepository, RelatedRepository $relatedRepository)
+    public function __construct(ProductRepository $productRepository, BrandRepository $brandRepository, CategoryRepository $categoryRepository, TagRepository $tagRepository, ProductImageRepository $productImageRepository, ProductRelatedRepository $productRelatedRepository)
     {
         $this->productRepository = $productRepository;
         $this->brandRepository = $brandRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
         $this->productImageRepository = $productImageRepository;
-        $this->relatedRepository = $relatedRepository;
+        $this->productRelatedRepository = $productRelatedRepository;
     }
 
     public function index()
@@ -102,13 +104,21 @@ class ProductController extends Controller
         ->make(true);
     }
 
+    public function getProduct(Request $request)
+    {
+        $products = Product::with(['brand', 'category', 'tags'])->find($request->id);
+
+        return response()->json($products);
+    }
+
     public function create()
     {
+        $products = $this->productRepository->getAll();
         $brands = $this->brandRepository->getAll();
         $categories = $this->categoryRepository->getAll();
         $tags = $this->tagRepository->getAll();
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('brands', 'categories', 'tags'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'brands', 'categories', 'tags'));
     }
 
     public function store(ProductCreateRequest $request)
@@ -130,8 +140,15 @@ class ProductController extends Controller
         $tag_ids = $request->input('tags', []);
         $product->tags()->attach($tag_ids);
 
-        $this->relatedRepository->create(['product_id' => $product->id]);
-
+        $product_ids = $request->input('products', []);
+        if (!empty($product_ids)) {
+            foreach ($product_ids as $product_related_id) {
+                $request['product_id'] = $product->id;
+                $request['product_related_id'] = $product_related_id;
+                $this->productRelatedRepository->createWithRelations($request->all(), ['product']);
+            }
+        }
+        
         return redirect()
             ->route('products.index')
             ->with('created', 'Thêm mới sản phẩm thành công!');
@@ -144,11 +161,14 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        $product = Product::with(['brand', 'category', 'tags', 'product_related.products'])->find($product->id);
+        $relatedProduct = $product->product_related;
+        $products = $this->productRepository->getAll();
         $brands = $this->brandRepository->getAll();
         $categories = $this->categoryRepository->getAll();
         $tags = $this->tagRepository->getAll();
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('product', 'brands', 'categories', 'tags'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product', 'relatedProduct', 'products', 'brands', 'categories', 'tags'));
     }
 
     public function update(ProductUpdateRequest $request, Product $product)
@@ -160,13 +180,14 @@ class ProductController extends Controller
         $request['image'] = $image;
         $product = $this->productRepository->updateWithRelations($product->id, $request->all(), ['brand', 'category']);
 
-        $newImages = $image_ids;
         $product_images = ProductImage::with(['product'])->where('product_id', $product->id)->get();
         if ($product_images != Null) {
             foreach ($product_images as $product_image) {
                 $this->productImageRepository->destroy($product_image->id);
             }
         }
+
+        $newImages = $image_ids;
         if (!empty($newImages)) {
             foreach ($newImages as $newImage) {
                 $request['product_id'] = $product->id;
@@ -177,6 +198,22 @@ class ProductController extends Controller
 
         $tag_ids = $request->input('tags', []);
         $product->tags()->sync($tag_ids);
+
+        $product_relateds = ProductRelated::with(['products'])->where('product_id', $product->id)->get();
+        if ($product_relateds != Null) {
+            foreach ($product_relateds as $product_related) {
+                $product_related->forceDelete();
+            }
+        }
+
+        $product_ids = $request->input('products', []);
+        if (!empty($product_ids)) {
+            foreach ($product_ids as $product_related_id) {
+                $request['product_id'] = $product->id;
+                $request['product_related_id'] = $product_related_id;
+                $this->productRelatedRepository->createWithRelations($request->all(), ['product']);
+            }
+        }
 
         return redirect()
             ->back()

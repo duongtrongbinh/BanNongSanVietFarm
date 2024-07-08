@@ -75,6 +75,7 @@ Route::group(['prefix' => 'admin'], function () {
     /* Route Product */
     Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
     Route::resource('products', ProductController::class);
+    Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
     Route::delete('products/{id}', [ProductController::class, 'delete'])
         ->name('products.delete');
     Route::get('export', [ProductController::class, 'export'])
@@ -84,14 +85,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Product Group */
     Route::resource('groups', GroupController::class);
-    Route::get('/get-product', [GroupController::class, 'getProduct'])->name('getProduct');
+    Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
-        ->name('groups.delete');
-    
-    /* Route Product Related */
-    Route::resource('products/{$product}/related', RelatedController::class);
-    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
         ->name('groups.delete');
     
     /* Route Tag */
@@ -202,6 +197,7 @@ Route::group(['prefix' => ''], function (){
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
         Route::get('login', 'showLoginForm')->name('login');
+        Route::post('login', 'login')->name('login');
         Route::post('logout', 'logout')->name('logout');
     });
 

@@ -1,6 +1,5 @@
 @extends('client.layouts.master')
 @section('title', 'Category')
-
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">

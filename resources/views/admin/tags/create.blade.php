@@ -23,12 +23,12 @@
                     <div class="row mb-3 mt-4">
                         <label for="name" class="col-sm-2 col-form-label">Tên nhãn</label>
                         <div class="col-sm-10">
-                        <input type="text" class="form-control" id="name" name="name">
+                          <input type="text" class="form-control" id="name" name="name">
+                          @error('name')
+                            <div style="color: red">{{ $message }}</div>
+                          @enderror
                         </div>
                     </div>
-                    @error('name')
-                        <div style="color: red">{{ $message }}</div>
-                    @enderror
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Thêm mới</button>
                         <button type="reset" class="btn btn-secondary">Hoàn tác</button>

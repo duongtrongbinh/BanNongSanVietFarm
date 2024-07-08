@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\BrandRepository;
-use App\Http\Repositories\ProductImageRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Requests\BrandCreateRequest;
+use App\Http\Requests\BrandUpdateRequest;
 use App\Models\Brand;
 
 class BrandController extends Controller
@@ -16,11 +16,10 @@ class BrandController extends Controller
     protected $productRepository;
     protected $productImageRepository;
 
-    public function __construct(BrandRepository $brandRepository, ProductRepository $productRepository, ProductImageRepository $productImageRepository)
+    public function __construct(BrandRepository $brandRepository, ProductRepository $productRepository)
     {
         $this->brandRepository = $brandRepository;
         $this->productRepository = $productRepository;
-        $this->productImageRepository = $productImageRepository;
     }
 
     public function index()
@@ -54,7 +53,7 @@ class BrandController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('brand'));
     }
 
-    public function update(BrandCreateRequest $request, Brand $brand)
+    public function update(BrandUpdateRequest $request, Brand $brand)
     {
         $this->brandRepository->update($brand->id, $request->validated());
 

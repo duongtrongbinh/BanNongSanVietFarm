@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\CategoryRepository;
 use App\Http\Requests\CategoryCreateRequest;
+use App\Http\Requests\CategoryUpdateRequest;
 use App\Models\Category;
 
 class CategoryController extends Controller
@@ -48,7 +49,7 @@ class CategoryController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('category'));
     }
 
-    public function update(CategoryCreateRequest $request, Category $category)
+    public function update(CategoryUpdateRequest $request, Category $category)
     {
         $this->categoryRepository->update($category->id, $request->all());
 

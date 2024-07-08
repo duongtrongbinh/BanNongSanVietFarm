@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Related extends Model
+class ProductRelated extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'related';
+    protected $table = 'product_related';
     public $timestamps = true;
     protected $fillable = [
         'product_id',
+        'product_related_id',
     ];
 
     public function product()
@@ -23,6 +24,6 @@ class Related extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_related', 'related_id', 'product_id')->withTrashed();
+        return $this->belongsTo(Product::class, 'product_related_id')->withTrashed();
     }
 }

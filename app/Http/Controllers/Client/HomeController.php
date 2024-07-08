@@ -43,11 +43,12 @@ class HomeController extends Controller
 
     public function product($slug)
     {
-        $product = Product::with(['brand', 'category', 'tags', 'product_images', 'comments'])
+        $product = Product::with(['brand', 'category', 'tags', 'product_images', 'comments', 'product_related'])
                     ->where('slug', $slug)
                     ->first();
+        $relatedProduct = $product->product_related;
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('product'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('product', 'relatedProduct'));
     }
 
     public function category($slug)

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TagCreateRequest extends FormRequest
+class TagUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,8 +13,10 @@ class TagCreateRequest extends FormRequest
 
     public function rules(): array
     {
+        $tagId = $this->route('tag')->id;
+
         return [
-            'name' => 'required|unique:tags,name|max:255',
+            'name' => 'required|unique:tags,name,' . $tagId . '|max:255',
         ];
     }
 
