@@ -16,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Http\Repositories\RepositoryInterface::class,
             \App\Http\Repositories\Repository::class,
+            \App\Http\Pipelines\PipelineFactory::class,
         );
     }
 

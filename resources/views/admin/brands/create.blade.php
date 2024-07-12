@@ -61,6 +61,5 @@
 
 @section('js')
   <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
-  <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script> 
   <script src="{{ asset('admin/assets/js/product/addProduct.js')}}"></script>
 @endsection

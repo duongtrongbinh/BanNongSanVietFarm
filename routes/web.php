@@ -29,8 +29,8 @@ use App\Http\Controllers\Client\ProfileUserController as ProfileUserClientContro
 use App\Http\Controllers\Client\PostController as PostClientController;
 
 use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\client\ForgotPasswordController;
-use App\Http\Controllers\client\CommentClientController;
+use App\Http\Controllers\Client\ForgotPasswordController;
+use App\Http\Controllers\Client\CommentClientController;
 
 
 /*
@@ -166,17 +166,19 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => ''], function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
-
-        Route::get('/product/{slug}', 'product')->name('product');
-        Route::get('/category/{slug}', 'category')->name('category');
+        Route::get('/san-pham/{slug}', 'product')->name('product');
+        Route::get('/danh-muc/{slug}', 'category')->name('category');
         Route::get('/post', 'post')->name('post');
         Route::post('/post', 'store')->name('post.store');
     });
+
     /* Route Rating */
     Route::post('/rating', [CommentClientController::class, 'rating'])->name('rating');
+
     /* Route Shop */
     Route::controller(ShopController::class)->group(function () {
-        Route::get('/shop', 'shop')->name('shop');
+        Route::get('/cua-hang', 'shop')->name('shop');
+        Route::get('/thuong-hieu/{slug}', 'brand')->name('brand');
     });
     /* Route Post */
     Route::resource('postclient', PostClientController::class);

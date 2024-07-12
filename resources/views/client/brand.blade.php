@@ -1,12 +1,12 @@
 @extends('client.layouts.master')
-@section('title', 'Cửa hàng')
+@section('title', $brand->name)
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Cửa hàng</h1>
+        <h1 class="text-center text-white display-6">{{ $brand->name }}</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-white">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('shop') }}" class="active">Cửa hàng</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('brand', $brand->slug) }}" class="active">{{ $brand->name }}</a></li>
         </ol>
     </div>
     <!-- Single Page Header End -->
@@ -14,10 +14,10 @@
     <!-- Fruits Shop Start-->
     <div class="container-fluid fruite py-5">
         <div class="container py-5">
-            <h1 class="mb-4">Cửa hàng</h1>
+            <h1 class="mb-4">{{ $brand->name }}</h1>
             <div class="row g-4">
                 <div class="col-lg-12">
-                    <form action="{{ route('shop') }}" method="GET">
+                    <form action="{{ route('brand', $brand->slug) }}" method="GET">
                         <div class="row g-4">
                             <div class="col-xl-3">
                                 <div class="input-group w-100 mx-auto d-flex">
@@ -41,28 +41,6 @@
                         <div class="row g-4">
                             <div class="col-lg-3">
                                 <div class="row g-4">
-                                    <div class="col-lg-12">
-                                        <div class="mb-3">
-                                            <h4>Thương hiệu</h4>
-                                            <ul class="list-unstyled fruite-categorie">
-                                                @foreach ($brands as $brand)
-                                                    @if ($brand->products->isNotEmpty())
-                                                        <li>
-                                                            <div class="d-flex justify-content-between fruite-name">
-                                                                <div>
-                                                                    <input type="checkbox" name="brands[]" value="{{ $brand->slug }}" {{ in_array($brand->slug, (array)request()->input('brands', [])) ? 'checked' : '' }}>
-                                                                    <a href="{{ route('brand', $brand->slug) }}">
-                                                                        {{ $brand->name }}
-                                                                    </a>
-                                                                </div>
-                                                                <span>({{ count($brand->products) }})</span>
-                                                            </div>
-                                                        </li>  
-                                                    @endif
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </div>
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Danh mục</h4>
@@ -107,7 +85,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
-                                        <h4 class="mb-3">Top đánh giá</h4>
+                                        <h4 class="mb-3">Sản phẩm bán chạy</h4>
                                         <div class="d-flex align-items-center justify-content-start">
                                             <div class="rounded me-4" style="width: 100px; height: 100px;">
                                                 <img src="{{ asset('client/assets/img/featur-1.jpg') }}" class="img-fluid rounded" alt="">
@@ -142,10 +120,10 @@
                                 </div>
                             </div>
                             <div class="col-lg-9">
-                                <div class="row g-4">
+                                <div class="row g-4 justify-content-center">
                                     @foreach ($products as $product)
-                                        <div class="col-xl-4">
-                                            <a href="{{ route('product', $product->slug) }}">
+                                        <div class="col-md-6 col-lg-6 col-xl-4">
+                                            <a href="{{ route('product', $product) }}">
                                                 <div class="rounded position-relative fruite-item border border-secondary">
                                                     <div class="fruite-img">
                                                         <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">

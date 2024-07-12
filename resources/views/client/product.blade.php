@@ -1,5 +1,5 @@
 @extends('client.layouts.master')
-@section('title', 'Product')
+@section('title', $product->name)
 @section('css')
     <style>
         .comment-container {
