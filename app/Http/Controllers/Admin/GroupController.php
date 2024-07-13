@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Repositories\GroupRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Requests\GroupCreateRequest;
+use App\Http\Requests\GroupUpdateRequest;
 use App\Models\Group;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -62,7 +63,7 @@ class GroupController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('group', 'products'));
     }
 
-    public function update(GroupCreateRequest $request, Group $group)
+    public function update(GroupUpdateRequest $request, Group $group)
     {
         $group = $this->groupRepository->update($group->id, $request->all());
         

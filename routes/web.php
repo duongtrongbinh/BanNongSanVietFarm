@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
@@ -23,13 +25,12 @@ use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\ProfileUserController;
 
-use App\Http\Controllers\Admin\RelatedController;
 use App\Http\Controllers\Client\ProfileUserController as ProfileUserClientController;
 use App\Http\Controllers\Client\PostController as PostClientController;
 
 use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\client\ForgotPasswordController;
-use App\Http\Controllers\client\CommentClientController;
+use App\Http\Controllers\Client\ForgotPasswordController;
+use App\Http\Controllers\Client\CommentClientController;
 
 
 /*
@@ -49,6 +50,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
+    /* Route Banner */
+    Route::resource('banners', BannerController::class);
+    
     /* Route User */
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
@@ -58,7 +62,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
     /* Route Login Admin */
-
     Route::get('login', [AuthController::class, 'index'])->name('login');
     Route::post('login', [AuthController::class, 'store'])->name('admin.login');
 
@@ -77,11 +80,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('categories', CategoryController::class);
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
-    /* Route Banner */
-    Route::resource('banners', BannerController::class);
+
     /* Route Product */
     Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
     Route::resource('products', ProductController::class);
+    Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
     Route::delete('products/{id}', [ProductController::class, 'delete'])
         ->name('products.delete');
     Route::get('export', [ProductController::class, 'export'])
@@ -91,14 +94,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Product Group */
     Route::resource('groups', GroupController::class);
-    Route::get('/get-product', [GroupController::class, 'getProduct'])->name('getProduct');
+    Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
-        ->name('groups.delete');
-    
-    /* Route Product Related */
-    Route::resource('products/{$product}/related', RelatedController::class);
-    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
         ->name('groups.delete');
     
     /* Route Tag */
@@ -169,17 +166,19 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['prefix' => ''], function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
-
-        Route::get('/product/{slug}', 'product')->name('product');
-        Route::get('/category/{slug}', 'category')->name('category');
+        Route::get('/san-pham/{slug}', 'product')->name('product');
+        Route::get('/danh-muc/{slug}', 'category')->name('category');
         Route::get('/post', 'post')->name('post');
         Route::post('/post', 'store')->name('post.store');
     });
+
     /* Route Rating */
     Route::post('/rating', [CommentClientController::class, 'rating'])->name('rating');
+
     /* Route Shop */
     Route::controller(ShopController::class)->group(function () {
-        Route::get('/shop', 'shop')->name('shop');
+        Route::get('/cua-hang', 'shop')->name('shop');
+        Route::get('/thuong-hieu/{slug}', 'brand')->name('brand');
     });
     /* Route Post */
     Route::resource('postclient', PostClientController::class);

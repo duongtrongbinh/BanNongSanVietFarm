@@ -45,9 +45,6 @@
                       <label for="product" class="mb-2">Sản phẩm</label>
                       <select class="select2-multiple form-control" name="products[]" multiple="multiple" id="select2Products">
                         @foreach ($products as $product)
-                          <option value="{{ $product->id }}">{{ $product->name }}</option>
-                        @endforeach   
-                        @foreach ($products as $product)
                           @php
                               $isSelected = false;
                           @endphp
@@ -175,7 +172,7 @@
 
         if (id) {
           $.ajax({
-            url: '{{ route('getProduct') }}',
+            url: '{{ route('getProductGroup') }}',
             type: 'GET',
             data: { 
               id: id 

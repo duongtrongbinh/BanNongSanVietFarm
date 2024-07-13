@@ -47,6 +47,9 @@
                       @error('products')
                         <div style="color: red">{{ $message }}</div>
                       @enderror
+                      @foreach ($errors->get('products.*') as $index => $message)
+                        <div style="color: red">{{ $message[0] }}</div>
+                      @endforeach
                     </div>
                     <div class="col mt-2">
                       <table id="productsTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
@@ -133,7 +136,7 @@
 
         if (id) {
           $.ajax({
-            url: '{{ route('getProduct') }}',
+            url: '{{ route('getProductGroup') }}',
             type: 'GET',
             data: { 
               id: id 

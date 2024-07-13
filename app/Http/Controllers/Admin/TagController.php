@@ -3,22 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Repositories\ProductRepository;
 use App\Http\Repositories\TagRepository;
 use App\Http\Requests\TagCreateRequest;
+use App\Http\Requests\TagUpdateRequest;
 use App\Models\Tag;
-use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
     const PATH_VIEW = 'admin.tags.';
     protected $tagRepository;
-    protected $productRepository;
 
-    public function __construct(TagRepository $tagRepository, ProductRepository $productRepository)
+    public function __construct(TagRepository $tagRepository)
     {
         $this->tagRepository = $tagRepository;
-        $this->productRepository = $productRepository;
     }
 
     public function index()
@@ -52,7 +49,7 @@ class TagController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('tag'));
     }
 
-    public function update(TagCreateRequest $request, Tag $tag)
+    public function update(TagUpdateRequest $request, Tag $tag)
     {
         $this->tagRepository->update($tag->id, $request->validated());
 
