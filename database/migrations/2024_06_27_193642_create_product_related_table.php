@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_related', function (Blueprint $table) {
-            $table->foreignId('related_id')->constrained()->onDelete('cascade')->onRestore('cascade');
+            $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade')->onRestore('cascade');
-            $table->primary(['related_id','product_id']);
+            $table->foreignId('product_related_id')->constrained()->onDelete('cascade')->onRestore('cascade');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

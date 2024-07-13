@@ -11,6 +11,11 @@ class ProductRepository extends Repository
         return Product::class;
     }
 
+    public function getQueryRelations($relations  = [])
+    {
+        return $this->model->query()->with($relations);
+    }
+
     public function getLatestAll()
     {
         return $this->model->query()->latest('id')->paginate(5);

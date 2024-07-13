@@ -55,14 +55,9 @@ class Product extends Model
         return $this->belongsToMany(Group::class, 'product_groups', 'product_id', 'group_id')->withTrashed();
     }
 
-    public function related()
+    public function product_related()
     {
-        return $this->hasOne(Related::class, 'product_id');
-    }
-
-    public function relateds()
-    {
-        return $this->belongsToMany(Related::class, 'product_related', 'product_id', 'related_id')->withTrashed();
+        return $this->hasMany(ProductRelated::class, 'product_id', 'id');
     }
 
     public function comments()

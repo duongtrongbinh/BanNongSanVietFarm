@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class GroupCreateRequest extends FormRequest
+class GroupUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,8 +14,14 @@ class GroupCreateRequest extends FormRequest
 
     public function rules(): array
     {
+        $groupId = $this->route('group');
+
         return [
-            'name' => 'required|unique:groups,name|max:255',
+            'name' => [
+                'required',
+                'max:255',
+                Rule::unique('groups')->ignore($groupId),
+            ],
             'products' => 'required|array',
             'products.*' => 'integer|exists:products,id',
         ];

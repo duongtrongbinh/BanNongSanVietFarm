@@ -2,13 +2,13 @@
 
 namespace App\Http\Repositories;
 
-use App\Models\Related;
+use App\Models\ProductRelated;
 
-class RelatedRepository extends Repository
+class ProductRelatedRepository extends Repository
 {
     public function getModel()
     {
-        return Related::class;
+        return ProductRelated::class;
     }
 
     public function getLatestAll()
