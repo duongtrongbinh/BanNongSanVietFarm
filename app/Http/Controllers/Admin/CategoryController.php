@@ -32,6 +32,7 @@ class CategoryController extends Controller
 
     public function store(CategoryCreateRequest $request)
     {
+        $request['slug'] = Str::slug($request['name']);
         $this->categoryRepository->create($request->all());
 
         return redirect()
@@ -41,16 +42,21 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
+        $this->categoryRepository->findOrFail($category->id);
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('category'));
     }
 
     public function edit(Category $category)
     {
+        $this->categoryRepository->findOrFail($category->id);
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('category'));
     }
 
     public function update(CategoryUpdateRequest $request, Category $category)
     {
+        $request['slug'] = Str::slug($request['name']);
         $this->categoryRepository->update($category->id, $request->all());
 
         return back()
@@ -62,7 +68,7 @@ class CategoryController extends Controller
         $this->categoryRepository->delete($category->id);
 
         return response()->json(true);
-        
+
     }
 
     public function destroy(Category $category)

@@ -78,6 +78,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Category */
     Route::resource('categories', CategoryController::class);
+
+    /* Route Product */
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
 
@@ -97,7 +99,13 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
         ->name('groups.delete');
-    
+
+    /* Route Product Related */
+    Route::resource('products/{$product}/related', RelatedController::class);
+    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
+    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
+        ->name('groups.delete');
+
     /* Route Tag */
     Route::resource('tags', TagController::class);
     Route::delete('tags/{id}', [TagController::class, 'delete'])
@@ -183,7 +191,6 @@ Route::group(['prefix' => ''], function () {
     /* Route Post */
     Route::resource('postclient', PostClientController::class);
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
-    
     /* Route Cart */
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'index')->name('cart.index');
@@ -200,17 +207,20 @@ Route::group(['prefix' => ''], function () {
 
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
+//    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
     Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+
+    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
-      
+
         Route::get('login', 'showLoginForm')->name('login');
         Route::post('register', 'register');
         Route::post('login', 'login')->name('clientlogin');
-      
+
         Route::post('logout', 'logout')->name('logout');
         Route::get('actived/{user}/{token}', 'activated')->name('user.activated');
     });
@@ -228,6 +238,7 @@ Route::group(['prefix' => ''], function () {
         Route::get('/auth/google/callback', 'handleGoogleCallback');
     });
 });
+
 
     /* Route 404 */
     Route::get('404', function () {

@@ -13,8 +13,8 @@
         }
     </style>
 @endsection
-@php 
-    use App\Enum\OrderStatus; 
+@php
+    use App\Enum\OrderStatus;
     $updated = session('updated');
 @endphp
 @section('content')
@@ -88,16 +88,14 @@
                         </table>
                     </div>
                     <div class="row border-top border-top-dashed d-flex justify-content-between mt-2 pt-3">
-                        <div class="col-5">
+                        <div class="col-4">
                             <div class="d-flex justify-content-between">
                                 <p>Phương thức thanh toán:</p>
                                 <p><b>VNPAY</b></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Trạng thái thanh toán:</p>
-                                <p class="{{ $statusData['badgeClass'] }}">
-                                    {{ $statusData['label'] }}
-                                </p>
+                                <p class="badge bg-warning-subtle text-warning text-uppercase">Đang xử lý</p>
                             </div>
                         </div>
                         <div class="col-4">
@@ -127,34 +125,39 @@
                     <div class="d-sm-flex align-items-center">
                         <h5 class="card-title flex-grow-1 mb-0">Trạng thái đơn hàng</h5>
                         <div class="d-flex flex-shrink-0 mt-2 mt-sm-0">
-                            @if ($order->status != OrderStatus::CANCELLED->value)
-                                <form action="{{ route('orders.update', $order->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-primary btn-sm align-items-center" style="font-size: 0.9rem; margin-right: 5px;">
-                                        Cập nhật trạng thái
-                                    </button>
-                                </form>
-                                <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
-                                        Hủy đơn hàng
-                                    </button>
-                                </form>
-                            @else
-                                <div class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
-                                    Đơn hàng đã bị hủy
-                                </div>
-                            @endif
+                            <form action="{{ route('orders.update', $order->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <select class="align-items-center" name="status">
+                                    @php use App\Enum\OrderStatus; @endphp
+                                    @foreach ([
+                                        OrderStatus::PENDING,
+                                        OrderStatus::PREPARE,
+                                        OrderStatus::READY_TO_PICK,
+                                        OrderStatus::CANCELLED,
+                                    ] as $status)
+                                        @if ($order->status == $status->value)
+                                            <option selected value="{{ $status->value }}">{{ $status->name }}</option>
+                                        @else
+                                            <option value="{{ $status->value }}">{{ $status->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                                @error('status')
+                                    <div style="color: red">{{ $message }}</div>
+                                @enderror
+                                <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
+                                    Thay đổi trạng thái
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="profile-timeline">
                         <div class="accordion accordion-flush" id="accordionFlushExample">
-                            @foreach($order->order_histories as $order_history) 
-                                @foreach (OrderStatus::cases() as $status) 
+                            @foreach($order->order_histories as $order_history)
+                                @foreach (OrderStatus::cases() as $status)
                                     @if($order_history->status == $status->value)
                                         <div class="accordion-item border-0">
                                             <div class="accordion-header" id="headingOne">
@@ -167,19 +170,96 @@
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
                                                             <h6 class="fs-15 mb-0 fw-semibold">
-                                                                {{ $status->name }} - <span class="fw-normal">{{ date('H:i:s l, d/m/Y', strtotime($order_history->created_at)) }}</span>
+                                                                {{ $status->name }} - <span class="fw-normal">{{ $order_history->created_at }}</span>
                                                             </h6>
                                                         </div>
                                                     </div>
                                                 </a>
                                             </div>
-                                            <div class="accordion-body ms-2 ps-5 pt-0">
-                                                <h6 class="mb-1">{{ $order_history->warehouse }}</h6>
-                                            </div>
                                         </div>
                                     @endif
                                 @endforeach
                             @endforeach
+                            {{-- <div class="accordion-item border-0">
+                                <div class="accordion-header" id="headingOne">
+                                    <a class="p-2 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 avatar-xs">
+                                                <div class="avatar-title bg-success rounded-circle">
+                                                    <i class="ri-shopping-bag-line"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="fs-15 mb-0 fw-semibold">Order Placed - <span class="fw-normal">Wed, 15 Dec 2021</span></h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0">
+                                <div class="accordion-header" id="headingTwo">
+                                    <a class="p-2 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 avatar-xs">
+                                                <div class="avatar-title bg-success rounded-circle">
+                                                    <i class="bi bi-gift"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="fs-15 mb-1 fw-semibold">Packed - <span class="fw-normal">Thu, 16 Dec 2021</span></h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0">
+                                <div class="accordion-header" id="headingThree">
+                                    <a class="p-2 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 avatar-xs">
+                                                <div class="avatar-title bg-success rounded-circle">
+                                                    <i class="bi bi-truck"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="fs-15 mb-1 fw-semibold">Shipping - <span class="fw-normal">Thu, 16 Dec 2021</span></h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0">
+                                <div class="accordion-header" id="headingFour">
+                                    <a class="p-2 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 avatar-xs">
+                                                <div class="avatar-title bg-light text-success rounded-circle">
+                                                    <i class="ri-takeaway-fill"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="fs-14 mb-0 fw-semibold">Out For Delivery</h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="accordion-item border-0">
+                                <div class="accordion-header" id="headingFive">
+                                    <a class="p-2 shadow-none">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0 avatar-xs">
+                                                <div class="avatar-title bg-light text-success rounded-circle">
+                                                    <i class="bi bi-box-seam-fill"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h6 class="fs-14 mb-0 fw-semibold">Delivered</h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div> --}}
                         </div>
                         <!--end accordion-->
                     </div>
@@ -235,21 +315,5 @@
     </section>
 @endsection
 @section('js')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!--ShowMessage js-->
-    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
-
-    <script>
-    $(document).ready(function() {
-        let status = @json($updated);
-        let title = 'Cập nhật';
-        let message = status;
-        let icon = 'success';
-
-        if (status) {
-        showMessage(title, message, icon);
-        }
-    });
-    </script>
 @endsection
