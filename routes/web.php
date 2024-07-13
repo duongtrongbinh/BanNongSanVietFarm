@@ -26,7 +26,7 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\ProfileUserController;
 
 use App\Http\Controllers\Client\ProfileUserController as ProfileUserClientController;
-use App\Http\Controllers\Client\PostController as PostClientController;
+use App\Http\Controllers\Client\PostClientController;
 
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Client\ForgotPasswordController;
