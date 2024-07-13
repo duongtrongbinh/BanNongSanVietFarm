@@ -1,5 +1,4 @@
 <?php
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
@@ -7,7 +6,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Client\AuthController as AuthClientController;
+use App\Http\Controllers\Client\AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
@@ -17,13 +16,21 @@ use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\OrderController;
 use \App\Http\Controllers\Admin\FlashSaleController;
+use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\PurchaseReceiptController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\ProfileUserController;
-use App\Http\Controllers\client\ProfileUserController as ProfileUserClientController;
-use App\Http\Controllers\client\PostController as PostClientController;
+
+use App\Http\Controllers\Admin\RelatedController;
+use App\Http\Controllers\Client\ProfileUserController as ProfileUserClientController;
+use App\Http\Controllers\Client\PostController as PostClientController;
+
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\client\ForgotPasswordController;
+use App\Http\Controllers\client\CommentClientController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +57,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::put('/users/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
+    /* Route Login Admin */
+
     Route::get('login', [AuthController::class, 'index'])->name('login');
     Route::post('login', [AuthController::class, 'store'])->name('admin.login');
 
@@ -57,7 +66,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::put('/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
     Route::get('/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
     Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
-
     Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
 
     /* Route Brand */
@@ -71,8 +79,10 @@ Route::group(['prefix' => 'admin'], function () {
     /* Route Product */
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
-
+    /* Route Banner */
+    Route::resource('banners', BannerController::class);
     /* Route Product */
+    Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
     Route::resource('products', ProductController::class);
     Route::delete('products/{id}', [ProductController::class, 'delete'])
         ->name('products.delete');
@@ -80,6 +90,18 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('products.export');
     Route::post('import', [ProductController::class, 'import'])
         ->name('products.import');
+
+    /* Route Product Group */
+    Route::resource('groups', GroupController::class);
+    Route::get('/get-product', [GroupController::class, 'getProduct'])->name('getProduct');
+    Route::delete('groups/{id}', [GroupController::class, 'delete'])
+        ->name('groups.delete');
+
+    /* Route Product Related */
+    Route::resource('products/{$product}/related', RelatedController::class);
+    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
+    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
+        ->name('groups.delete');
 
     /* Route Tag */
     Route::resource('tags', TagController::class);
@@ -93,6 +115,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('purchase_receipt', PurchaseReceiptController::class);
     Route::post('purchases/import', [PurchaseReceiptController::class, 'import'])
         ->name('purchases.import');
+
     /* Route Voucher */
     Route::resource('vouchers',VoucherController::class);
     Route::get('adeleted/vouchers',[VoucherController::class,'deleted'])
@@ -104,39 +127,58 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('flash-sales',FlashSaleController::class);
 
     /* Route Order */
+    Route::get('orders/all', [OrderController::class, 'getAll'])
+        ->name('orders.all');
+    Route::get('orders/pending', [OrderController::class, 'getPending'])
+        ->name('orders.pending');
+    Route::get('orders/prepare', [OrderController::class, 'getPrepare'])
+        ->name('orders.prepare');
+    Route::get('orders/pending-payment', [OrderController::class, 'getPendingPayment'])
+        ->name('orders.pendingPayment');
+    Route::get('orders/success-payment', [OrderController::class, 'getSuccessPayment'])
+        ->name('orders.successPayment');
+    Route::get('orders/ready-to-pick', [OrderController::class, 'getReadyToPick'])
+        ->name('orders.readyToPick');
+    Route::get('orders/cancelled', [OrderController::class, 'getCancelled'])
+        ->name('orders.cancelled');
+    Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
+        ->name('orders.updateStatus');
     Route::resource('orders',OrderController::class);
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
-    Route::get('/bill/return', [GHNService::class,'pay_return'])->name('bill.return');
+    Route::delete('orders/{id}', [OrderController::class, 'delete'])
+        ->name('orders.delete');
+    Route::get('/bill/return', [GHNService::class,'pay_return'])
+        ->name('bill.return');
 
     /* Route Post */
     Route::resource('post', PostController::class);
     Route::delete('post/{postId}/comment/{commentId}', [PostController::class, 'destroyComment'])->name('post.comment.destroy');
+
     /* Route Comment */
     Route::resource('comment', CommentController::class);
     Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
         ->name('product.comment.destroy');
 
-     /* Route Rate */
-     Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
+    /* Route Rate */
+    Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
 
-     Route::post('/orders/{order}/retry', 'OrderController@retryOrder')->name('orders.retry');
+    //  Route::post('/orders/{order}/retry', 'OrderController@retryOrder')->name('orders.retry');
 });
 
 /* Route Client */
 /* Route Home */
-Route::group(['prefix' => ''], function (){
+Route::group(['prefix' => ''], function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
-        Route::get('/product/{id}', 'product')->name('product');
-        Route::get('/category/{id}', 'category')->name('category');
+
+        Route::get('/product/{slug}', 'product')->name('product');
+        Route::get('/category/{slug}', 'category')->name('category');
         Route::get('/post', 'post')->name('post');
         Route::post('/post', 'store')->name('post.store');
     });
-
     /* Route Rating */
-    Route::post('/rating', [CommentController::class, 'rating'])->name('rating');
-
+    Route::post('/rating', [CommentClientController::class, 'rating'])->name('rating');
     /* Route Shop */
     Route::controller(ShopController::class)->group(function () {
         Route::get('/shop', 'shop')->name('shop');
@@ -169,12 +211,22 @@ Route::group(['prefix' => ''], function (){
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
-        Route::post('register', 'register')->name('register');
+
         Route::get('login', 'showLoginForm')->name('login');
-        Route::post('login', 'login');
+        Route::post('register', 'register');
+        Route::post('login', 'login')->name('clientlogin');
+
         Route::post('logout', 'logout')->name('logout');
+        Route::get('actived/{user}/{token}', 'activated')->name('user.activated');
     });
 
+    /*  Route ForgotPasswordController*/
+    Route::controller(ForgotPasswordController::class)->group(function () {
+        Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+        Route::get('reset-password/{user}/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('reset-password/{user}/{token}', [ForgotPasswordController::class, 'reset']);
+    });
     /* Route Auth Google */
     Route::controller(GoogleLoginController::class)->group(function () {
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
@@ -187,3 +239,4 @@ Route::group(['prefix' => ''], function (){
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
+

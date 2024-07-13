@@ -50,20 +50,24 @@ class Product extends Model
         return $this->hasMany(ProductImage::class, 'product_id', 'id');
     }
 
-    public function product_related()
+    public function groups()
     {
-        return $this->hasMany(Product::class, 'product_id', 'id');
+        return $this->belongsToMany(Group::class, 'product_groups', 'product_id', 'group_id')->withTrashed();
     }
 
-    public function product_groups()
+    public function related()
     {
-        return $this->hasMany(Product::class, 'product_id', 'id');
+        return $this->hasOne(Related::class, 'product_id');
+    }
+
+    public function relateds()
+    {
+        return $this->belongsToMany(Related::class, 'product_related', 'product_id', 'related_id')->withTrashed();
     }
 
     public function comments()
     {
         return $this->belongsToMany(Comment::class, 'product_comments', 'product_id', 'comment_id');
-
     }
     
     public function flashSaleProducts()

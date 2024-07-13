@@ -22,14 +22,14 @@
           <div class="row form-group mt-2">
             <div class="col-3 mt-2">
               <label for="name">Tên sản phẩm</label>
-              <input type="text" class="form-control" name="name" value="{{ old('name')}}">
+              <input type="text" class="form-control mt-2" name="name" value="{{ old('name')}}">
               @error('name')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
               <label for="name">Thương hiệu</label>
-              <select class="form-select" name="brand_id" aria-label="Default select example">
+              <select class="form-select mt-2" name="brand_id" aria-label="Default select example">
                 <option value="" selected>Mở menu chọn này</option>
                 @foreach ($brands as $brand)
                     <option value="{{ $brand->id }}">{{ $brand->name }}</option>
@@ -41,7 +41,7 @@
             </div>
             <div class="col-3 mt-2">
               <label for="name">Danh mục</label>
-              <select class="form-select" name="category_id" aria-label="Default select example">
+              <select class="form-select mt-2" name="category_id" aria-label="Default select example">
                 <option value="" selected>Mở menu chọn này</option>
                 @foreach ($categories as $category)
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -53,7 +53,7 @@
             </div>
             <div class="col-3 mt-2">
               <label for="name">Số lượng</label>
-              <input type="text" class="form-control" name="quantity" value="{{ old('quantity', 0)}}">
+              <input type="text" class="form-control mt-2" name="quantity" value="{{ old('quantity', 0)}}">
               @error('quantity')
                 <div style="color: red">{{ $message }}</div>
               @enderror
@@ -62,11 +62,11 @@
               <label for="name">Ảnh</label>
               <div class="input-group">
                 <span class="input-group-btn">
-                  <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary text-white">
+                  <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary text-white mt-2">
                     <i class="fa fa-picture-o"></i> Chọn
                   </a>
                 </span>
-                <input id="thumbnail" class="form-control" type="text" name="image[]" value="{{ old('image[]')}}">
+                <input id="thumbnail" class="form-control mt-2" type="text" name="image[]" value="{{ old('image[]')}}">
               </div>
               @error('image')
                 <div style="color: red">{{ $message }}</div>
@@ -74,7 +74,7 @@
               <div id="holder" style="margin-top:15px;"></div>
             </div>
             <div class="col-6 mt-2">
-              <label for="name">Nhãn</label>
+              <label for="name" class="mb-2">Nhãn</label>
               <select class="select2-multiple form-control" name="tags[]" multiple="multiple" id="select2Multiple">
                 @foreach ($tags as $tag)
                   <option value="{{ $tag->id }}">{{ $tag->name }}</option>
@@ -86,14 +86,14 @@
             </div>
             <div class="col-4 mt-2">
               <label for="name">Giá gốc (VNĐ)</label>
-              <input type="text" class="form-control" name="price_regular" value="{{ old('price_regular', 0)}}">
+              <input type="text" class="form-control mt-2" name="price_regular" value="{{ old('price_regular', 0)}}">
               @error('price_regular')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-4 mt-2">
               <label for="name">Giá giảm (VNĐ)</label>
-              <input type="text" class="form-control" name="price_sale" value="{{ old('price_sale', 0)}}">
+              <input type="text" class="form-control mt-2" name="price_sale" value="{{ old('price_sale', 0)}}">
               @error('price_sale')
                 <div style="color: red">{{ $message }}</div>
               @enderror
@@ -103,61 +103,61 @@
             </div>
             <div class="col-4 mt-2">
               <label for="name">Loại trừ</label>
-              <input type="text" class="form-control" name="excerpt" value="{{ old('excerpt')}}">
+              <input type="text" class="form-control mt-2" name="excerpt" value="{{ old('excerpt')}}">
               @error('except')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
               <label for="name">Chiều dài (Cm)</label>
-              <input type="text" class="form-control" name="length" value="{{ old('length', 0)}}">
+              <input type="text" class="form-control mt-2" name="length" value="{{ old('length', 0)}}">
               @error('length')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
               <label for="name">Chiều rộng (Cm)</label>
-              <input type="text" class="form-control" name="width" value="{{ old('width', 0)}}">
+              <input type="text" class="form-control mt-2" name="width" value="{{ old('width', 0)}}">
               @error('width')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
               <label for="name">Chiều cao (Cm)</label>
-              <input type="text" class="form-control" name="height" value="{{ old('height', 0)}}">
+              <input type="text" class="form-control mt-2" name="height" value="{{ old('height', 0)}}">
               @error('height')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-3 mt-2">
               <label for="name">Trọng lượng (Gram)</label>
-              <input type="text" class="form-control" name="weight" value="{{ old('weight', 0)}}">
+              <input type="text" class="form-control mt-2" name="weight" value="{{ old('weight', 0)}}">
               @error('weight')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-12 mt-2">
               <label for="name">Mô tả</label>
-              <textarea class="form-control" name="description">{{ old('description')}}</textarea>
+              <textarea class="form-control mt-2" name="description">{{ old('description')}}</textarea>
               @error('description')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             <div class="col-12 mt-2">
               <label for="name">Nội dung</label>
-              <textarea class="form-control my-editor-tinymce4" name="content">{{ old('content')}}</textarea>
+              <textarea class="form-control mt-2 my-editor-tinymce4" name="content">{{ old('content')}}</textarea>
               @error('content')
                 <div style="color: red">{{ $message }}</div>
               @enderror
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_active" value="{{ old('is_active')}}" id="flexSwitchCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" value="{{ old('is_active')}}" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Active</label>
               </div>
             </div>
             <div class="col-2 mt-2">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" value="is_home" value="{{ old('is_home')}}" id="flexSwitchCheckChecked" checked>
+                <input class="form-check-input" type="checkbox" value="{{ old('is_home')}}" id="flexSwitchCheckChecked" checked>
                 <label class="form-check-label" for="flexSwitchCheckChecked">Home</label>
               </div>
             </div>
@@ -174,16 +174,15 @@
   <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
   <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script> 
   <script src="{{ asset('admin/assets/js/product/addProduct.js')}}"></script>
-  <script src="path-to-your-tinymce/tinymce.min.js"></script>
+
   <script>
     $(document).ready(function() {
       // Select2 Multiple
-      $('.select2-multiple').select2({
+      $('#select2Multiple').select2({
         them: 'bootstrap-5',
-        placeholder: "Select",
+        placeholder: "Chọn sản phẩm",
         allowClear: true
       });
-
     });
   </script>
 @endsection

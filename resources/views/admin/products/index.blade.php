@@ -5,23 +5,12 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
     <!--datatable responsive css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-
-    <style>
-      table.dataTable {
-          width: 100% !important;
-      }
-
-      .dataTables_wrapper {
-          overflow-x: auto; /* Đảm bảo rằng bao quanh bảng có thể cuộn ngang */
-      }
-
-      th, td {
-          white-space: nowrap; /* Đảm bảo rằng nội dung không bị gói dòng */
-      }
-    </style>
 @endsection
+@php
+  $created = session('created');
+  $importErrors = session('importErrors');
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Danh sách sản phẩm</h1>
@@ -82,7 +71,7 @@
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle w-100" >
+                    <table id="productTable" class="table table-bordered dt-responsive nowrap table-striped align-middle w-100" >
                       <thead>
                           <tr>
                               <th>#</th>
@@ -94,67 +83,11 @@
                               <th>Số lượng</th>
                               <th>Giá gốc</th>
                               <th>Giá giảm</th>
-                              <th>Slug</th>
                               <th>Active</th>
                               <th>Home</th>
                               <th>Action</th>
                           </tr>
                       </thead>
-                      <tbody>
-                        @foreach ($products as $key => $product)
-                          <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td>
-                                <img src="{{ $product->image }}" width="100px">
-                            </td>
-                            <td>{{ $product->name }}</td>
-                            <td>{{ $product->brand->name }}</td>
-                            <td>{{ $product->category->name }}</td>
-                            <td>
-                              @foreach ($product->tags as $tag)
-                                <div>{{ $tag->name }}</div>
-                              @endforeach
-                            </td>
-                            <td>{{ $product->quantity }}</td>
-                            <td>{{ number_format($product->price_regular, 0) }} VNĐ</td>
-                            <td>{{ number_format($product->price_sale, 0) }} VNĐ</td>
-                            <td>{{ $product->slug }}</td>
-                            <td>
-                              @if ($product->is_active == true)
-                                <span class="badge bg-success">Yes</span>
-                              @else
-                                <span class="badge bg-danger">No</span>
-                              @endif
-                            </td>
-                            <td>
-                              @if ($product->is_home == true)
-                                <span class="badge bg-success">Yes</span>
-                              @else
-                                <span class="badge bg-danger">No</span>
-                              @endif
-                            </td>
-                            <td>
-                              <ul class="list-inline hstack gap-2 mb-0">
-                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chi tiết">
-                                    <a href="{{ route('products.show', $product->id) }}" class="text-primary d-inline-block">
-                                        <i class="ri-eye-fill fs-16"></i>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chỉnh sửa">
-                                    <a href="{{ route('products.edit', $product->id) }}" class="text-primary d-inline-block">
-                                      <i class="ri-pencil-fill fs-16"></i>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-                                    <a data-url="{{ route('products.delete', $product->id) }}" class="text-danger d-inline-block deleteProduct">
-                                      <i class="ri-delete-bin-5-fill fs-16"></i>
-                                    </a>
-                                </li>
-                              </ul>
-                            </td>
-                          </tr>
-                        @endforeach
-                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -172,20 +105,44 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.misn.j"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!--Delete js-->
     <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+    <!--ShowMessage js-->
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        $('#example').DataTable({
+        $('#productTable').DataTable({
           responsive: true,
+          processing: true,
+          serverSide: true,
+          ajax: {
+            url: '{{ route("products.data") }}',
+            type: 'GET',
+          },
           autoWidth: false,
+          columns: [
+            { data: 'stt', name: 'stt' },
+            { data: 'image', name: 'image', orderable: false, searchable: false},
+            { data: 'name', name: 'name' },
+            { data: 'brand', name: 'brand' },
+            { data: 'category', name: 'category' },
+            { data: 'tags', name: 'tags' },
+            { data: 'quantity', name: 'quantity' },
+            { data: 'price_regular', name: 'price_regular' },
+            { data: 'price_sale', name: 'price_sale' },
+            { data: 'is_home', name: 'is_home', orderable: false, searchable: false },
+            { data: 'is_active', name: 'is_active', orderable: false, searchable: false },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+          ],
           columnDefs: [
-            { responsivePriority: 1, targets: 0 },  // ID
+            { responsivePriority: 1, targets: 0 },  // ID column
             { responsivePriority: 2, targets: 1 },  // Img Thumbnail
             { responsivePriority: 3, targets: 2 },  // Name
             { responsivePriority: 4, targets: 3 },  // Brand
@@ -194,18 +151,38 @@
             { responsivePriority: 7, targets: 6 },  // Quantity
             { responsivePriority: 8, targets: 7 },  // Price Regular
             { responsivePriority: 9, targets: 8 },  // Price Sale
-            { responsivePriority: 100, targets: 9 }, // Slug (ít ưu tiên nhất)
-            { responsivePriority: 100, targets: 10 }, // Is Active (ít ưu tiên nhất)
-            { responsivePriority: 100, targets: 11 }, // Is Home (ít ưu tiên nhất)
-            { responsivePriority: 10, targets: 12 }  // Action
+            { responsivePriority: 100, targets: 9 }, // Is Active (least priority)
+            { responsivePriority: 100, targets: 10 }, // Is Home (least priority)
+            { responsivePriority: 10, targets: 11 }  // Action
           ]
         });
 
         $('#export').click(function() {
-          var table = document.getElementById("example");
+          var table = document.getElementById("productTable");
           var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
           XLSX.writeFile(wb, "products.xlsx");
         });
+
+        //Show Message
+        let status = @json($created);
+        let title = 'Thêm mới';
+        let message = status;
+        let icon = 'success';
+
+        if (status) {
+          showMessage(title, message, icon);
+        }
       });
     </script> 
+
+    @if ($errors->any())
+      <script>
+        Swal.fire({
+          title: "Lỗi nhập file thêm sản phẩm",
+          text: "Kiểm tra lại dữ liệu trong file!",
+          icon: "error"
+        });
+      </script>
+    @endif
 @endsection
+

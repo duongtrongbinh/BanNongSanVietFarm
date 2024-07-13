@@ -12,12 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('product_related', function (Blueprint $table) {
-            $table->id();
+            $table->foreignId('related_id')->constrained()->onDelete('cascade')->onRestore('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade')->onRestore('cascade');
-            $table->bigInteger('product_ids');
-            $table->tinyInteger('is_active')->default(1);
-            $table->timestamps();
-            $table->softDeletes();
+            $table->primary(['related_id','product_id']);
         });
     }
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->tinyInteger('status');
-            $table->string('warehouse');
+            $table->string('warehouse')->nullable();
             $table->timestamps();
         });
     }

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderUpdateStatusRequest extends FormRequest
+class UpdateStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,11 +21,8 @@ class OrderUpdateStatusRequest extends FormRequest
      */
     public function rules(): array
     {
-        $order = $this->route('order');
-
         return [
-            'status' => 'required|integer',
+            //
         ];
     }
-    
 }

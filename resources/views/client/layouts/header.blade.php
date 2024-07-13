@@ -21,9 +21,9 @@
           </button>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
-                    <a href="{{ route('home') }}" class="nav-item nav-link active">Trang chủ</a>
-                    <a href="{{ route('shop') }}" class="nav-item nav-link">Cửa hàng</a>
-                    <a href="{{ route('postclient.index')}}" class="nav-item nav-link">Bài viết</a>
+                    <a href="{{ route('home') }}" class="nav-item nav-link @if(request()->routeIs('home')) active @endif">Trang chủ</a>
+                    <a href="{{ route('shop') }}" class="nav-item nav-link @if(request()->is('*category*') || request()->is('*product*') || request()->is('*shop*')) active @endif">Cửa hàng</a>
+                    <a href="#" class="nav-item nav-link">Bài viết</a>
                     <a href="#" class="nav-item nav-link">Liên hệ</a>
                     <a href="#" class="nav-item nav-link">Chính sách</a>
                 </div>
@@ -123,7 +123,7 @@
                             <i class="fas fa-user fa-2x"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
-                            <a class="dropdown-item" href="{{ route('login') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng nhập</span></a>
+                            <a class="dropdown-item" href="{{ route('clientlogin') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng nhập</span></a>
                             <a class="dropdown-item" href="{{ route('register') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng ký</span></a>
                         @endif
                     </div>

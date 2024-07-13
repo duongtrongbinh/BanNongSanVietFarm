@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\District;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
@@ -37,10 +38,10 @@ class UserController extends Controller
     {
         $data = $request->except('avatar');
         $data['avatar'] = $request->input('avatar');
+        $data['password'] = Hash::make($request->input('password'));
         $user = User::create($data);
-        return redirect()->route('user.index')->with('thongbao','bạn đã thêm thành công !');
+        return redirect()->route('user.index')->with('created','Thêm khách hàng thành công!');
     }
-
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -74,6 +75,6 @@ class UserController extends Controller
             Storage::delete($oldImagePath);
         }
         $user->delete();
-      return response()->json(true);
+        return response()->json(true);
     }
 }

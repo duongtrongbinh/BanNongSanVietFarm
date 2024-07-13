@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\ProductComment;
 use Illuminate\Support\Facades\Auth;
 class CommentController extends Controller
@@ -35,25 +36,8 @@ class CommentController extends Controller
             ->firstOrFail();
         // Xóa bản ghi ProductComment
         $productComment->delete();
-        return redirect()->back()->with('success', 'Đã xóa bình luận thành công.');
+      return response()->json(true);
     }
-    public function rating(Request $request)
-    {
-        // Xác thực dữ liệu đầu vào
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'comment' => 'required|string',
-            'ratting' => 'required|integer|between:1,5',
-        ]);
-        $userId = Auth::id();
-        $comment = new Comment();
-        $comment->user_id = $userId;
-        $comment->content = $request->input('comment');
-        $comment->ratting = $request->input('ratting');
-        $comment->save();
-        $product = Product::findOrFail($request->input('product_id'));
-        $product->comments()->attach($comment->id);
-        $comments = $product->comments()->orderBy('created_at', 'desc')->get();
-        return redirect()->back()->with(['success' => 'Đã thêm bình luận thành công.', 'comments' => $comments]);
-    }
+
+
 }

@@ -11,6 +11,24 @@ return [
     //     ],
     // ],
     [
+        'title' => 'banners',
+        'icon' => 'bi bi-image-fill',
+        'subtitle' => [
+            [
+                'title' => 'Danh sách banners',
+                'icon' => 'bi bi-list-nested',
+                'route' => 'banners.index',
+                'name' => 'banners',
+            ],
+            [
+                'title' => 'Thêm banners',
+                'icon' => 'bi bi-building-add',
+                'route' => 'banners.create',
+                'name' => 'banners',
+            ],
+        ],
+    ],
+    [
         'title' => 'Quản lý sản phẩm',
         'icon' => 'bi bi-box-seam',
         'subtitle' => [
@@ -18,7 +36,12 @@ return [
                 'title' => 'Danh sách sản phẩm',
                 'icon' => 'bi bi-card-list',
                 'route' => 'products.index',
-                'name' => 'products',
+            ],
+            [
+                'title' => 'Nhóm sản phẩm',
+                'icon' => 'bi bi-collection',
+                'route' => 'groups.index',
+                'name' => 'groups',
             ],
             [
                 'title' => 'Thương hiệu',
@@ -30,7 +53,6 @@ return [
                 'title' => 'Danh mục',
                 'icon' => 'bi bi-list-task',
                 'route' => 'categories.index',
-                'name' => 'categories',
             ],
             [
                 'title' => 'Đánh giá',
@@ -42,7 +64,6 @@ return [
                 'title' => 'Tag',
                 'icon' => 'bi bi-tag',
                 'route' => 'tags.index',
-                'name' => 'tags',
             ],
         ],
     ],
@@ -54,6 +75,12 @@ return [
                 'title' => 'Danh sách bài viết',
                 'icon' => 'bi bi-file-earmark',
                 'route' => 'post.index',
+                'name' => 'post',
+            ],
+            [
+                'title' => 'Tạo bài viết',
+                'icon' => 'bi bi-building-add',
+                'route' => 'post.create',
                 'name' => 'post',
             ],
             [
@@ -90,13 +117,11 @@ return [
                 'title' => 'Nhà cung cấp',
                 'icon' => 'bi bi-house-add',
                 'route' => 'supplier.index',
-                'name' => 'supplier',
             ],
             [
                 'title' => 'Phiếu nhập hàng',
                 'icon' => 'bi bi-receipt',
                 'route' => 'purchase_receipt.index',
-                'name' => 'purchase_receipt',
             ],
         ],
     ],
@@ -108,7 +133,6 @@ return [
                 'title' => 'Danh sách đơn hàng',
                 'icon' => 'bi bi-inboxes',
                 'route' => 'orders.index',
-                'name' => 'orders',
             ],
         ],
     ],
@@ -120,7 +144,6 @@ return [
                 'title' => 'Danh sách Flash Sale',
                 'icon' => 'bi bi-activity',
                 'route' => 'flash-sales.index',
-                'name' => 'flash-sales',
             ],
         ],
     ],

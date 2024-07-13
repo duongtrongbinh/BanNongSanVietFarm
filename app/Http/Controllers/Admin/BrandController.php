@@ -8,10 +8,6 @@ use App\Http\Repositories\ProductImageRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Requests\BrandCreateRequest;
 use App\Models\Brand;
-use Illuminate\Support\Str;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class BrandController extends Controller
 {
@@ -27,9 +23,9 @@ class BrandController extends Controller
         $this->productImageRepository = $productImageRepository;
     }
 
-    public function index(Brand $brand)
+    public function index()
     {
-        $brands = $this->brandRepository->getAllWithRelations(['products']);
+        $brands = $this->brandRepository->getLatestAll();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('brands'));
     }
@@ -41,25 +37,20 @@ class BrandController extends Controller
 
     public function store(BrandCreateRequest $request)
     {
-        $request['slug'] = Str::slug($request['name']);
         $this->brandRepository->create($request->all());
 
         return redirect()
             ->route('brands.index')
-            ->with('status', 'Success');
+            ->with('created', 'Thêm mới thương hiệu thành công!');
     }
 
     public function show(Brand $brand)
     {
-        $this->brandRepository->findOrFail($brand->id);
-
         return view(self::PATH_VIEW . __FUNCTION__, compact('brand'));
     }
 
     public function edit(Brand $brand)
     {
-        $this->brandRepository->findOrFail($brand->id);
-
         return view(self::PATH_VIEW . __FUNCTION__, compact('brand'));
     }
 
@@ -68,7 +59,7 @@ class BrandController extends Controller
         $this->brandRepository->update($brand->id, $request->validated());
 
         return back()
-            ->with('status', 'Success');
+            ->with('updated', 'Cập nhật thương hiệu thành công!');
     }
 
     public function delete(Brand $brand)
@@ -76,7 +67,6 @@ class BrandController extends Controller
         $this->brandRepository->delete($brand->id);
 
         return response()->json(true);
-
     }
 
     public function destroy(Brand $brand)

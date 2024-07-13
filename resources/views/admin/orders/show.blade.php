@@ -9,6 +9,7 @@
         }
     </style>
 @endsection
+@php use App\Enum\OrderStatus; @endphp
 @section('content')
     <div class="pagetitle">
       <h1>Chi tiết đơn hàng</h1>
@@ -90,7 +91,9 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Trạng thái thanh toán:</p>
-                                <p class="badge bg-warning-subtle text-warning text-uppercase">Đang xử lý</p>
+                                <p class="{{ $statusData['badgeClass'] }}">
+                                    {{ $statusData['label'] }}
+                                </p>
                             </div>
                         </div>
                         <div class="col-5">
@@ -119,12 +122,18 @@
                 <div class="card-header">
                     <div class="d-sm-flex align-items-center">
                         <h5 class="card-title flex-grow-1 mb-0">Trạng thái đơn hàng</h5>
+                        <div class="d-flex flex-shrink-0 mt-2 mt-sm-0">
+                            @if ($order->status == OrderStatus::CANCELLED->value)
+                                <div class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
+                                    Đơn hàng đã bị hủy
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="profile-timeline">
                         <div class="accordion accordion-flush" id="accordionFlushExample">
-                            @php use App\Enum\OrderStatus; @endphp
                             @foreach($order->order_histories as $order_history) 
                                 @foreach (OrderStatus::cases() as $status) 
                                     @if($order_history->status == $status->value)
@@ -139,7 +148,7 @@
                                                         </div>
                                                         <div class="flex-grow-1 ms-3">
                                                             <h6 class="fs-15 mb-0 fw-semibold">
-                                                                {{ $status->name }} - <span class="fw-normal">{{ $order_history->created_at }}</span>
+                                                                {{ $status->name }} - <span class="fw-normal">{{ date('H:i:s l, d/m/Y', strtotime($order_history->created_at)) }}</span>
                                                             </h6>
                                                         </div>
                                                     </div>

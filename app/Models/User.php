@@ -9,7 +9,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Uuid;
-
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -22,6 +21,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'phone',
+        'user_code',
         'address',
         'social_id',
         'name_avatar',
@@ -29,6 +29,9 @@ class User extends Authenticatable
         'desc',
         'avatar',
         'user_code',
+        'token',
+        'status',
+        'remember_token',
         'birthday'
     ];
 
@@ -47,7 +50,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'user_id', 'id');
     }
-
+    public function hasPurchasedProduct($productId)
+    {
+        return $this->orders()->whereHas('products', function ($query) use ($productId) {
+            $query->where('product_id', $productId);
+        })->exists();
+    }
     /**
      * The attributes that should be cast to native types.
      *
@@ -87,12 +95,13 @@ class User extends Authenticatable
         ]);
     }
 
+
     public static function boot()
     {
         parent::boot();
 
         static::creating(function ($user) {
-            $user->user_code = fake()->uuid(); 
+            $user->user_code = fake()->uuid();
         });
     }
 

@@ -13,6 +13,10 @@
         }
     </style>
 @endsection
+@php
+    use App\Enum\OrderStatus;
+    $updated = session('updated');
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Chỉnh sửa đơn hàng</h1>
@@ -32,9 +36,6 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h5 class="card-title flex-grow-1 mb-0">Đơn hàng #{{ $order->order_code }}</h5>
-                        <div class="flex-shrink-0">
-
-                        </div>
                     </div>
                 </div>
                 <div class="card-body">
@@ -128,7 +129,7 @@
                                 @csrf
                                 @method('PUT')
                                 <select class="align-items-center" name="status">
-                                    @php use App\Enums\OrderStatus; @endphp
+                                    @php use App\Enum\OrderStatus; @endphp
                                     @foreach ([
                                         OrderStatus::PENDING,
                                         OrderStatus::PREPARE,
