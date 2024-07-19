@@ -4,12 +4,16 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/order/order.css') }}">
     <style>
         .table-container {
-            max-height: 300px;
+            max-height: 320px;
             overflow: auto;
         }
     </style>
 @endsection
-@php use App\Enum\OrderStatus; @endphp
+@php 
+    use App\Enums\OrderStatus;
+    use App\Enums\TransferStatus; 
+    use Carbon\Carbon;
+@endphp
 @section('content')
     <div class="pagetitle">
       <h1>Chi tiết đơn hàng</h1>
@@ -96,22 +100,22 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="col-5">
+                        <div class="col-4">
                             <div class="d-flex justify-content-between">
                                 <p>Thành Tiền:</p>
-                                <p>{{ number_format($subtotal) }} VNĐ</p>
+                                <p>{{ number_format($order->before_total_amount) }} VNĐ</p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Giảm giá <span class="text-muted">()</span> :</p>
                                 <p></p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p>Shipping:</p>
-                                <p> VNĐ</p>
+                                <p>Phí vận chuyển:</p>
+                                <p>{{ number_format($order->shipping) }} VNĐ</p>
                             </div>
                             <div class="border-top border-top-dashed d-flex justify-content-between">
-                                <p><b>Total:</b></p>
-                                <p><b>VNĐ</b></p>
+                                <p><b>Tổng tiền:</b></p>
+                                <p><b>{{ number_format($order->after_total_amount) }} VNĐ</b></p>
                             </div>
                         </div>
                     </div>
@@ -127,106 +131,56 @@
                                 <div class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
                                     Đơn hàng đã bị hủy
                                 </div>
+                            @elseif ($order->status == OrderStatus::COMPLETED->value)
+                                <div class="btn btn-success btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
+                                    Đơn hàng đã hoàn thành
+                                </div>
                             @endif
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="profile-timeline">
-                        <div class="accordion accordion-flush" id="accordionFlushExample">
-                            @foreach($order->order_histories as $order_history) 
-                                @foreach (OrderStatus::cases() as $status) 
-                                    @if($order_history->status == $status->value)
-                                        <div class="accordion-item border-0">
-                                            <div class="accordion-header" id="headingOne">
-                                                <a class="p-2 shadow-none">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 avatar-xs">
-                                                            <div class="avatar-title bg-success rounded-circle">
-                                                                <i class="ri-shopping-bag-line"></i>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex-grow-1 ms-3">
-                                                            <h6 class="fs-15 mb-0 fw-semibold">
-                                                                {{ $status->name }} - <span class="fw-normal">{{ date('H:i:s l, d/m/Y', strtotime($order_history->created_at)) }}</span>
-                                                            </h6>
-                                                        </div>
+                        @foreach ($orderHistoriesWithTransfers as $key => $historyWithTransfers)
+                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                <div class="accordion-item border-0">
+                                    <div class="accordion-header" id="heading{{ $key + 1 }}">
+                                        <a class="accordion-button p-2 shadow-none {{ !$historyWithTransfers['showTransferHistory'] ? 'no-arrow' : '' }}" data-bs-toggle="collapse" href="#collapse{{ $key + 1 }}" aria-expanded="{{ $historyWithTransfers['showTransferHistory'] ? 'true' : 'false' }}" aria-controls="collapse{{ $key + 1 }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 avatar-xs">
+                                                    <div class="avatar-title bg-success rounded-circle">
+                                                        <i class="ri-shopping-bag-line"></i>
                                                     </div>
-                                                </a>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    @foreach (OrderStatus::cases() as $statusOrder)
+                                                        @if($historyWithTransfers['orderHistory']->status == $statusOrder->value)
+                                                            <h6 class="fs-15 mb-0 fw-semibold">
+                                                                <b style="color: #4154f1;">{{ $statusOrder->label() }}</b> - <span class="fw-normal">{{ $historyWithTransfers['formattedOrderHistory'] }}</span>
+                                                            </h6>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
                                             </div>
+                                        </a>
+                                    </div>
+                                    @if ($historyWithTransfers['showTransferHistory'])
+                                        <div id="collapse{{ $key + 1 }}" class="accordion-collapse collapse show" aria-labelledby="heading{{ $key + 1 }}" data-bs-parent="#accordionExample">
                                             <div class="accordion-body ms-2 ps-5 pt-0">
-                                                <h6 class="mb-1">{{ $order_history->warehouse }}</h6>
+                                                @foreach($historyWithTransfers['transferHistories'] as $transfer_history)
+                                                    @foreach (TransferStatus::cases() as $statusTransfer)
+                                                        @if($transfer_history->status == $statusTransfer->value)
+                                                            <h6 class="">{{ $statusTransfer->label() }}</h6>
+                                                            <p class="text-muted">{{ Carbon::parse($transfer_history->created_at)->translatedFormat('H:i:s l, d/m/Y') }}</p>
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
                                             </div>
                                         </div>
                                     @endif
-                                @endforeach
-                            @endforeach
-                            
-                            {{-- <div class="accordion-item border-0">
-                                <div class="accordion-header" id="headingTwo">
-                                    <a class="p-2 shadow-none">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 avatar-xs">
-                                                <div class="avatar-title bg-success rounded-circle">
-                                                    <i class="bi bi-gift"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="fs-15 mb-1 fw-semibold">Packed - <span class="fw-normal">Thu, 16 Dec 2021</span></h6>
-                                            </div>
-                                        </div>
-                                    </a>
                                 </div>
                             </div>
-                            <div class="accordion-item border-0">
-                                <div class="accordion-header" id="headingThree">
-                                    <a class="p-2 shadow-none">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 avatar-xs">
-                                                <div class="avatar-title bg-success rounded-circle">
-                                                    <i class="bi bi-truck"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="fs-15 mb-1 fw-semibold">Shipping - <span class="fw-normal">Thu, 16 Dec 2021</span></h6>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="accordion-item border-0">
-                                <div class="accordion-header" id="headingFour">
-                                    <a class="p-2 shadow-none">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 avatar-xs">
-                                                <div class="avatar-title bg-light text-success rounded-circle">
-                                                    <i class="ri-takeaway-fill"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="fs-14 mb-0 fw-semibold">Out For Delivery</h6>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="accordion-item border-0">
-                                <div class="accordion-header" id="headingFive">
-                                    <a class="p-2 shadow-none">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0 avatar-xs">
-                                                <div class="avatar-title bg-light text-success rounded-circle">
-                                                    <i class="bi bi-box-seam-fill"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="fs-14 mb-0 fw-semibold">Delivered</h6>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div> --}}
-                        </div>
+                        @endforeach
                         <!--end accordion-->
                     </div>
                 </div>
