@@ -70,4 +70,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderHistory::class, 'order_id', 'id');
     }
+
+    public function transfer_histories()
+    {
+        return $this->hasMany(TransferHistory::class, 'order_id', 'id');
+    }
 }

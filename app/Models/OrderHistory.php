@@ -14,11 +14,10 @@ class OrderHistory extends Model
     protected $fillable = [
         'order_id',
         'status',
-        'warehouse',
     ];
 
     public function order()
     {
-        return $this->BelongsTo(Order::class, 'product_id')->withTrashed();
+        return $this->BelongsTo(Order::class, 'order_id')->withTrashed();
     }
 }

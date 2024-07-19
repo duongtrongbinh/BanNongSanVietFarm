@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
-use App\Enum\OrderStatus;
+use App\Enums\OrderStatus;
 
 class SendOrderToGHN implements ShouldQueue
 {

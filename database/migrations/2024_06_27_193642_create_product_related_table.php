@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_related', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade')->onRestore('cascade');
-            $table->foreignId('product_related_id')->constrained()->onDelete('cascade')->onRestore('cascade');
+            $table->foreignId('product_related_id')->constrained('products')->onDelete('cascade')->onRestore('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

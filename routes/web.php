@@ -100,12 +100,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
         ->name('groups.delete');
 
-    /* Route Product Related */
-    Route::resource('products/{$product}/related', RelatedController::class);
-    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
-        ->name('groups.delete');
-
     /* Route Tag */
     Route::resource('tags', TagController::class);
     Route::delete('tags/{id}', [TagController::class, 'delete'])
@@ -134,16 +128,20 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('orders.all');
     Route::get('orders/pending', [OrderController::class, 'getPending'])
         ->name('orders.pending');
-    Route::get('orders/prepare', [OrderController::class, 'getPrepare'])
-        ->name('orders.prepare');
-    Route::get('orders/pending-payment', [OrderController::class, 'getPendingPayment'])
-        ->name('orders.pendingPayment');
-    Route::get('orders/success-payment', [OrderController::class, 'getSuccessPayment'])
-        ->name('orders.successPayment');
-    Route::get('orders/ready-to-pick', [OrderController::class, 'getReadyToPick'])
-        ->name('orders.readyToPick');
+    Route::get('orders/processing', [OrderController::class, 'getProcessing'])
+        ->name('orders.processing');
+    Route::get('orders/shipping', [OrderController::class, 'getShipping'])
+        ->name('orders.shipping');
+    Route::get('orders/shipped', [OrderController::class, 'getShipped'])
+        ->name('orders.shipped');
+    Route::get('orders/delivered', [OrderController::class, 'getDelivered'])
+        ->name('orders.delivered');
+    Route::get('orders/completed', [OrderController::class, 'getCompleted'])
+        ->name('orders.completed');
     Route::get('orders/cancelled', [OrderController::class, 'getCancelled'])
         ->name('orders.cancelled');
+    Route::get('orders/returned', [OrderController::class, 'getReturned'])
+        ->name('orders.returned');
     Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
         ->name('orders.updateStatus');
     Route::resource('orders',OrderController::class);
@@ -207,7 +205,7 @@ Route::group(['prefix' => ''], function () {
 
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
-//    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+   Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
     Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 

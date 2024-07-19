@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enum\TypeUnitEnum;
+use App\Enums\TypeUnitEnum;
 use App\Excel\Imports\PurchaseReceiptImport;
 use App\Http\Controllers\Controller;
 use App\Models\Product;

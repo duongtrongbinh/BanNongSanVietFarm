@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enum\OrderStatus;
+use App\Enums\OrderStatus;
 use App\Notifications\OrderFailedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
