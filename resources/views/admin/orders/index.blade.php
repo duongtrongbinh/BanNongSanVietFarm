@@ -108,38 +108,50 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">
-                                <i class="ri-loader-2-line me-1 align-bottom"></i> 
-                                Chờ xử lý
+                                <i class="ri-more-fill me-1 align-bottom"></i> 
+                                Đang chờ xử lý
                             </button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#prepare">
-                                <i class="ri-archive-2-fill me-1 align-bottom"></i> 
-                                Đang chuẩn bị
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#processing">
+                                <i class="ri-loader-2-fill me-1 align-bottom"></i> 
+                                Đang xử lý
                             </button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pendingPayment">
-                                <i class="ri-bank-card-fill me-1 align-bottom"></i> 
-                                Chờ thanh toán
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping">
+                                <i class="ri-truck-fill me-1 align-bottom"></i> 
+                                Vận chuyển
                             </button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#successPayment">
-                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i> 
-                                Thanh toán thành công
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#readyToPick">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipped">
                                 <i class="ri-takeaway-fill me-1 align-bottom"></i> 
-                                Sẵn sàng lấy hàng
+                                Giao hàng
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
+                                <i class="ri-user-received-fill me-1 align-bottom"></i> 
+                                Đã nhận hàng
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed">
+                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i> 
+                                Hoàn thành
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
                                 <i class="ri-close-circle-fill me-1 align-bottom"></i> 
-                                Đơn hàng đã huỷ
+                                Đã hủy
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returned">
+                                <i class="ri-reply-fill me-1 align-bottom"></i> 
+                                Trả hàng/Hoàn tiền
                             </button>
                         </li>
                     </ul>
@@ -190,10 +202,10 @@
                                     </thead>
                                 </table>
                             </div>
-                            <!-- Prepare -->
-                            <div class="tab-pane fade prepare pt-3" id="prepare">
+                            <!-- Processing -->
+                            <div class="tab-pane fade prepare pt-3" id="processing">
                                 <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
-                                    data-url="{{ route('orders.prepare') }}">
+                                    data-url="{{ route('orders.processing') }}">
                                     <thead>
                                         <tr>
                                             <th>
@@ -212,10 +224,10 @@
                                     </thead>
                                 </table>
                             </div>
-                            <!-- Pending Payment -->
-                            <div class="tab-pane fade pendingPayment pt-3" id="pendingPayment">
+                            <!-- Shipping -->
+                            <div class="tab-pane fade shipping pt-3" id="shipping">
                                 <table id="table3" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
-                                    data-url="{{ route('orders.pendingPayment') }}">
+                                    data-url="{{ route('orders.shipping') }}">
                                     <thead>
                                         <tr>
                                             <th>
@@ -234,10 +246,10 @@
                                     </thead>
                                 </table>
                             </div>
-                            <!-- Success Payment -->
-                            <div class="tab-pane fade successPayment pt-3" id="successPayment">
+                            <!-- Shipped -->
+                            <div class="tab-pane fade shipped pt-3" id="shipped">
                                 <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
-                                    data-url="{{ route('orders.successPayment') }}">
+                                    data-url="{{ route('orders.shipped') }}">
                                     <thead>
                                         <tr>
                                             <th>
@@ -256,10 +268,32 @@
                                     </thead>
                                 </table>
                             </div>
-                             <!-- Ready To Pick -->
-                             <div class="tab-pane fade readyToPick pt-3" id="readyToPick">
+                            <!-- Delivered -->
+                            <div class="tab-pane fade delivered pt-3" id="delivered">
                                 <table id="table5" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
-                                    data-url="{{ route('orders.readyToPick') }}">
+                                    data-url="{{ route('orders.delivered') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Completed -->
+                            <div class="tab-pane fade completed pt-3" id="completed">
+                                <table id="table6" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.completed') }}">
                                     <thead>
                                         <tr>
                                             <th>
@@ -280,8 +314,30 @@
                             </div>
                             <!-- Cancelled -->
                             <div class="tab-pane fade cancelled pt-3" id="cancelled">
-                                <table id="table6" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                <table id="table7" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                     data-url="{{ route('orders.cancelled') }}">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <input class="form-check-input selectAll" type="checkbox">
+                                            </th>
+                                            <th>#</th>
+                                            <th>Mã hóa đơn</th>
+                                            <th>Khách hàng</th>
+                                            <th>Sản phẩm</th>
+                                            <th>Ngày đặt hàng</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Phương thức thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Chỉnh sửa</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <!-- Returned -->
+                            <div class="tab-pane fade returned pt-3" id="returned">
+                                <table id="table8" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
+                                    data-url="{{ route('orders.returned') }}">
                                     <thead>
                                         <tr>
                                             <th>
@@ -500,6 +556,7 @@
                         let title = 'Cập nhật';
                         let message = response.message;
                         let icon = 'success';
+
                         showMessage(title, message, icon);
 
                         var allTables = $.fn.dataTable.tables();
@@ -510,9 +567,11 @@
                     },
                     error: function(response) {
                         let title = 'Lỗi';
-                        let message = 'Cập nhật trạng thái đơn hàng không thành công!';
                         let icon = 'error';
-                        showMessage(title, message, icon);
+                        if (response.status === 400) {
+                            let errorMessage = response.responseJSON.message;
+                            showMessage(title, errorMessage, icon);
+                        }
                     }
                 });
 
@@ -526,6 +585,8 @@
             initializeDataTable('table4');
             initializeDataTable('table5');
             initializeDataTable('table6');
+            initializeDataTable('table7');
+            initializeDataTable('table8');
 
             $('#export').click(function() {
                 var table = document.getElementById("table0");

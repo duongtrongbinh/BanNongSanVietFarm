@@ -167,32 +167,28 @@
                             <div class="row g-4">
                                 <div class="col-lg-12">
                                     <div class="row g-4">
-                                        @php $productCount = 0; @endphp
-                                        @foreach ($category->products as $product)
-                                            @if ($product->is_home == 1 && $product->is_active == 1 && $productCount < 8)
-                                                <div class="col-md-6 col-lg-4 col-xl-3">
-                                                    <a href="{{ route('product', $product->slug) }}">
-                                                        <div class="rounded position-relative fruite-item border border-secondary">
-                                                            <div class="fruite-img">
-                                                                <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
-                                                            </div>
-                                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
-                                                            <div class="p-4 border-top-0 rounded-bottom">
-                                                                <h4 class="text-truncate">{{ $product->name }}</h4>
-                                                                <p class="text-truncate">{{ $product->description }}</p>
-                                                                <div class="justify-content-between flex-lg-wrap">
-                                                                    <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>
-                                                                    <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                                                        <i class="fa fa-shopping-bag me-2 text-primary"></i> 
-                                                                        Thêm vào giỏ
-                                                                    </a>
-                                                                </div>
+                                        @foreach ($category->products as $product) 
+                                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                                <a href="{{ route('product', $product->slug) }}">
+                                                    <div class="rounded position-relative fruite-item border border-secondary">
+                                                        <div class="fruite-img">
+                                                            <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
+                                                        </div>
+                                                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
+                                                        <div class="p-4 border-top-0 rounded-bottom">
+                                                            <h4 class="text-truncate">{{ $product->name }}</h4>
+                                                            <p class="text-truncate">{{ $product->description }}</p>
+                                                            <div class="justify-content-between flex-lg-wrap">
+                                                                <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>
+                                                                <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
+                                                                    <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                                                    Thêm vào giỏ
+                                                                </a>
                                                             </div>
                                                         </div>
-                                                    </a>
-                                                </div>
-                                                @php $productCount++; @endphp
-                                            @endif
+                                                    </div>
+                                                </a>
+                                            </div>
                                         @endforeach
                                     </div>
                                     <div class="justify-content-between mt-5">

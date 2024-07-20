@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('related', function (Blueprint $table) {
+        Schema::create('transfer_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade')->onRestore('cascade');
-            $table->tinyInteger('is_active')->default(1);
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->tinyInteger('status');
+            $table->string('warehouse')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('related');
+        Schema::dropIfExists('transfer_histories');
     }
 };

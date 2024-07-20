@@ -19,6 +19,8 @@ class OrderSeeder extends Seeder
         $users = User::all();
         foreach ($users as $user) {
             for ($i = 0; $i < 30; $i++) {
+                $beforeTotalAmount = 0;
+
                 $order = Order::create([
                     'user_id' => $user->id,
                     'voucher_id' => rand(1, 15),
@@ -26,9 +28,7 @@ class OrderSeeder extends Seeder
                     'name' => $user->name,
                     'phone' => $user->phone,
                     'email' => $user->email,
-                    'before_total_amount' => $faker->randomFloat(4, 100, 1000),
-                    'shipping' => $faker->randomFloat(4, 10, 50),
-                    'after_total_amount' => $faker->randomFloat(4, 110, 1050),
+                    'payment_method' => rand(0, 1),
                     'note' => $faker->sentence(),
                     'status' => 0,
                     'order_code' => strtoupper($faker->regexify('[A-Z]{4}[0-9]{4}')),
@@ -40,6 +40,9 @@ class OrderSeeder extends Seeder
                 $orderDetailsCount = rand(2, 10);
                 $products = Product::inRandomOrder()->take($orderDetailsCount)->get();
                 foreach ($products as $product) {
+                    $quantity = $faker->numberBetween(1, 5);
+                    $beforeTotalAmount += $product->price_sale * $quantity;
+
                     DB::table('order_details')->insert([
                         'order_id' => $order->id,
                         'product_id' => $product->id,
@@ -47,11 +50,20 @@ class OrderSeeder extends Seeder
                         'image' => $product->image,
                         'price_regular' => $product->price_regular,
                         'price_sale' => $product->price_sale,
-                        'quantity' => $faker->numberBetween(1, 5),
+                        'quantity' => $quantity,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
                 }
+                
+                $shipping = $faker->randomFloat(4, 10000, 50000);
+                $afterTotalAmount = $beforeTotalAmount + $shipping;
+
+                // Update order with calculated amounts
+                $order->before_total_amount = $beforeTotalAmount;
+                $order->shipping = $shipping;
+                $order->after_total_amount = $afterTotalAmount;
+                $order->save();
 
                 // Create order history
                 DB::table('order_histories')->insert([

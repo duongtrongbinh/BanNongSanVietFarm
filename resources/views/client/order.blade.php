@@ -8,116 +8,54 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 @endsection
-
+@php use App\Enums\OrderStatus; @endphp
 @section('content')
-    <div class="pagetitle">
-        <h1>List Order</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active"><a href="{{ route('orders.index') }}">Order</a></li>
-            </ol>
-        </nav>
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Đơn hàng</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="#"> Đơn hàng </a></li>
+        </ol>
     </div>
     <!-- End Page Title -->
-    <section class="container-lg section" style="margin-top:150px ; height: 1000px">
+    <section class="container-lg section" style="margin-top:50px">
         <div class="row">
             <div class="col">
                 <div class="card">
-                    <div class="card-header border-0">
-{{--                        <div class="row align-items-center gy-3">--}}
-{{--                            <div class="col-sm-auto">--}}
-{{--                                <div class="d-flex gap-1 flex-wrap">--}}
-{{--                                    <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Create Order</button>--}}
-{{--                                    <button type="button" class="btn btn-info"><i class="ri-file-download-line align-bottom me-1"></i> Import</button>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <div class="row g-3">
-                                <div class="col-xxl-2 col-sm-6">
-                                    <div>
-                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" id="demo-datepicker" placeholder="Select date">
-                                    </div>
-                                </div>
-                                <!--end col-->
-                                <div class="col-xxl-2 col-sm-4">
-                                    <div>
-                                        <select class="form-control" data-choices data-choices-search-false name="choices-single-default" id="idStatus">
-                                            <option value="">Status</option>
-                                            <option value="all" selected>All</option>
-                                            <option value="Pending">Pending</option>
-                                            <option value="Inprogress">Inprogress</option>
-                                            <option value="Cancelled">Cancelled</option>
-                                            <option value="Pickups">Pickups</option>
-                                            <option value="Returns">Returns</option>
-                                            <option value="Delivered">Delivered</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!--end col-->
-                                <div class="col-xxl-2 col-sm-4">
-                                    <div>
-                                        <select class="form-control" data-choices data-choices-search-false name="choices-single-default" id="idPayment">
-                                            <option value="">Select Payment</option>
-                                            <option value="all" selected>All</option>
-                                            <option value="Mastercard">Mastercard</option>
-                                            <option value="Paypal">Paypal</option>
-                                            <option value="Visa">Visa</option>
-                                            <option value="COD">COD</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!--end col-->
-                                <div class="col-xxl-1 col-sm-4">
-                                    <div>
-                                        <button type="button" class="btn btn-primary w-100" onclick="SearchData();"> <i class="ri-equalizer-fill me-1 align-bottom"></i>
-                                            Filters
-                                        </button>
-                                    </div>
-                                </div>
-                                <!--end col-->
-                            </div>
-                            <!--end row-->
-                        </form>
-                    </div>
                     <div class="card-body pt-3">
                         <!-- Bordered Tabs -->
                         <ul class="nav nav-tabs nav-tabs-bordered">
                             <li class="nav-item">
                                 <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#all-orders">
                                     <i class="ri-store-2-fill me-1 align-bottom"></i>
-                                    All Orders
+                                    Tất cả
                                 </button>
                             </li>
-
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
                                     <i class="ri-checkbox-circle-line me-1 align-bottom"></i>
-                                    Delivered
+                                    Đang chuẩn bị
                                 </button>
                             </li>
 
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pickups">
                                     <i class="ri-truck-line me-1 align-bottom"></i>
-                                    Pickups
-                                    <span class="badge bg-danger align-middle ms-1">{{ count($pickups) }}</span>
+                                    Chờ thanh toán
+{{--                                    <span class="badge bg-danger align-middle ms-1">{{ count($pickups) }}</span>--}}
                                 </button>
                             </li>
 
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returns">
                                     <i class="ri-arrow-left-right-fill me-1 align-bottom"></i>
-                                    Returns
+                                    Sẵn sàng lấy hàng
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
                                     <i class="ri-close-circle-line me-1 align-bottom"></i>
-                                    Cancelled
+                                    Đơn hàng hủy
                                 </button>
                             </li>
                         </ul>
@@ -135,6 +73,7 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -163,26 +102,29 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($order->status == 0)
-                                                    <span class="badge border border-warning text-warning">Pending</span>
-                                                @elseif ($order->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($order->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($order->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($order->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
+                                                @if ($order->status == OrderStatus::PENDING->value)
+                                                    <span class="badge border border-warning text-warning">Chờ xử lý</span>
+                                                @elseif ($order->status == OrderStatus::PREPARE->value)
+                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Đang chuẩn bị</span>
+                                                @elseif ($order->status == OrderStatus::PENDING_PAYMENT->value)
+                                                    <span class="badge bg-info-subtle text-info text-uppercase">Chờ thanh toán</span>
+                                                @elseif ($order->status == OrderStatus::READY_TO_PICK->value)
+                                                    <span class="badge bg-success-subtle text-success text-uppercase">Sẵn sàng lấy hàng</span>
+                                                @elseif ($order->status == OrderStatus::PICKING->value)
+                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Đang lấy hàng</span>
+                                                @elseif($order->status == OrderStatus::PICKED->value)
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Đã lấy hàng</span>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
                                             </td>
                                         </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- Delivered -->
+                            <!-- Đang chuẩn bị -->
                             <div class="tab-pane fade delivered pt-3" id="delivered">
                                 <table id="table1" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
@@ -195,10 +137,12 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($delivereds as $key => $delivered)
+                                    @foreach ($orderAll as $key => $delivered)
+                                        @if($delivered->status == OrderStatus::PREPARE->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
@@ -223,27 +167,19 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($delivered->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($delivered->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($delivered->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($delivered->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($delivered->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
+                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Đang chuẩn bị</span>
+                                            </td>
+                                              <td>
+                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
                                             </td>
                                         </tr>
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Pickups -->
+                            <!-- Chờ thanh toán  -->
                             <div class="tab-pane fade pickups pt-3" id="pickups">
                                 <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
@@ -256,10 +192,12 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($pickups as $key => $pickup)
+                                    @foreach ($orderAll as $key => $pickup)
+                                        @if($pickup->status == OrderStatus::PENDING_PAYMENT->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
@@ -284,27 +222,19 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($pickup->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($pickup->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($pickup->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($pickup->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($pickup->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
+                                                    <span class="badge bg-info-subtle text-info text-uppercase">Chờ thanh toán</span>
+                                            </td>
+                                              <td>
+                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
                                             </td>
                                         </tr>
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Returns -->
+                            <!-- Sẵn sàng lấy hàng -->
                             <div class="tab-pane fade returns pt-3" id="returns">
                                 <table id="table3" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
@@ -317,10 +247,12 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($returns as $key => $return)
+                                    @foreach ($orderAll as $key => $return)
+                                        @if($return->status == OrderStatus::RETURNING->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
@@ -345,22 +277,13 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if ($return->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($return->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($return->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($return->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($return->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
+                                                    <span class="badge bg-success-subtle text-success text-uppercase">Sẵn sàng lấy hàng</span>
                                             </td>
-
+                                              <td>
+                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                            </td>
                                         </tr>
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -379,10 +302,12 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($cancelleds as $key => $cancelled)
+                                    @foreach ($orderAll as $key => $cancelled)
+                                        @if($cancelled->status == OrderStatus::CANCELLED->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
@@ -421,8 +346,12 @@
                                                     <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
                                                 @endif
                                             </td>
+                                              <td>
+                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                            </td>
 
                                         </tr>
+                                        @endif
                                     @endforeach
                                     </tbody>
                                 </table>

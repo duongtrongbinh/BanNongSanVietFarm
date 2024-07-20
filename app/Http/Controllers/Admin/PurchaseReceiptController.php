@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enum\TypeUnitEnum;
+use App\Enums\TypeUnitEnum;
 use App\Excel\Imports\PurchaseReceiptImport;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
@@ -65,10 +65,10 @@ class PurchaseReceiptController extends Controller
         return view('admin.purchase_receipt.index', compact('purchaseReceipts'));
     }
 
-    public function import(Request $request) 
+    public function import(Request $request)
     {
         Excel::import(new PurchaseReceiptImport, $request->file('purchase_file'));
-        
+
         return redirect()->back()->with('success', 'Purchases imported successfully.');
     }
 

@@ -4,18 +4,25 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/css/order/order.css') }}">
     <style>
         .table-container {
-            max-height: 300px;
+            max-height: 320px;
             overflow: auto;
         }
         .no-hover:hover {
             background-color: #dc3545;
             color: #fff;
         }
+        .accordion-button.no-arrow:not(.collapsed)::after {
+            display: none;
+        }
     </style>
 @endsection
-@php 
-    use App\Enum\OrderStatus; 
+@php
+    use App\Enums\OrderStatus;
+    use App\Enums\TransferStatus;
+    use Carbon\Carbon;
+
     $updated = session('updated');
+    $error = session('error');
 @endphp
 @section('content')
     <div class="pagetitle">
@@ -24,7 +31,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Trang chủ</a></li>
             <li class="breadcrumb-item"><a href="{{ route('orders.index') }}">Đơn hàng</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('orders.show', $order->id) }}" class="active">Chi tiết đơn hàng</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('orders.edit', $order->id) }}" class="active">Chỉnh sửa đơn hàng</a></li>
         </ol>
       </nav>
     </div>
@@ -91,7 +98,7 @@
                         <div class="col-5">
                             <div class="d-flex justify-content-between">
                                 <p>Phương thức thanh toán:</p>
-                                <p><b>VNPAY</b></p>
+                                <p><b>{{ $order->payment_method == 0 ? 'VNPAY' : 'COD' }}</b></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Trạng thái thanh toán:</p>
@@ -103,19 +110,19 @@
                         <div class="col-4">
                             <div class="d-flex justify-content-between">
                                 <p>Thành Tiền:</p>
-                                <p>{{ number_format($subtotal) }} VNĐ</p>
+                                <p>{{ number_format($order->before_total_amount) }} VNĐ</p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Giảm giá <span class="text-muted">()</span> :</p>
                                 <p></p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p>Shipping:</p>
-                                <p> VNĐ</p>
+                                <p>Phí vận chuyển:</p>
+                                <p>{{ number_format($order->shipping) }} VNĐ</p>
                             </div>
                             <div class="border-top border-top-dashed d-flex justify-content-between">
-                                <p><b>Total:</b></p>
-                                <p><b>VNĐ</b></p>
+                                <p><b>Tổng tiền:</b></p>
+                                <p><b>{{ number_format($order->after_total_amount) }} VNĐ</b></p>
                             </div>
                         </div>
                     </div>
@@ -127,7 +134,15 @@
                     <div class="d-sm-flex align-items-center">
                         <h5 class="card-title flex-grow-1 mb-0">Trạng thái đơn hàng</h5>
                         <div class="d-flex flex-shrink-0 mt-2 mt-sm-0">
-                            @if ($order->status != OrderStatus::CANCELLED->value)
+                            @if ($order->status == OrderStatus::COMPLETED->value)
+                                <div class="btn btn-success btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
+                                    Đơn hàng đã hoàn thành
+                                </div>
+                            @elseif($order->status == OrderStatus::CANCELLED->value)
+                                <div class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
+                                    Đơn hàng đã bị hủy
+                                </div>
+                            @else
                                 <form action="{{ route('orders.update', $order->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
@@ -137,50 +152,56 @@
                                 </form>
                                 <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
                                     @csrf
-                                    @method('PUT')
                                     <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
                                         Hủy đơn hàng
                                     </button>
                                 </form>
-                            @else
-                                <div class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
-                                    Đơn hàng đã bị hủy
-                                </div>
                             @endif
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="profile-timeline">
-                        <div class="accordion accordion-flush" id="accordionFlushExample">
-                            @foreach($order->order_histories as $order_history) 
-                                @foreach (OrderStatus::cases() as $status) 
-                                    @if($order_history->status == $status->value)
-                                        <div class="accordion-item border-0">
-                                            <div class="accordion-header" id="headingOne">
-                                                <a class="p-2 shadow-none">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0 avatar-xs">
-                                                            <div class="avatar-title bg-success rounded-circle">
-                                                                <i class="ri-shopping-bag-line"></i>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex-grow-1 ms-3">
-                                                            <h6 class="fs-15 mb-0 fw-semibold">
-                                                                {{ $status->name }} - <span class="fw-normal">{{ date('H:i:s l, d/m/Y', strtotime($order_history->created_at)) }}</span>
-                                                            </h6>
-                                                        </div>
+                        @foreach ($orderHistoriesWithTransfers as $key => $historyWithTransfers)
+                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                <div class="accordion-item border-0">
+                                    <div class="accordion-header" id="heading{{ $key + 1 }}">
+                                        <a class="accordion-button p-2 shadow-none {{ !$historyWithTransfers['showTransferHistory'] ? 'no-arrow' : '' }}" data-bs-toggle="collapse" href="#collapse{{ $key + 1 }}" aria-expanded="{{ $historyWithTransfers['showTransferHistory'] ? 'true' : 'false' }}" aria-controls="collapse{{ $key + 1 }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 avatar-xs">
+                                                    <div class="avatar-title bg-success rounded-circle">
+                                                        <i class="ri-shopping-bag-line"></i>
                                                     </div>
-                                                </a>
+                                                </div>
+                                                <div class="flex-grow-1 ms-3">
+                                                    @foreach (OrderStatus::cases() as $statusOrder)
+                                                        @if($historyWithTransfers['orderHistory']->status == $statusOrder->value)
+                                                            <h6 class="fs-15 mb-0 fw-semibold">
+                                                                <b style="color: #4154f1;">{{ $statusOrder->label() }}</b> - <span class="fw-normal">{{ $historyWithTransfers['formattedOrderHistory'] }}</span>
+                                                            </h6>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
                                             </div>
+                                        </a>
+                                    </div>
+                                    @if ($historyWithTransfers['showTransferHistory'])
+                                        <div id="collapse{{ $key + 1 }}" class="accordion-collapse collapse show" aria-labelledby="heading{{ $key + 1 }}" data-bs-parent="#accordionExample">
                                             <div class="accordion-body ms-2 ps-5 pt-0">
-                                                <h6 class="mb-1">{{ $order_history->warehouse }}</h6>
+                                                @foreach($historyWithTransfers['transferHistories'] as $transfer_history)
+                                                    @foreach (TransferStatus::cases() as $statusTransfer)
+                                                        @if($transfer_history->status == $statusTransfer->value)
+                                                            <h6 class="">{{ $statusTransfer->label() }}</h6>
+                                                            <p class="text-muted">{{ Carbon::parse($transfer_history->created_at)->translatedFormat('H:i:s l, d/m/Y') }}</p>
+                                                        @endif
+                                                    @endforeach
+                                                @endforeach
                                             </div>
                                         </div>
                                     @endif
-                                @endforeach
-                            @endforeach
-                        </div>
+                                </div>
+                            </div>
+                        @endforeach
                         <!--end accordion-->
                     </div>
                 </div>
@@ -242,13 +263,20 @@
 
     <script>
     $(document).ready(function() {
-        let status = @json($updated);
-        let title = 'Cập nhật';
-        let message = status;
-        let icon = 'success';
+        let updated = @json($updated);
+        let error = @json($error);
+        if (updated) {
+            let title = 'Cập nhật';
+            let message = updated;
+            let icon = 'success';
+            showMessage(title, message, icon);
+        }
 
-        if (status) {
-        showMessage(title, message, icon);
+        if (error) {
+            let title = 'Lỗi';
+            let message = error;
+            let icon = 'error';
+            showMessage(title, message, icon);
         }
     });
     </script>

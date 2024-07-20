@@ -25,7 +25,7 @@ class OrderRequest extends FormRequest
             'voucher_id' => 'nullable|integer|exists:vouchers,id',
             'name' => 'required|min:3',
             'email' => 'required|min:3',
-            'address' => 'required|min:5',
+            'specific_address' => 'required|min:5',
             'phone' => ['required', 'regex:/^(0[3|5|7|8|9])+([0-9]{8})$/'],
             'province' => 'required',
             'district' => 'required',

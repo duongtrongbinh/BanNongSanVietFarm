@@ -64,7 +64,8 @@ class FlashSaleController extends Controller
                 ]);
             }
             DB::commit();
-            return redirect()->back()->withErrors(['success'=> 'create new flash sale success']);
+            return redirect()->route('flash-sales.index')
+                ->with('created', 'Thêm mới thành công!');
         } catch ( Exception $exception){
             DB::rollBack();
             return back();
@@ -152,7 +153,8 @@ class FlashSaleController extends Controller
                     ->delete();
             }
             DB::commit();
-            return redirect()->back()->withErrors(['success'=> 'Update flash sale success']);
+            return redirect()->back()
+                ->with('updated', 'Sửa thành công!');
         } catch ( Exception $exception){
             DB::rollBack();
             return back();
