@@ -33,9 +33,9 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h5 class="card-title flex-grow-1 mb-0">Đơn hàng #{{ $order->order_code }}</h5>
-                        <div class="flex-shrink-0">
+                        {{-- <div class="flex-shrink-0">
                             <a href="apps-invoices-details.html" class="btn btn-success btn-sm"><i class="ri-download-2-fill align-middle me-1"></i> Invoice</a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -91,7 +91,7 @@
                         <div class="col-6">
                             <div class="d-flex justify-content-between">
                                 <p>Phương thức thanh toán:</p>
-                                <p><b>VNPAY</b></p>
+                                <p><b>{{ $order->payment_status == 0 ? "COD" : "VNPAY"}}</b></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Trạng thái thanh toán:</p>

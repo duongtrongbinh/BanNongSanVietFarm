@@ -26,7 +26,7 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\ProfileUserController;
 
 use App\Http\Controllers\Client\ProfileUserController as ProfileUserClientController;
-use App\Http\Controllers\Client\PostClientController;
+use App\Http\Controllers\Client\PostController as PostClientController;
 
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Client\ForgotPasswordController;
@@ -213,7 +213,7 @@ Route::group(['prefix' => ''], function () {
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
+    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');

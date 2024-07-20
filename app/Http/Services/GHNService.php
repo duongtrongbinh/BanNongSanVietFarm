@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Services;
 
+use App\Enums\TransferStatus;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
+use App\Models\TransferHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -14,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+
 class GHNService
 {
     protected $apiUrl;
@@ -35,18 +39,17 @@ class GHNService
         DB::beginTransaction();
         try {
             $order = $this->saveData($value, session('cart'));
-            $ghnData = $this->createOrderGHN($value,session('cart'));
-            // $this->ghnTranform->saveOrderDataToStorage($ghnData, $order->order_code);
+            $ghnData = $this->createOrderGHN($value,session('cart'), $order->order_code);
+            $this->ghnTranform->saveOrderDataToStorage($ghnData, $order->order_code);
 
             if ($request['payment_method'] == 'VNPAYQR') {
-                $order->status = OrderStatus::PENDING_PAYMENT;
-                $order->expires_at = Carbon::now()->addDay();
-                $order->save();
                 $url = $this->paymentVNPAY($value['after_total_amount'], $order->order_code);
                 $routeUrl = redirect()->away($url);
             } else {
-                $routeUrl = redirect()->route('home');
+                $routeUrl = redirect()->route('checkout.success',$order->order_code);
             }
+
+            dispatch(new SendOrderConfirmation($order));
             DB::commit();
             session()->forget('cart');
             return $routeUrl;
@@ -87,17 +90,17 @@ class GHNService
         $data['address_detail'] = $data['specific_address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
         return $data;
     }
-    public function createOrderGHN($data, $items)
+    public function createOrderGHN($data, $items, $ordercode)
     {
         $product = $this->formatDataGHN($items);
 
         $jsonData = [
             "note" => $data['note'] ?? 'No',
             "required_note" => "KHONGCHOXEMHANG",
-            "client_order_code" => '',
+            "client_order_code" => $ordercode,
             "to_name" => $data['name'],
             "to_phone" => $data['phone'],
-            "to_address" => $data['address'],
+            "to_address" => $data['address_detail'],
             "to_ward_name" => $data['ward_name'],
             "to_district_name" => $data['district_name'],
             "to_province_name" => $data['province_name'],
@@ -118,7 +121,6 @@ class GHNService
             "items" => $product,
         ];
 
-        // Điều chỉnh loại thanh toán và COD
         if ($data['payment_method'] == 'VNPAYQR') {
             $jsonData["payment_type_id"] = 1;
             $jsonData["cod_amount"] = 0;
@@ -213,7 +215,11 @@ class GHNService
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
             $data['payment_method'] = $data['payment_method'] ? 1 : 2;
-            $data['user_id'] = Auth::user()->id;
+            if(Auth::user()->id){
+                $data['user_id'] = Auth::user()->id;
+            }else{
+                $data['user_id'] = 1;
+            }
             $data['address'] = $data['address_detail'];
             $order = Order::create($data);
             $products = [];
@@ -228,23 +234,23 @@ class GHNService
             }
             $this->updateQuantityProduct($products);
             $order->products()->attach($products);
+            OrderHistory::create([
+                'order_id' => $order->id,
+                'status' => OrderStatus::PENDING
+            ]);
             return $order;
         });
     }
 
     public function UpdateStatusOrder($status,$code){
-        try {
             $order = Order::query()->where('order_code',$code)->first();
             if ($order->status != $status){
                 $order->update([
-                    'status' => $status,
+                    'payment_status' => $status,
                 ]);
                 return $order;
             }
             return null;
-        }catch (\Exception $exception){
-            dd($exception);
-        }
     }
 
     private function updateQuantityProduct($products){
@@ -276,15 +282,14 @@ class GHNService
         }
     }
 
-     public function pay_return(Request $request){
+   public function pay_return(Request $request){
         $dd = $request->input('vnp_ResponseCode');
         $code = $request->input('vnp_TxnRef');
         if($dd == "00" ){
-            $this->UpdateStatusOrder(OrderStatus::SUCCESS_PAYMENT,$code);
-            return redirect()->route('home');
+            $this->UpdateStatusOrder(OrderStatus::PENDING,$code);
+            return redirect()->route('checkout.success',$code);
         }else{
-             $this->UpdateStatusOrder(OrderStatus::PENDING_PAYMENT,$code);
-            return redirect()->route('home');
+            return redirect()->route('checkout.success',$code);
         }
     }
 
@@ -342,32 +347,29 @@ class GHNService
         return $data;
     }
 
-    public function delivery(Request $request)
+ public function delivery(Request $request)
     {
-      if ($request->input('data') != null){
-          $status = $request->input('data.status_id');
-          $code = $request->input('data.order_code');
-          $orderUpdate = $this->UpdateStatusOrder($status,$code);
-          if ($orderUpdate){
-              $this->createOrderHistories($orderUpdate['']->toArray());
-          }else{
-              return response(['message'=>'The order does not have a new status yet'],400);
-          }
-      }else{
-          return response(['message'=>'Update error: Order not found'],400);
-      }
-    }
-
-    public function createOrderHistories(array $data)
-    {
-            $data = [
-                'order_id' => $data['id'],
-                'status' => $data['status'],
-            ];
-
-            $order_histories = OrderHistory::create($data);
-
-            return $order_histories;
+        $Status = '';
+        $order = Order::query()->where('order_code',$request->OrderCode)->first();
+        if(!empty($order)){
+            foreach(TransferStatus::values() as $value => $name){
+                if (strtoupper($request->Status) == $name){
+                    $Status = $name;
+                }
+            }
+            if (empty($Status)){
+                TransferHistory::created([
+                    'order_id' => $order->id,
+                    'status' => $Status,
+                    'warehouse' => $request->Warehouse,
+                ]);
+                return response()->json('success',200);
+            }else{
+                return response()->json(['error', 'Không tìm thấy trạng thái đơn hàng.'],400);
+            }
+        }else{
+                return response()->json(['error', 'Không tìm thấy đơn hàng.'],400);
+        }
     }
 
 }

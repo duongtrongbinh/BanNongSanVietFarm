@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
+use App\Jobs\SendOrderToGHN;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 class Order extends Model
 {
@@ -20,6 +23,7 @@ class Order extends Model
         'phone',
         'address',
         'payment_method',
+        'payment_status',
         'before_total_amount',
         'shipping',
         'after_total_amount',
@@ -63,6 +67,13 @@ class Order extends Model
 
         static::creating(function ($order) {
             $order->order_code = 'PH'.fake()->imei;
+        });
+
+
+        static::updating(function ($order) {
+            if($order->status == OrderStatus::PROCESSING->value){
+                dispatch(new SendOrderToGHN($order));
+            }
         });
     }
   

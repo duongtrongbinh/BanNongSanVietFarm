@@ -11,8 +11,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 use App\Enums\OrderStatus;
+use Exception;
 
 class SendOrderToGHN implements ShouldQueue
 {
@@ -36,24 +36,33 @@ class SendOrderToGHN implements ShouldQueue
 
             // Gửi dữ liệu đến GHN
             $response = $ghnOrderService->sendToGHN($orderData);
+            Log::info('Order Data:', $orderData);
 
             // Kiểm tra phản hồi từ GHN
             if ($response->successful()) {
-                $this->order->status = OrderStatus::READY_TO_PICK;
-                $this->order->save();
+                Log::info('Tạo đơn hàng thành công.');
 
                 // Xóa dữ liệu khỏi storage sau khi gửi thành công
                 $ghnOrderService->deleteOrderDataFromStorage($this->order->order_code);
             } else {
-                throw new \Exception('Failed to send order to GHN');
+                // Log response chi tiết nếu thất bại
+                Log::error('Failed to send order to GHN', ['response' => $response->body()]);
+                throw new Exception('Failed to send order to GHN: ' . $response->body());
             }
-        } catch (\Exception $e) {
-            Log::error('Error sending order to GHN: ' . $e->getMessage());
-            $this->order->status = OrderStatus::RETRY;
+        } catch (Exception $e) {
+            Log::error('Error sending order to GHN:', [
+                'message' => $e->getMessage(),
+                'order_id' => $this->order->id,
+                'order_code' => $this->order->order_code,
+            ]);
+            $this->order->status = OrderStatus::RETRY->value;
             $this->order->save();
             $this->release($this->retryAfter);
         }
     }
-
+    public function getOrder()
+        {
+            return $this->order;
+        }
 
 }

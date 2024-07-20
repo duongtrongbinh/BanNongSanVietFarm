@@ -120,11 +120,11 @@
                                                 {{ $order->created_at }}
                                             </td>
                                             <td>{{ number_format($order->after_total_amount) }}đ</td>
-                                            <td>@if($order->payment_method == 0)
-                                                   Nhận Hàng
-                                                @else
-                                                   VNPAY
-                                                @endif
+                                            <td>  @if($order->payment_method == \App\Enums\PaymentStatus::PENDING_PAYMENT->value)
+                                               COD
+                                            @else
+                                               VNPAY
+                                            @endif
                                             </td>
                                             <td>
                                                 @if ($order->status == OrderStatus::PENDING->value)
