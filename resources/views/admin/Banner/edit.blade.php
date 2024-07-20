@@ -40,25 +40,23 @@
 
                             </div>
                             <div class="row mb-3">
-                                <div class="col-sm-2">
-                                    <label for="inputStatus" class="col-form-label">Home</label>
-                                </div>
-                                <div class="col-sm-4">
+                                <!-- Home Switch -->
+                                <div class="col-md-1">
+                                    <label for="home" class="form-label">Home</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="statusSwitch" name="is_home"
-                                               value="1" {{ old('status', $banner->is_home) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusSwitch">
-                                            {{ old('status', $banner->status) == 1 ? 'Yes' : 'No' }}
+                                        <input class="form-check-input" type="checkbox" id="homeSwitch" name="is_home"
+                                               value="1" {{ old('is_home', $banner->is_home) == 1 ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="homeSwitch">
+                                            {{ old('is_home', $banner->is_home) == 1 ? 'Yes' : 'No' }}
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <label for="inputActive" class="col-form-label">Active</label>
-                                </div>
-                                <div class="col-sm-4">
+
+                                <!-- Active Switch -->
+                                <div class="col-md-1">
+                                    <label for="active" class="form-label">Active</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="activeSwitch"
-                                               name="is_active"
+                                        <input class="form-check-input" type="checkbox" id="activeSwitch" name="is_active"
                                                value="1" {{ old('is_active', $banner->is_active) == 1 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="activeSwitch">
                                             {{ old('is_active', $banner->is_active) == 1 ? 'Yes' : 'No' }}
@@ -66,6 +64,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div class="col-sm-10 offset-sm-2 text-end">
                                     <a href="{{ route('user.index') }}" class="btn btn-info me-2">Quay Lại</a>

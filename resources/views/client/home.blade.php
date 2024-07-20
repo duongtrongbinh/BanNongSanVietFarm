@@ -23,14 +23,11 @@
                 <div class="col-md-12 col-lg-5">
                     <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                         <div class="carousel-inner" role="listbox">
-                            <div class="carousel-item active rounded">
-                                <img src="{{ asset('client/assets/img/hero-img-1.png') }}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide">
-                                <a href="#" class="btn px-4 py-2 text-white rounded">Fruites</a>
-                            </div>
-                            <div class="carousel-item rounded">
-                                <img src="{{ asset('client/assets/img/hero-img-2.jpg') }}" class="img-fluid w-100 h-100 rounded" alt="Second slide">
-                                <a href="#" class="btn px-4 py-2 text-white rounded">Vesitables</a>
-                            </div>
+                            @foreach ($banners as $index => $row)
+                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }} rounded">
+                                    <img src="{{ $row->image }}" class="img-fluid w-100 h-100 bg-secondary rounded" alt="Slide {{ $index + 1 }}">
+                                </div>
+                            @endforeach
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -42,6 +39,7 @@
                         </button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -146,7 +144,7 @@
                                                         <div class="justify-content-between flex-lg-wrap">
                                                             <p class="text-dark fs-5 fw-bold mb-2">{{ number_format($product->price_sale) }} VNĐ</p>
                                                             <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                                                <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                                                <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                                                 Thêm vào giỏ
                                                             </a>
                                                         </div>
@@ -167,7 +165,7 @@
                             <div class="row g-4">
                                 <div class="col-lg-12">
                                     <div class="row g-4">
-                                        @foreach ($category->products as $product) 
+                                        @foreach ($category->products as $product)
                                             <div class="col-md-6 col-lg-4 col-xl-3">
                                                 <a href="{{ route('product', $product->slug) }}">
                                                     <div class="rounded position-relative fruite-item border border-secondary">
@@ -181,7 +179,7 @@
                                                             <div class="justify-content-between flex-lg-wrap">
                                                                 <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>
                                                                 <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                                                    <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                                                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                                                     Thêm vào giỏ
                                                                 </a>
                                                             </div>
