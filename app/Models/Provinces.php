@@ -15,7 +15,7 @@ class Provinces extends Model
 
     public $timestamps = true;
 
-    public $fillable = ['name','gso_id','created_at','created_at'];
+    public $fillable = ['ProvinceID','ProvinceName','created_at','created_at'];
 
     public function district()
 {
