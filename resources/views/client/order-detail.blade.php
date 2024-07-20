@@ -82,11 +82,11 @@
                                 <div class="d-flex justify-content-between">
                                     <p>Trạng thái thanh toán:</p>
                                     <p class="badge bg-warning-subtle text-warning text-uppercase">
-                                        @foreach(App\Enums\OrderStatus::values() as $key => $item)
-                                            @if($order->status == $key)
-                                               {{ $item }}
+                                            @if($order->payment_method == \App\Enums\PaymentStatus::PENDING_PAYMENT->value)
+                                               Chờ thanh toán
+                                            @else
+                                               Đã thanh toán
                                             @endif
-                                        @endforeach
                                     </p>
                                 </div>
                             </div>
@@ -132,7 +132,7 @@
                                                             </div>
                                                             <div class="flex-grow-1 ms-3">
                                                                 <h6 class="fs-15 mb-0 fw-semibold">
-                                                                    {{ $status->name }} - <span class="fw-normal">{{ $order_history->created_at }}</span>
+                                                                    {{ $status->label() }} - <span class="fw-normal">{{ $order_history->created_at }}</span>
                                                                 </h6>
                                                             </div>
                                                         </div>

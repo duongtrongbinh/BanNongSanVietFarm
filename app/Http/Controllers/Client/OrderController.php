@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Enums\OrderStatus;
+
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
-use App\Models\District;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Provinces;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use  \App\Enums\TransferStatus;
 
 
 class OrderController extends Controller
@@ -37,25 +32,11 @@ class OrderController extends Controller
        $orderAll = Order::With('order_details')->where('user_id',Auth::user()->id)->get();
        return view('client.order', compact('orderAll'));
    }
-   public function create()
+   public function orderCheckOut()
    {
-       if(!session()->has('cart')){
-           return redirect()->back();
-       }
-       $headers = [
-           'Content-Type' => 'application/json',
-           'token'=>self::token,
-       ];
-       $response = Http::withHeaders($headers)->get(self::url);
-       if ($response->successful()) {
-           $provinces = $response->json();
-       }else{
-           $provinces = null;
-           dd('error system');
-       }
-       $user = auth()->user();
+       $provinces = Provinces::query()->get();
        $vouchers = $this->voucherRepository->getVoucherActive();
-       return view('client.check-out',compact(['user','vouchers','provinces']));
+       return view('client.check-out',compact(['vouchers','provinces']));
    }
    public function detail(Order $order)
    {

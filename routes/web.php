@@ -120,38 +120,42 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('purchases.import');
 
     /* Route Voucher */
-    Route::resource('vouchers', VoucherController::class);
-    Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
+    Route::resource('vouchers',VoucherController::class);
+    Route::get('adeleted/vouchers',[VoucherController::class,'deleted'])
         ->name('vouchers.deleted');
-    Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
+    Route::post('restore/vouchers/{id}',[VoucherController::class,'restore'])
         ->name('restore.vouchers');
 
     /* Route Flash Sale */
-    Route::resource('flash-sales', FlashSaleController::class);
+    Route::resource('flash-sales',FlashSaleController::class);
 
     /* Route Order */
     Route::get('orders/all', [OrderController::class, 'getAll'])
         ->name('orders.all');
     Route::get('orders/pending', [OrderController::class, 'getPending'])
         ->name('orders.pending');
-    Route::get('orders/prepare', [OrderController::class, 'getPrepare'])
-        ->name('orders.prepare');
-    Route::get('orders/pending-payment', [OrderController::class, 'getPendingPayment'])
-        ->name('orders.pendingPayment');
-    Route::get('orders/success-payment', [OrderController::class, 'getSuccessPayment'])
-        ->name('orders.successPayment');
-    Route::get('orders/ready-to-pick', [OrderController::class, 'getReadyToPick'])
-        ->name('orders.readyToPick');
+    Route::get('orders/processing', [OrderController::class, 'getProcessing'])
+        ->name('orders.processing');
+    Route::get('orders/shipping', [OrderController::class, 'getShipping'])
+        ->name('orders.shipping');
+    Route::get('orders/shipped', [OrderController::class, 'getShipped'])
+        ->name('orders.shipped');
+    Route::get('orders/delivered', [OrderController::class, 'getDelivered'])
+        ->name('orders.delivered');
+    Route::get('orders/completed', [OrderController::class, 'getCompleted'])
+        ->name('orders.completed');
     Route::get('orders/cancelled', [OrderController::class, 'getCancelled'])
         ->name('orders.cancelled');
+    Route::get('orders/returned', [OrderController::class, 'getReturned'])
+        ->name('orders.returned');
     Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
         ->name('orders.updateStatus');
-    Route::resource('orders', OrderController::class);
+    Route::resource('orders',OrderController::class);
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
     Route::delete('orders/{id}', [OrderController::class, 'delete'])
         ->name('orders.delete');
-    Route::get('/bill/return', [GHNService::class, 'pay_return'])
+    Route::get('/bill/return', [GHNService::class,'pay_return'])
         ->name('bill.return');
 
     /* Route Post */
@@ -207,12 +211,12 @@ Route::group(['prefix' => ''], function () {
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
-    Route::get('/order', [OrderClientController::class, 'index'])->name('order.index');
-//    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out', [OrderClientController::class, 'create'])->name('checkout');
-    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
+    Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
+   Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
-    Route::get('/check-out/success/{order}', [OrderClientController::class, 'success'])->name('checkout.success');
+    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
@@ -241,8 +245,8 @@ Route::group(['prefix' => ''], function () {
 });
 
 
-/* Route 404 */
-Route::get('404', function () {
-    return view('client.layouts.404');
-})->name('404');
+    /* Route 404 */
+    Route::get('404', function () {
+        return view('client.layouts.404');
+    })->name('404');
 
