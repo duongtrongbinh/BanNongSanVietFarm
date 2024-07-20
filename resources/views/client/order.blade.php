@@ -32,32 +32,57 @@
                                 </button>
                             </li>
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">
                                     <i class="ri-checkbox-circle-line me-1 align-bottom"></i>
-                                    Đang chuẩn bị
+                                     {{ OrderStatus::PENDING->label() }}
                                 </button>
                             </li>
 
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pickups">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#processing">
                                     <i class="ri-truck-line me-1 align-bottom"></i>
-                                    Chờ thanh toán
+                                    {{ OrderStatus::PROCESSING->label() }}
 {{--                                    <span class="badge bg-danger align-middle ms-1">{{ count($pickups) }}</span>--}}
                                 </button>
                             </li>
 
                             <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returns">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping">
                                     <i class="ri-arrow-left-right-fill me-1 align-bottom"></i>
-                                    Sẵn sàng lấy hàng
+                                    {{ OrderStatus::SHIPPING->label() }}
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipped">
+                                    <i class="ri-close-circle-line me-1 align-bottom"></i>
+                                    {{ OrderStatus::SHIPPED->label() }}
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
+                                    <i class="ri-close-circle-line me-1 align-bottom"></i>
+                                    {{ OrderStatus::DELIVERED->label() }}
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed">
+                                    <i class="ri-close-circle-line me-1 align-bottom"></i>
+                                    {{ OrderStatus::COMPLETED->label() }}
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
                                     <i class="ri-close-circle-line me-1 align-bottom"></i>
-                                    Đơn hàng hủy
+                                    {{ OrderStatus::CANCELLED->label() }}
                                 </button>
                             </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returned">
+                                    <i class="ri-close-circle-line me-1 align-bottom"></i>
+                                    {{ OrderStatus::RETURNED->label() }}
+                                </button>
+                            </li>
+
                         </ul>
                         <div class="tab-content pt-2">
                             <!-- All Orders -->
@@ -103,17 +128,21 @@
                                             </td>
                                             <td>
                                                 @if ($order->status == OrderStatus::PENDING->value)
-                                                    <span class="badge border border-warning text-warning">Chờ xử lý</span>
-                                                @elseif ($order->status == OrderStatus::PREPARE->value)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Đang chuẩn bị</span>
-                                                @elseif ($order->status == OrderStatus::PENDING_PAYMENT->value)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Chờ thanh toán</span>
-                                                @elseif ($order->status == OrderStatus::READY_TO_PICK->value)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Sẵn sàng lấy hàng</span>
-                                                @elseif ($order->status == OrderStatus::PICKING->value)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Đang lấy hàng</span>
-                                                @elseif($order->status == OrderStatus::PICKED->value)
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Đã lấy hàng</span>
+                                                    <span class="badge border border-warning text-warning">{{  OrderStatus::PENDING->label() }}</span>
+                                                @elseif ($order->status == OrderStatus::PROCESSING->value)
+                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">{{  OrderStatus::PROCESSING->label() }}</span>
+                                                @elseif ($order->status == OrderStatus::SHIPPING->value)
+                                                    <span class="badge bg-info-subtle text-info text-uppercase">{{  OrderStatus::SHIPPING->label() }}</span>
+                                                @elseif ($order->status == OrderStatus::SHIPPED->value)
+                                                    <span class="badge bg-success-subtle text-success text-uppercase">{{  OrderStatus::SHIPPED->label() }}</span>
+                                                @elseif ($order->status == OrderStatus::DELIVERED->value)
+                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">{{  OrderStatus::DELIVERED->label() }}</span>
+                                                @elseif($order->status == OrderStatus::COMPLETED->value)
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::COMPLETED->label() }}</span>
+                                                @elseif($order->status == OrderStatus::CANCELLED->value)
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::CANCELLED->label() }}</span>
+                                                @elseif($order->status == OrderStatus::RETURNED->value)
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::RETURNED->label() }}</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -125,7 +154,7 @@
                                 </table>
                             </div>
                             <!-- Đang chuẩn bị -->
-                            <div class="tab-pane fade delivered pt-3" id="delivered">
+                            <div class="tab-pane fade delivered pt-3" id="pending">
                                 <table id="table1" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
                                     <tr>
@@ -141,33 +170,33 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($orderAll as $key => $delivered)
-                                        @if($delivered->status == OrderStatus::PREPARE->value)
+                                    @foreach ($orderAll as $key => $pending)
+                                        @if($pending->status == OrderStatus::PENDING->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
                                             </td>
                                             <td>
-                                                <a href="" class="fw-medium link-primary">{{ $delivered->order_code }}</a>
+                                                <a href="" class="fw-medium link-primary">{{ $pending->order_code }}</a>
                                             </td>
                                             <td>
-                                                {{ $delivered->user->name }}
+                                                {{ $pending->user->name }}
                                             </td>
                                             <td>
-                                                {{ count($delivered->order_details) }}
+                                                {{ count($pending->order_details) }}
                                             </td>
                                             <td>
-                                                {{ $delivered->created_at }}
+                                                {{ $pending->created_at }}
                                             </td>
-                                            <td>{{ number_format($delivered->after_total_amount) }}đ</td>
-                                            <td>@if($delivered->payment_method == 0)
+                                            <td>{{ number_format($pending->after_total_amount) }}đ</td>
+                                            <td>@if($pending->payment_method == 0)
                                                     Nhận Hàng
                                                 @else
                                                     VNPAY
                                                 @endif
                                             </td>
                                             <td>
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Đang chuẩn bị</span>
+                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">{{  OrderStatus::PENDING->label() }}</span>
                                             </td>
                                               <td>
                                                 <a href="{{ route('order.detail',$order->id) }}">view</a>
@@ -180,7 +209,7 @@
                             </div>
 
                             <!-- Chờ thanh toán  -->
-                            <div class="tab-pane fade pickups pt-3" id="pickups">
+                            <div class="tab-pane fade pickups pt-3" id="processing">
                                 <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
                                     <tr>
@@ -196,33 +225,33 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($orderAll as $key => $pickup)
-                                        @if($pickup->status == OrderStatus::PENDING_PAYMENT->value)
+                                    @foreach ($orderAll as $key => $processing)
+                                        @if($processing->status == OrderStatus::PROCESSING->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
                                             </td>
                                             <td>
-                                                <a href="" class="fw-medium link-primary">{{ $pickup->order_code }}</a>
+                                                <a href="" class="fw-medium link-primary">{{ $processing->order_code }}</a>
                                             </td>
                                             <td>
-                                                {{ $pickup->user->name }}
+                                                {{ $processing->user->name }}
                                             </td>
                                             <td>
-                                                {{ count($pickup->order_details) }}
+                                                {{ count($processing->order_details) }}
                                             </td>
                                             <td>
-                                                {{ $pickup->created_at }}
+                                                {{ $processing->created_at }}
                                             </td>
-                                            <td>{{ number_format($pickup->after_total_amount) }}đ</td>
-                                            <td>@if($pickup->payment_method == 0)
+                                            <td>{{ number_format($processing->after_total_amount) }}đ</td>
+                                            <td>@if($processing->payment_method == 0)
                                                     Nhận Hàng
                                                 @else
                                                     VNPAY
                                                 @endif
                                             </td>
                                             <td>
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Chờ thanh toán</span>
+                                                    <span class="badge bg-info-subtle text-info text-uppercase">{{  OrderStatus::PROCESSING->label() }}</span>
                                             </td>
                                               <td>
                                                 <a href="{{ route('order.detail',$order->id) }}">view</a>
@@ -235,7 +264,7 @@
                             </div>
 
                             <!-- Sẵn sàng lấy hàng -->
-                            <div class="tab-pane fade returns pt-3" id="returns">
+                            <div class="tab-pane fade returns pt-3" id="shipping">
                                 <table id="table3" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
                                     <tr>
@@ -251,33 +280,33 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($orderAll as $key => $return)
-                                        @if($return->status == OrderStatus::RETURNING->value)
+                                    @foreach ($orderAll as $key => $shipping)
+                                        @if($shipping->status == OrderStatus::SHIPPING->value)
                                         <tr>
                                             <td>
                                                 {{ $key }}
                                             </td>
                                             <td>
-                                                <a href="" class="fw-medium link-primary">{{ $return->order_code }}</a>
+                                                <a href="" class="fw-medium link-primary">{{ $shipping->order_code }}</a>
                                             </td>
                                             <td>
-                                                {{ $return->user->name }}
+                                                {{ $shipping->user->name }}
                                             </td>
                                             <td>
-                                                {{ count($return->order_details) }}
+                                                {{ count($shipping->order_details) }}
                                             </td>
                                             <td>
-                                                {{ $return->created_at }}
+                                                {{ $shipping->created_at }}
                                             </td>
-                                            <td>{{ number_format($return->after_total_amount) }}đ</td>
-                                            <td>@if($return->payment_method == 0)
+                                            <td>{{ number_format($shipping->after_total_amount) }}đ</td>
+                                            <td>@if($shipping->payment_method == 0)
                                                     Nhận Hàng
                                                 @else
                                                     VNPAY
                                                 @endif
                                             </td>
                                             <td>
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Sẵn sàng lấy hàng</span>
+                                                    <span class="badge bg-success-subtle text-success text-uppercase">{{ OrderStatus::SHIPPING->label() }}</span>
                                             </td>
                                               <td>
                                                 <a href="{{ route('order.detail',$order->id) }}">view</a>
@@ -290,6 +319,171 @@
                             </div>
 
                             <!-- Cancelled -->
+                            <div class="tab-pane fade cancelled pt-3" id="shipped">
+                                <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-ordering="false">ID</th>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Ngày đặt hàng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Phương thức thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($orderAll as $key => $shipped)
+                                        @if($shipped->status == OrderStatus::SHIPPED->value)
+                                        <tr>
+                                            <td>
+                                                {{ $key }}
+                                            </td>
+                                            <td>
+                                                <a href="" class="fw-medium link-primary">{{ $shipped->order_code }}</a>
+                                            </td>
+                                            <td>
+                                                {{ $shipped->user->name }}
+                                            </td>
+                                            <td>
+                                                {{ count($shipped->order_details) }}
+                                            </td>
+                                            <td>
+                                                {{ $shipped->created_at }}
+                                            </td>
+                                            <td>{{ number_format($shipped->after_total_amount) }}đ</td>
+                                            <td>@if($shipped->payment_method == 0)
+                                                    Nhận Hàng
+                                                @else
+                                                    VNPAY
+                                                @endif
+                                            </td>
+                                            <td>
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::SHIPPED->label() }}</span>
+                                            </td>
+                                              <td>
+                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                            </td>
+
+                                        </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="tab-pane fade cancelled pt-3" id="delivered">
+                                <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-ordering="false">ID</th>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Ngày đặt hàng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Phương thức thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($orderAll as $key => $delivered)
+                                        @if($delivered->status == OrderStatus::DELIVERED->value)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $delivered->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $delivered->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($delivered->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $delivered->created_at }}
+                                                </td>
+                                                <td>{{ number_format($delivered->after_total_amount) }}đ</td>
+                                                <td>@if($delivered->payment_method == 0)
+                                                        Nhận Hàng
+                                                    @else
+                                                        VNPAY
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::DELIVERED->label() }}</span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                </td>
+
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="tab-pane fade cancelled pt-3" id="completed">
+                                <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-ordering="false">ID</th>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Ngày đặt hàng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Phương thức thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($orderAll as $key => $completed)
+                                        @if($completed->status == OrderStatus::COMPLETED->value)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $completed->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $completed->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($completed->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $completed->created_at }}
+                                                </td>
+                                                <td>{{ number_format($completed->after_total_amount) }}đ</td>
+                                                <td>@if($completed->payment_method == 0)
+                                                        Nhận Hàng
+                                                    @else
+                                                        VNPAY
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::COMPLETED->label() }}</span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                </td>
+
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div class="tab-pane fade cancelled pt-3" id="cancelled">
                                 <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                     <thead>
@@ -308,49 +502,92 @@
                                     <tbody>
                                     @foreach ($orderAll as $key => $cancelled)
                                         @if($cancelled->status == OrderStatus::CANCELLED->value)
-                                        <tr>
-                                            <td>
-                                                {{ $key }}
-                                            </td>
-                                            <td>
-                                                <a href="" class="fw-medium link-primary">{{ $cancelled->order_code }}</a>
-                                            </td>
-                                            <td>
-                                                {{ $cancelled->user->name }}
-                                            </td>
-                                            <td>
-                                                {{ count($cancelled->order_details) }}
-                                            </td>
-                                            <td>
-                                                {{ $cancelled->created_at }}
-                                            </td>
-                                            <td>{{ number_format($cancelled->after_total_amount) }}đ</td>
-                                            <td>@if($cancelled->payment_method == 0)
-                                                    Nhận Hàng
-                                                @else
-                                                    VNPAY
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($cancelled->status == 0)
-                                                    <span class="badge bg-warning-subtle text-warning text-uppercase">Pending</span>
-                                                @elseif ($cancelled->status == 1)
-                                                    <span class="badge bg-secondary-subtle text-secondary text-uppercase">Inprogress</span>
-                                                @elseif ($cancelled->status == 2)
-                                                    <span class="badge bg-info-subtle text-info text-uppercase">Pickups</span>
-                                                @elseif ($cancelled->status == 3)
-                                                    <span class="badge bg-success-subtle text-success text-uppercase">Delivered</span>
-                                                @elseif ($cancelled->status == 4)
-                                                    <span class="badge bg-primary-subtle text-primary text-uppercase">Returns</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Cancelled</span>
-                                                @endif
-                                            </td>
-                                              <td>
-                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
-                                            </td>
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $cancelled->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $cancelled->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($cancelled->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $cancelled->created_at }}
+                                                </td>
+                                                <td>{{ number_format($cancelled->after_total_amount) }}đ</td>
+                                                <td>@if($cancelled->payment_method == 0)
+                                                        Nhận Hàng
+                                                    @else
+                                                        VNPAY
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::CANCELLED->label() }}</span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                </td>
 
-                                        </tr>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="tab-pane fade cancelled pt-3" id="returned">
+                                <table id="table4" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th data-ordering="false">ID</th>
+                                        <th>Mã hóa đơn</th>
+                                        <th>Khách hàng</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Ngày đặt hàng</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Phương thức thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($orderAll as $key => $returned)
+                                        @if($returned->status == OrderStatus::RETURNED->value)
+                                            <tr>
+                                                <td>
+                                                    {{ $key }}
+                                                </td>
+                                                <td>
+                                                    <a href="" class="fw-medium link-primary">{{ $returned->order_code }}</a>
+                                                </td>
+                                                <td>
+                                                    {{ $returned->user->name }}
+                                                </td>
+                                                <td>
+                                                    {{ count($returned->order_details) }}
+                                                </td>
+                                                <td>
+                                                    {{ $returned->created_at }}
+                                                </td>
+                                                <td>{{ number_format($returned->after_total_amount) }}đ</td>
+                                                <td>@if($returned->payment_method == 0)
+                                                        Nhận Hàng
+                                                    @else
+                                                        VNPAY
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::RETURNED->label() }}</span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                </td>
+
+                                            </tr>
                                         @endif
                                     @endforeach
                                     </tbody>
