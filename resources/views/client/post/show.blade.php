@@ -105,6 +105,9 @@
                             <div class="entry-content">
                                 <p>{{$post->description}}</p>
                             </div>
+                              <div class="entry-content">
+                                <p>{!! $post->content !!}</p>
+                            </div>
                         </article>
                         <div class="blog-comments">
                             <div class="col-lg-12">

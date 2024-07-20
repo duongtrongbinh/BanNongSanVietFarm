@@ -30,15 +30,14 @@ class ImportDistricts extends Command
      */
     public function handle()
     {
-        $url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
-        $provinces = Provinces::all();
-        foreach ($provinces as $item) {
-
-            $headers = [
+        $headers = [
                 'Content-Type' => 'application/json',
                 'token' => env('GHN_API_TOKEN'),
             ];
 
+        $url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
+        $provinces = Provinces::all();
+        foreach ($provinces as $item) {
             $data = [
                 'province_id' => $item->ProvinceID
             ];

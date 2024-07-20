@@ -213,7 +213,7 @@ Route::group(['prefix' => ''], function () {
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
+    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
@@ -249,4 +249,3 @@ Route::group(['prefix' => ''], function () {
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
-

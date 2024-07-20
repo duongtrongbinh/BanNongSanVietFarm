@@ -69,11 +69,11 @@
                             <div class="col-6">
                                 <div class="d-flex justify-content-between">
                                     <p>Phương thức thanh toán:</p>
-                                    <p><b> @if($order->payment_method == 1) VNPAY @else Thanh toán khi nhận hàng @endif</b></p>
+                                    <p><b>{{ $order->payment_method == \App\Enums\PaymentStatus::PENDING_PAYMENT ? "VNPAY" : "Thanh toán khi nhận hàng" }}</b></p>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <p>Trạng thái thanh toán:</p>
-                                     @if($order->status == \App\Enums\OrderStatus::PENDING_PAYMENT->value)
+                                     @if($order->payment_status == \App\Enums\PaymentStatus::PENDING_PAYMENT->value)
                                         <p class="badge bg-warning-subtle text-warning text-uppercase">
                                          Chờ thanh toán
                                         </p>

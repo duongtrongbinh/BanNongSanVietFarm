@@ -20,7 +20,7 @@ class NotifyUserOfFailedJob
     public function handle(object $event): void
     {
         if ($event->job->resolveName() === 'App\Jobs\SendOrderToGHN') {
-            $order = unserialize($event->job->payload()['data']['command'])->order;
+            $order = unserialize($event->job->payload()['data']['command'])->getOrder();
             $user = $order->user;
 
             $order->status = OrderStatus::PENDING;

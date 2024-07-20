@@ -11,6 +11,7 @@ enum OrderStatus: int
     case COMPLETED = 5;                    // Hoàn thành
     case CANCELLED = 6;                   // Đã hủy
     case RETURNED = 7;                    // Trả hàng/Hoàn tiền
+    case RETRY = 8;                    // Trả hàng/Hoàn tiền
     
     public static function values(): array
     {
@@ -28,6 +29,7 @@ enum OrderStatus: int
             self::COMPLETED => 'Hoàn thành',
             self::CANCELLED => 'Đã hủy',
             self::RETURNED => 'Trả hàng/Hoàn tiền',
+            self::RETRY => 'Gửi yêu cầu lỗi ',
         };
     }
 }
