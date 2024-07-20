@@ -100,6 +100,12 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
         ->name('groups.delete');
 
+    /* Route Product Related */
+    Route::resource('products/{$product}/related', RelatedController::class);
+    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
+    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
+        ->name('groups.delete');
+
     /* Route Tag */
     Route::resource('tags', TagController::class);
     Route::delete('tags/{id}', [TagController::class, 'delete'])
@@ -154,8 +160,10 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Post */
     Route::resource('post', PostController::class);
-    Route::delete('post/{postId}/comment/{commentId}', [PostController::class, 'destroyComment'])->name('post.comment.destroy');
-
+    Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
+        ->name('post.comment.markAsSpam');
+    Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
+        ->name('post.comment.unmarkAsSpam');
     /* Route Comment */
     Route::resource('comment', CommentController::class);
     Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
@@ -174,8 +182,7 @@ Route::group(['prefix' => ''], function () {
         Route::get('/', 'home')->name('home');
         Route::get('/san-pham/{slug}', 'product')->name('product');
         Route::get('/danh-muc/{slug}', 'category')->name('category');
-        Route::get('/post', 'post')->name('post');
-        Route::post('/post', 'store')->name('post.store');
+
     });
 
     /* Route Rating */
@@ -187,7 +194,7 @@ Route::group(['prefix' => ''], function () {
         Route::get('/thuong-hieu/{slug}', 'brand')->name('brand');
     });
     /* Route Post */
-    Route::resource('postclient', PostClientController::class);
+    Route::resource('bai-viet', PostClientController::class)->names('postclient');
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
     /* Route Cart */
     Route::controller(CartController::class)->group(function () {
@@ -205,8 +212,8 @@ Route::group(['prefix' => ''], function () {
 
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
-    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
+   Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');

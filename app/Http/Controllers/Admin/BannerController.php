@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use Illuminate\Support\Facades\Storage;
+
 class BannerController extends Controller
 {
     public function index()
@@ -24,14 +25,16 @@ class BannerController extends Controller
         $data = $request->except('image');
         $data['image'] = $request->input('image');
         $banner = Banner::create($data);
-        return redirect()->route('banners.index')->with('thongbao', 'bạn đã thêm thành công !');
+        return redirect()->route('banners.index')->with('created', 'bạn đã thêm thành công !');
     }
+
     public function edit($id)
     {
         $banner = Banner::findOrFail($id);
-        return view('admin.banner.edit',compact('banner'));
+        return view('admin.banner.edit', compact('banner'));
     }
-    public function update(Request $request,$id)
+
+    public function update(Request $request, $id)
     {
         $banner = Banner::findOrFail($id);
         $data = $request->except('image');
@@ -45,8 +48,9 @@ class BannerController extends Controller
         $banner->is_home = $request->input('is_home', 0);
         $banner->is_active = $request->input('is_active', 0);
         $banner->update($data);
-        return redirect()->route('banners.index')->with('thongbao', 'Bạn đã cập nhật thành công!');
+        return redirect()->route('banners.index')->with('update', 'Bạn đã cập nhật thành công!');
     }
+
     public function destroy($id)
     {
         $banner = Banner::findOrFail($id);

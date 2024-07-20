@@ -19,28 +19,31 @@ class PostController extends Controller
             ->withAvg('comments as average_ratting', 'ratting')
             ->orderByDesc('id')
             ->paginate(10);
-        return view('admin.post.index',compact('post'));
+        return view('admin.post.index', compact('post'));
     }
 
     public function create()
     {
         return view('admin/post.create');
     }
+
     public function store(StorePostRequest $request)
     {
         $data = $request->except('image');
         $data['image'] = $request->input('image');
         $post = Post::create($data);
-        return redirect()->route('post.index')->with('thongbao','bạn đã thêm thành công !');
+        return redirect()->route('post.index')->with('created', 'bạn đã thêm thành công !');
     }
-    public function show(Post $post )
+
+    public function show(Post $post)
     {
         $post->load('comments');
-        return view('admin.post.show',compact('post'));
+        return view('admin.post.show', compact('post'));
     }
-    public function edit(Post $post )
+
+    public function edit(Post $post)
     {
-        return view('admin.post.edit',compact('post'));
+        return view('admin.post.edit', compact('post'));
     }
 
     public function update(UpdatePostRequest $request, Post $post)
@@ -56,7 +59,7 @@ class PostController extends Controller
             $data['image'] = $request->input('image');
         }
         $post->update($data);
-        return redirect()->route('post.index')->with('thongbao', 'Bạn đã cập nhật thành công!');
+        return redirect()->route('post.index')->with('update', 'Bạn đã cập nhật thành công!');
     }
 
     public function storeComment(Request $request, Post $post)
@@ -70,6 +73,7 @@ class PostController extends Controller
 
         return redirect()->route('post.show', $post->id);
     }
+
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
@@ -80,11 +84,32 @@ class PostController extends Controller
         $post->delete();
         return response()->json(true);
     }
-    public function destroyComment($postId, $commentId)
+
+    public function markCommentAsSpam($postId, $commentId)
     {
-        $post = Post::findOrFail($postId);
-        // Xác định và xóa bình luận
-        $post->comments()->detach($commentId);
-        return response()->json(true);
+        try {
+            $post = Post::findOrFail($postId);
+            $comment = Comment::findOrFail($commentId);
+            $user = $comment->user;
+            $user->is_spam = true;
+            $user->save();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function unmarkCommentAsSpam($postId, $commentId)
+    {
+        try {
+            $post = Post::findOrFail($postId);
+            $comment = Comment::findOrFail($commentId);
+            $user = $comment->user;
+            $user->is_spam = false;
+            $user->save();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

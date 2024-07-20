@@ -41,8 +41,8 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="inputHome" class="col-sm-2 col-form-label">Home</label>
-                                <div class="col-sm-4">
+                                <div class="col-md-1">
+                                    <label for="home" class="form-label">home</label>
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="homeSwitch" name="is_home"
                                                value="1" {{ old('is_home', 1) == 1 ? 'checked' : '' }}>
@@ -51,11 +51,13 @@
                                         </label>
                                     </div>
                                 </div>
-                                <label for="inputActive" class="col-sm-2 col-form-label">Active</label>
-                                <div class="col-sm-4">
+
+                                <!-- Active Switch -->
+                                <div class="col-md-1">
+                                    <label for="active" class="form-label">Active</label>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="activeSwitch"
-                                               name="is_active" value="1" {{ old('is_active', 1) == 1 ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="checkbox" id="activeSwitch" name="is_active"
+                                               value="1" {{ old('is_active', 1) == 1 ? 'checked' : '' }}>
                                         <label class="form-check-label" for="activeSwitch">
                                             {{ old('is_active', 1) == 1 ? 'Yes' : 'No' }}
                                         </label>

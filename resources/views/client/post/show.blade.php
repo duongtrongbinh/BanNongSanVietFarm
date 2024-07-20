@@ -40,7 +40,7 @@
 
     .carousel-item img {
         margin: 0 auto;
-        max-width: 100%;
+        max-width: 50%;
     }
 </style>
 @php
@@ -74,7 +74,7 @@
                     <div class="col-lg-12 entries">
                         <article class="entry entry-single">
                             <div class="entry-img">
-                                <img src="{{asset($post->image)}}" alt="" style="width: 100%" class="img-fluid">
+                                <img src="{{asset($post->image)}}" alt="" style="width: 100%;height: 600px" class="img-fluid">
                             </div>
                             <h2 class="entry-title">
                                 <a href="#">{{$post->title}}</a>
