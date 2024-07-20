@@ -5,6 +5,7 @@ use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -288,9 +289,13 @@ class GHNService
     public function UpdateStatusOrder($status,$code){
         try {
             $order = Order::query()->where('order_code',$code)->first();
-            $order->update([
-                'status' => $status,
-            ]);
+            if ($order->status != $status){
+                $order->update([
+                    'status' => $status,
+                ]);
+                return $order;
+            }
+            return null;
         }catch (\Exception $exception){
             dd($exception);
         }
@@ -388,6 +393,34 @@ class GHNService
         $data['width'] = 40;
         $data['insurance_value'] = 0;
         return $data;
+    }
+
+    public function delivery(Request $request)
+    {
+      if ($request->input('data') != null){
+          $status = $request->input('data.status_id');
+          $code = $request->input('data.order_code');
+          $orderUpdate = $this->UpdateStatusOrder($status,$code);
+          if ($orderUpdate){
+              $this->createOrderHistories($orderUpdate['']->toArray());
+          }else{
+              return response(['message'=>'The order does not have a new status yet'],400);
+          }
+      }else{
+          return response(['message'=>'Update error: Order not found'],400);
+      }
+    }
+
+    public function createOrderHistories(array $data)
+    {
+            $data = [
+                'order_id' => $data['id'],
+                'status' => $data['status'],
+            ];
+
+            $order_histories = OrderHistory::create($data);
+
+            return $order_histories;
     }
 
 }
