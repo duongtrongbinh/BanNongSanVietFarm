@@ -42,60 +42,11 @@
                     <div class="row align-items-center gy-3">
                         <div class="col-sm-auto">
                             <div class="d-flex gap-1 flex-wrap">
-                                <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a>
-                                <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up"></i> Xuất</a>
+                                {{-- <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a> --}}
+                                <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <form>
-                        <div class="row g-3">
-                            <div class="col-xxl-2 col-sm-6">
-                                <div>
-                                    <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true" id="demo-datepicker" placeholder="Select date">
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-xxl-2 col-sm-4">
-                                <div>
-                                    <select class="form-control" data-choices data-choices-search-false name="choices-single-default" id="idStatus">
-                                        <option value="">Status</option>
-                                        <option value="all" selected>All</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Inprogress">Inprogress</option>
-                                        <option value="Cancelled">Cancelled</option>
-                                        <option value="Pickups">Pickups</option>
-                                        <option value="Returns">Returns</option>
-                                        <option value="Delivered">Delivered</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-xxl-2 col-sm-4">
-                                <div>
-                                    <select class="form-control" data-choices data-choices-search-false name="choices-single-default" id="idPayment">
-                                        <option value="">Select Payment</option>
-                                        <option value="all" selected>All</option>
-                                        <option value="Mastercard">Mastercard</option>
-                                        <option value="Paypal">Paypal</option>
-                                        <option value="Visa">Visa</option>
-                                        <option value="COD">COD</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!--end col-->
-                            <div class="col-xxl-1 col-sm-4">
-                                <div>
-                                    <button type="button" class="btn btn-primary w-100" onclick="SearchData();"> <i class="ri-equalizer-fill me-1 align-bottom"></i>
-                                        Filters
-                                    </button>
-                                </div>
-                            </div>
-                            <!--end col-->
-                        </div>
-                        <!--end row-->
-                    </form>
                 </div>
                 <div class="card-body pt-3">
                     <!-- Bordered Tabs -->

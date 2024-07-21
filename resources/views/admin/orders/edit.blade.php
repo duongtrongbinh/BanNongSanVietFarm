@@ -150,12 +150,14 @@
                                         Cập nhật trạng thái
                                     </button>
                                 </form>
-                                <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
-                                        Hủy đơn hàng
-                                    </button>
-                                </form>
+                                @if ($order->status < OrderStatus::PROCESSING->value)
+                                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
+                                            Hủy đơn hàng
+                                        </button>
+                                    </form>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -215,7 +217,7 @@
                     <div class="d-flex">
                         <h5 class="card-title flex-grow-1 mb-0">Thông tin khách hàng</h5>
                         <div class="flex-shrink-0">
-                            <a href="" class="link-secondary">Xem hồ sơ</a>
+                            <a href="{{ route('user.edit', $order->user->id) }}" class="link-secondary">Xem hồ sơ</a>
                         </div>
                     </div>
                 </div>
@@ -234,17 +236,7 @@
                         </li>
                         <li><i class="ri-mail-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->email }}</li>
                         <li><i class="ri-phone-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->phone }}</li>
-                    </ul>
-                </div>
-            </div>
-            <!--end card-->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="ri-map-pin-line align-middle me-1 text-muted"></i> Địa chỉ giao hàng</h5>
-                </div>
-                <div class="card-body pt-3">
-                    <ul class="list-unstyled vstack gap-2 fs-13 mb-0">
-                        <li>{{ $order->address }}</li>
+                        <li><i class="ri-map-pin-line align-middle me-2 text-muted fs-16"></i>{{ $order->address }}</li>
                     </ul>
                 </div>
             </div>

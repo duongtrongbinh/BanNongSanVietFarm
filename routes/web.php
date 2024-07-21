@@ -147,8 +147,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('orders',OrderController::class);
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
-    Route::delete('orders/{id}', [OrderController::class, 'delete'])
-        ->name('orders.delete');
     Route::get('/bill/return', [GHNService::class,'pay_return'])
         ->name('bill.return');
 

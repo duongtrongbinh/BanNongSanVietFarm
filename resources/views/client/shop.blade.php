@@ -90,11 +90,11 @@
                                             <h4 class="mb-2">Giá (VNĐ)</h4>
                                             <div class="col">
                                                 <label for="minPrice">Giá từ:</label>
-                                                <input type="number" id="minPrice" name="minPrice" class="form-control" value="{{ request('minPrice') ?? 0 }}" placeholder="{{ number_format($priceLimits->min_price) }} VNĐ">
+                                                <input type="number" id="minPrice" name="minPrice" class="form-control" value="{{ request('minPrice') ?? (int)$priceLimits->min_price }}">
                                             </div>
                                             <div class="col">
                                                 <label for="maxPrice">Đến:</label>
-                                                <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="{{ request('maxPrice') ?? 0 }}" placeholder="{{ number_format($priceLimits->max_price) }} VNĐ">
+                                                <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="{{ request('maxPrice') ?? (int)$priceLimits->max_price }}">
                                             </div>
                                         </div>
                                     </div>
@@ -104,39 +104,6 @@
                                                 <i class="bi bi-funnel"></i>
                                                 Lọc
                                             </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <h4 class="mb-3">Top đánh giá</h4>
-                                        <div class="d-flex align-items-center justify-content-start">
-                                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                                <img src="{{ asset('client/assets/img/featur-1.jpg') }}" class="img-fluid rounded" alt="">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-2">Big Banana</h6>
-                                                <div class="d-flex mb-2">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                                <div class="d-flex mb-2">
-                                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-center my-4">
-                                            <a href="#" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Xem thêm</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="position-relative">
-                                            <img src="{{ asset('client/assets/img/banner-fruits.jpg') }}" class="img-fluid w-100 rounded" alt="">
-                                            <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                                <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -167,7 +134,7 @@
                                         </div>
                                     @endforeach
                                 </div>
-                                {{ $products->links() }}
+                                {{ $products->appends(request()->query())->links() }}
                             </div>
                         </div>
                     </form>

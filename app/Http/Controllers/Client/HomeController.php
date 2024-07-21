@@ -72,14 +72,13 @@ class HomeController extends Controller
         $searchTerm = $request->filled('search') ? $request->input('search') : null;
         $sort = $request->filled('sort') ? $request->input('sort') : 'newest';
         $brandSlugs = $request->filled('brands') ? $request->input('brands') : [];
-        $categorySlugs = $request->filled('categories') ? $request->input('categories') : [];
         $minPrice = $request->filled('minPrice') > 0 ? $request->input('minPrice') : 0;
         $maxPrice = $request->filled('maxPrice') > 0 ? $request->input('maxPrice') : 0;
 
         $category = Category::where('slug', $slug)
                         ->first();
 
-        $stages = $this->pipelineFactory->make($searchTerm, $brandSlugs, $categorySlugs, $minPrice, $maxPrice, [$sort]);
+        $stages = $this->pipelineFactory->make($searchTerm, $brandSlugs, $slug, $minPrice, $maxPrice, [$sort]);
 
         $productsQuery = Product::query()
                             ->with(['brand', 'category'])
