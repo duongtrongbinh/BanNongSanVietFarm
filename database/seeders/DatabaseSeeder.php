@@ -67,9 +67,9 @@ class DatabaseSeeder extends Seeder
         /**
          * Bước 3: Comment đoạn seed ở bước 1 lại và chạy đoạn seed còn lại
         */
-            // $this->call(ProductSeeder::class);
-            // $this->call(ProductImageSeeder::class);
-            // $this->call(VoucherSeeder::class);
+            $this->call(ProductSeeder::class);
+            $this->call(ProductImageSeeder::class);
+            $this->call(VoucherSeeder::class);
             $this->call(OrderSeeder::class);
     }
 }

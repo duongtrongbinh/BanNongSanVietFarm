@@ -15,13 +15,13 @@ class CreateWardsTable extends Migration
     {
         Schema::create('wards', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('gso_id');
-            $table->unsignedBigInteger('district_id');
+            $table->string('WardCode')->index();
+            $table->string('WardName');
+            $table->unsignedBigInteger('DistrictID');
             $table->timestamps();
 
-            $table->foreign('district_id')
-                ->references('id')
+            $table->foreign('DistrictID')
+                ->references('DistrictID')
                 ->on('districts')
                 ->cascadeOnDelete();
         });

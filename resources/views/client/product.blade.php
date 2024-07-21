@@ -47,17 +47,16 @@
     </style>
 @endsection
 @section('content')
-    @if (session('error'))
-        <script>
-            alert("{{ session('error') }}");
-        </script>
-    @endif
-    <!-- Single Page Header start -->
+    @php
+        $created = session('created');
+    @endphp
+        <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">{{ $product->name }}</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-white">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('product', $product->slug) }}" class="active">Sản phẩm</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('product', $product->slug) }}" class="active">Sản phẩm</a>
+            </li>
         </ol>
     </div>
     <!-- Single Page Header End -->
@@ -92,7 +91,7 @@
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Next</span>
                                     </button>
-                                  </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -152,17 +151,20 @@
                                 </div>
                             </div>
                             <p>{{ $product->quantity }} sản phẩm có sẵn</p>
-                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart"
+                               data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
+                                <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                 Thêm vào giỏ
                             </a>
                         </div>
                         <div class="col-lg-12">
                             <nav>
                                 <div class="nav nav-tabs mb-3">
-                                    <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
-                                        id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
-                                        aria-controls="nav-about" aria-selected="true">Chi tiết</button>
+                                    <button class="nav-link active border-white border-bottom-0" type="button"
+                                            role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Chi tiết
+                                    </button>
                                     <button class="nav-link border-white border-bottom-0" type="button" role="tab"
                                             id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
                                             aria-controls="nav-mission" aria-selected="false">Reviews
@@ -170,7 +172,8 @@
                                 </div>
                             </nav>
                             <div class="tab-content mb-5">
-                                <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                <div class="tab-pane active" id="nav-about" role="tabpanel"
+                                     aria-labelledby="nav-about-tab">
                                     {!!  $product->content !!}
                                 </div>
                                 <div class="tab-pane" id="nav-mission" role="tabpanel"
@@ -184,7 +187,8 @@
                                                      style="width: 100px; height: 100px;"
                                                      alt="">
                                                 <div>
-                                                    <p class="mb-2" style="font-size: 14px;">{{ $comment->created_at->format('F j, Y') }}</p>
+                                                    <p class="mb-2"
+                                                       style="font-size: 14px;">{{ $comment->created_at->format('F j, Y') }}</p>
                                                     <div class="d-flex justify-content-between">
                                                         <h5>{{ $comment->user->name }}</h5>
                                                         <div class="d-flex mb-3">
@@ -197,13 +201,16 @@
                                                             @endphp
                                                             <div class="d-flex align-items-center">
                                                                 @for ($i = 1; $i <= $fullStars; $i++)
-                                                                    <i class="fa fa-star text-warning" data-rating="{{ $i }}"></i>
+                                                                    <i class="fa fa-star text-warning"
+                                                                       data-rating="{{ $i }}"></i>
                                                                 @endfor
                                                                 @if ($halfStar > 0)
-                                                                    <i class="fa fa-star-half-alt text-warning" data-rating="{{ $fullStars + 1 }}"></i>
+                                                                    <i class="fa fa-star-half-alt text-warning"
+                                                                       data-rating="{{ $fullStars + 1 }}"></i>
                                                                 @endif
                                                                 @for ($j = 1; $j <= $emptyStars; $j++)
-                                                                    <i class="fa fa-star" data-rating="{{ $fullStars + $halfStar + $j }}"></i>
+                                                                    <i class="fa fa-star"
+                                                                       data-rating="{{ $fullStars + $halfStar + $j }}"></i>
                                                                 @endfor
                                                                 <p class="mb-0">
                                                                     {{ number_format($averageRatting, 1) }}
@@ -277,14 +284,18 @@
                                 <div class="vesitable-img">
                                     <img src="{{ $related->products->image }}" class="img-fluid w-100 rounded-top">
                                 </div>
-                                <div class="text-white bg-primary px-3 py-1 rounded position-absolute" style="top: 10px; right: 10px;">{{ $related->products->category->name }}</div>
+                                <div class="text-white bg-primary px-3 py-1 rounded position-absolute"
+                                     style="top: 10px; right: 10px;">{{ $related->products->category->name }}</div>
                                 <div class="p-4 pb-0 rounded-bottom">
                                     <h4 class="text-truncate">{{ $related->products->name }}</h4>
                                     <p class="text-truncate">{{ $related->products->description }}</p>
                                     <div class="text-center flex-lg-wrap">
-                                        <p class="text-dark fs-5 fw-bold">{{ number_format($related->products->price_sale) }} VNĐ</p>
-                                        <a class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                            <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                        <p class="text-dark fs-5 fw-bold">{{ number_format($related->products->price_sale) }}
+                                            VNĐ</p>
+                                        <a class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary add-to-cart"
+                                           data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}"
+                                           data-quantity="1">
+                                            <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                             Thêm vào giỏ
                                         </a>
                                     </div>
@@ -296,12 +307,16 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const stars = document.querySelectorAll('.fa-star1');
         const rattingInput = document.getElementById('ratting-input');
 
         stars.forEach(star => {
-            star.addEventListener('click', function() {
+            star.addEventListener('click', function () {
                 const ratting = this.getAttribute('data-ratting');
                 rattingInput.value = ratting;
 
@@ -316,33 +331,37 @@
                 });
             });
         });
-
-        function validateForm() {
-            var hasCommented = false; // Biến để kiểm tra người dùng đã bình luận chưa
-            var rattingInput = document.getElementById('ratting-input');
-            var userId = document.getElementById('user_id').value;
-
-            // Kiểm tra xem đã chọn rating chưa
-            if (rattingInput.value === "") {
-                alert("Please select a rating.");
-                return false;
+        $(document).ready(function () {
+            // Hiển thị thông báo thành công nếu có
+            let status = @json($created);
+            let title = 'Bạn đã';
+            let message = status;
+            let icon = 'success';
+            if (status) {
+                showMessage(title, message, icon);
             }
 
-            // Kiểm tra xem người dùng đã đăng nhập chưa
-            if (userId === '') {
-                alert('Bạn cần đăng nhập để thực hiện thao tác này.');
-                return false;
-            }
-            if (hasCommented) {
-                alert('Bạn đã bình luận sản phẩm này rồi.');
-                return false;
-            }
-            // Nếu đã đăng nhập và đã chọn rating, cho phép submit form
-            return true;
+            // Hiển thị thông báo lỗi nếu có
+            @if (session('error'))
+            Swal.fire({
+                title: 'Lỗi',
+                text: '{{ session('error') }}',
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            @endif
+        });
+
+        function showMessage(title, message, icon) {
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: icon,
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     </script>
 @endsection
-@section('js')
-<script src="path-to-your-tinymce/tinymce.min.js"></script>
 
-@endsection

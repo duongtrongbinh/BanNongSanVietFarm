@@ -11,7 +11,7 @@ return [
     //     ],
     // ],
     [
-        'title' => 'banners',
+        'title' => 'Quản lý banners',
         'icon' => 'bi bi-image-fill',
         'subtitle' => [
             [

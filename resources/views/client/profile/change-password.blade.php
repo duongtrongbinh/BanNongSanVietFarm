@@ -2,8 +2,12 @@
 @section('title', 'Thông tin tài khoản')
 
 @section('content')
+    @php
+        $updated = session('update');
+        $error = session('error');
+    @endphp
     <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Thông tin khoản</h1>
+        <h1 class="text-center text-white display-6">Thông tin tài khoản</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
             <li class="breadcrumb-item active text-white">Tài khoản</li>
@@ -21,7 +25,8 @@
                         <a href="{{route('user.profile')}}" class="btn btn-primary btn-sm mt-3 text-white">
                             <i class="bi bi-info-circle-fill me-2"></i>Thông tin chính
                         </a>
-                        <a href="{{route('user.showChangePasswordForm')}}" class="btn btn-primary btn-sm mt-3 text-white">
+                        <a href="{{route('user.showChangePasswordForm')}}"
+                           class="btn btn-primary btn-sm mt-3 text-white">
                             <i class="bi bi-shield-lock-fill me-2"></i>Đổi mật khẩu
                         </a>
                     </div>
@@ -37,11 +42,6 @@
                             <div class="card-header">
                                 <h5>Đổi Mật Khẩu</h5>
                             </div>
-                            @if(session('error'))
-                                <div class="alert alert-danger">
-                                    {{ session('error') }}
-                                </div>
-                            @endif
                             <div class="card-body">
                                 <form action="{{ route('user.profile.change_password') }}" method="POST">
                                     @csrf
@@ -52,11 +52,13 @@
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="new_password">Mật Khẩu Mới</label>
-                                        <input type="password" name="new_password" id="new_password" class="form-control">
+                                        <input type="password" name="new_password" id="new_password"
+                                               class="form-control">
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="new_password_confirmation">Xác Nhận Mật Khẩu Mới</label>
-                                        <input type="password" name="new_password_confirmation" id="new_password_confirmation"
+                                        <input type="password" name="new_password_confirmation"
+                                               id="new_password_confirmation"
                                                class="form-control">
                                     </div>
                                     <button type="submit" class="btn btn-primary text-white">Đổi Mật Khẩu</button>
@@ -65,13 +67,33 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 @endsection
-{{--@section('js')--}}
-{{--    <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>--}}
-{{--    <script src="{{ asset('client/assets/js/product/addProduct.js')}}"></script>--}}
-{{--@endsection--}}
 
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            let status = @json($updated);
+            if (status) {
+                let title = 'Cập nhật thành công';
+                let message = 'Hồ sơ của bạn đã được cập nhật thành công!';
+                let icon = 'success';
+                showMessage(title, message, icon);
+            }
+            @if (session('error'))
+            Swal.fire({
+                title: 'Lỗi',
+                text: '{{ session('error') }}',
+                icon: 'error',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            @endif
+        });
+    </script>
+@endsection

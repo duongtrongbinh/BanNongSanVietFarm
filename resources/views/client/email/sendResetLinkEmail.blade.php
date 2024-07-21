@@ -44,8 +44,8 @@
     <p>Vui lòng nhấn vào liên kết dưới đây để thiết lập lại mật khẩu:</p>
     <p>Chú ý : Mã xác nhận trong link chỉ có hiện lực 72 giờ</p>
     <a href="{{ route('password.reset', ['user' => $user->id, 'token' => $token]) }}">
-    <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
-    <p>Xin cảm ơn!</p>
+        <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+        <p>Xin cảm ơn!</p>
 </div>
 </body>
 </html>

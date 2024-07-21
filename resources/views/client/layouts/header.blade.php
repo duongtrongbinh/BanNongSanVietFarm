@@ -8,20 +8,34 @@
           </button>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
-                    <a href="{{ route('home') }}" class="nav-item nav-link @if(request()->routeIs('home')) active @endif">Trang chủ</a>
-                    <a href="{{ route('shop') }}" class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif">Cửa hàng</a>
-                    <a href="#" class="nav-item nav-link">Bài viết</a>
+                    <a href="{{ route('home') }}"
+                       class="nav-item nav-link @if(request()->routeIs('home')) active @endif">Trang chủ</a>
+                    <a href="{{ route('shop') }}"
+                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif">Cửa
+                        hàng</a>
+                    <a href="{{ route('postclient.index') }}"
+                       class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif">Bài viết</a>
                     <a href="#" class="nav-item nav-link">Liên hệ</a>
                     <a href="#" class="nav-item nav-link">Chính sách</a>
                 </div>
                 <div class="d-flex m-3 me-0">
-                    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
+                    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white"
+                            data-bs-toggle="modal" data-bs-target="#searchModal"><i
+                            class="fas fa-search text-primary"></i></button>
                     <div class="dropdown topbar-head-dropdown ms-1 header-item">
-                        <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative my-auto cart-button" data-url="{{ route('cart.getCart') }}" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-cart-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                        <button type="button"
+                                class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative my-auto cart-button"
+                                data-url="{{ route('cart.getCart') }}"
+                                style="outline: none; box-shadow: none; color: #81c408;" id="page-header-cart-dropdown"
+                                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true"
+                                aria-expanded="false">
                             <i class="fa fa-shopping-bag fa-2x"></i>
-                            <span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 cart-count" style="top: -5px; left: 30px; height: 20px; min-width: 20px;">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
+                            <span
+                                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 cart-count"
+                                style="top: -5px; left: 30px; height: 20px; min-width: 20px;">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end p-0 dropdown-menu-cart" style="min-width: 31.25rem" aria-labelledby="page-header-cart-dropdown">
+                        <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end p-0 dropdown-menu-cart"
+                             style="min-width: 31.25rem" aria-labelledby="page-header-cart-dropdown">
                             @if (session('cart'))
                                 <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
                                     <div class="row align-items-center">
@@ -30,7 +44,8 @@
                                         </div>
                                         <div class="col-auto">
                                             <span class="badge bg-warning-subtle text-warning fs-13">
-                                                <span class="cartitem-badge cart-count">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
+                                                <span
+                                                    class="cartitem-badge cart-count">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
                                                 sản phẩm
                                             </span>
                                         </div>
@@ -45,7 +60,8 @@
                                         @foreach (session('cart') as $id => $item)
                                             <div class="d-block dropdown-item dropdown-item-cart text-wrap px-3 py-2">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ $item['image'] }}" class="me-3 rounded-circle image" style="width: 4.5rem; height: 4.5rem" alt="user-pic">
+                                                    <img src="{{ $item['image'] }}" class="me-3 rounded-circle image"
+                                                         style="width: 4.5rem; height: 4.5rem" alt="user-pic">
                                                     <div class="flex-grow-1">
                                                         <h6 class="mt-0 mb-1 fs-14">
                                                             <a class="text-reset name">{{ $item['name'] }}</a>
@@ -55,10 +71,14 @@
                                                         </p>
                                                     </div>
                                                     <div class="px-2">
-                                                        <h5 class="m-0 fw-normal total">{{number_format($item['price'] * $item['quantity']) }}<span class="cart-item-price">đ</span></h5>
+                                                        <h5 class="m-0 fw-normal total">{{number_format($item['price'] * $item['quantity']) }}
+                                                            <span class="cart-item-price">đ</span></h5>
                                                     </div>
                                                     <div class="ps-2">
-                                                        <button type="button" class="btn btn-icon btn-sm btn-ghost-secondary remove-cart" data-id="{{ $id }}" data-url="{{ route('cart.remove', $id) }}">
+                                                        <button type="button"
+                                                                class="btn btn-icon btn-sm btn-ghost-secondary remove-cart"
+                                                                data-id="{{ $id }}"
+                                                                data-url="{{ route('cart.remove', $id) }}">
                                                             <i class="fa fa-times text-danger"></i>
                                                         </button>
                                                     </div>
@@ -67,7 +87,8 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                <div class="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border" id="checkout-elem">
+                                <div class="p-3 border-bottom-0 border-start-0 border-end-0 border-dashed border"
+                                     id="checkout-elem">
                                     <div class="d-flex justify-content-between align-items-center pb-3">
                                         <h5 class="m-0 text-muted">Tổng: </h5>
                                         <div class="px-2">
@@ -75,7 +96,8 @@
                                         </div>
                                     </div>
                                     <div class="d-flex">
-                                        <a href="{{ route('cart.index') }}" class="btn btn-secondary text-center w-100 m-1">Giỏ hàng</a>
+                                        <a href="{{ route('cart.index') }}"
+                                           class="btn btn-secondary text-center w-100 m-1">Giỏ hàng</a>
                                         <a href="{{ route('checkout') }}" class="btn btn-success text-center w-100 m-1">Checkout</a>
                                     </div>
                                 </div>
@@ -84,7 +106,9 @@
                     </div>
                     <div class="dropdown header-item topbar-user">
                         @if (auth()->check())
-                            <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;"
+                                    id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
                                 <i class="fas fa-user fa-2x"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
@@ -106,18 +130,24 @@
                                 </form>
                             </div>
                         @else
-                        <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-user fa-2x"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
-                            <a class="dropdown-item" href="{{ route('clientlogin') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng nhập</span></a>
-                            <a class="dropdown-item" href="{{ route('register') }}"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span class="align-middle" data-key="t-logout">Đăng ký</span></a>
-                        @endif
+                            <button type="button" class="btn" style="outline: none; box-shadow: none; color: #81c408;"
+                                    id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                <i class="fas fa-user fa-2x"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" style="min-width: 13rem">
+                                <a class="dropdown-item" href="{{ route('clientlogin') }}"><i
+                                        class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
+                                        class="align-middle" data-key="t-logout">Đăng nhập</span></a>
+                                <a class="dropdown-item" href="{{ route('register') }}"><i
+                                        class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
+                                        class="align-middle" data-key="t-logout">Đăng ký</span></a>
+                                @endif
+                            </div>
                     </div>
                 </div>
-          </div>
-      </nav>
-  </div>
+        </nav>
+    </div>
 </div>
 <!-- Navbar End -->
 
@@ -131,7 +161,8 @@
             </div>
             <div class="modal-body d-flex align-items-center">
                 <div class="input-group w-75 mx-auto d-flex">
-                    <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1">
+                    <input type="search" class="form-control p-3" placeholder="keywords"
+                           aria-describedby="search-icon-1">
                     <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                 </div>
             </div>

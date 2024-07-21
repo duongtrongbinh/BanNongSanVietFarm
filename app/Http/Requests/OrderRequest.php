@@ -22,11 +22,9 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'voucher_id' => 'nullable|integer|exists:vouchers,id',
             'name' => 'required|min:3',
             'email' => 'required|min:3',
-            'specific_address' => 'required|min:5',
-            'phone' => ['required', 'regex:/^(0[3|5|7|8|9])+([0-9]{8})$/'],
+            'phone' => ['required'],
             'province' => 'required',
             'district' => 'required',
             'ward' => 'required',

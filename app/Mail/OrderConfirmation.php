@@ -39,7 +39,9 @@ class OrderConfirmation extends Mailable
     {
         return new Content(
             view: 'admin.mails.send_order_mail',
-            with: ['data' => $this->data],
+            with: [
+                'data' => $this->data,
+                ],
         );
     }
 }

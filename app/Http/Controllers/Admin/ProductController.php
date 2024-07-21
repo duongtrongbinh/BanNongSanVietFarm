@@ -93,11 +93,6 @@ class ProductController extends Controller
                                 <i class="ri-pencil-fill fs-16"></i>
                             </a>
                         </li>
-                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-                            <a data-url="'.route('products.delete', $product->id).'" class="text-danger d-inline-block deleteProduct">
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                            </a>
-                        </li>
                     </ul>';
         })
         ->rawColumns(['image', 'tags', 'is_active', 'is_home', 'action'])

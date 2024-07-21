@@ -52,7 +52,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Banner */
     Route::resource('banners', BannerController::class);
-    
+
     /* Route User */
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
@@ -78,8 +78,6 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Category */
     Route::resource('categories', CategoryController::class);
-
-    /* Route Product */
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
 
@@ -87,8 +85,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
     Route::resource('products', ProductController::class);
     Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
-    Route::delete('products/{id}', [ProductController::class, 'delete'])
-        ->name('products.delete');
     Route::get('export', [ProductController::class, 'export'])
         ->name('products.export');
     Route::post('import', [ProductController::class, 'import'])
@@ -152,7 +148,10 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Post */
     Route::resource('post', PostController::class);
-    Route::delete('post/{postId}/comment/{commentId}', [PostController::class, 'destroyComment'])->name('post.comment.destroy');
+    Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
+        ->name('post.comment.markAsSpam');
+    Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
+        ->name('post.comment.unmarkAsSpam');
 
     /* Route Comment */
     Route::resource('comment', CommentController::class);
@@ -172,8 +171,7 @@ Route::group(['prefix' => ''], function () {
         Route::get('/', 'home')->name('home');
         Route::get('/san-pham/{slug}', 'product')->name('product');
         Route::get('/danh-muc/{slug}', 'category')->name('category');
-        Route::get('/post', 'post')->name('post');
-        Route::post('/post', 'store')->name('post.store');
+
     });
 
     /* Route Rating */
@@ -185,7 +183,7 @@ Route::group(['prefix' => ''], function () {
         Route::get('/thuong-hieu/{slug}', 'brand')->name('brand');
     });
     /* Route Post */
-    Route::resource('postclient', PostClientController::class);
+    Route::resource('bai-viet', PostClientController::class)->names('postclient');
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
     /* Route Cart */
     Route::controller(CartController::class)->group(function () {
@@ -204,7 +202,7 @@ Route::group(['prefix' => ''], function () {
     /* Route Order */
     Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out',[OrderClientController::class,'create'])->name('checkout');
+    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
 
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
@@ -240,4 +238,3 @@ Route::group(['prefix' => ''], function () {
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
-

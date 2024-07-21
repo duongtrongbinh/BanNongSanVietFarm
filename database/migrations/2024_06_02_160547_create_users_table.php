@@ -26,11 +26,26 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->string('token', 50)->nullable();
             $table->string('address', 255)->nullable();
-            $table->foreignId('province_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('district_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('ward_id')->nullable()->constrained()->onDelete('cascade');
+$table->unsignedBigInteger('province_id')->nullable();
+            $table->unsignedBigInteger('district_id')->nullable();
+            $table->unsignedBigInteger('ward_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+$table->foreign('province_id')
+                ->references('ProvinceID')
+                ->on('provinces')
+                ->cascadeOnDelete();
+
+            $table->foreign('district_id')
+                ->references('DistrictID')
+                ->on('districts')
+                ->cascadeOnDelete();
+
+            $table->foreign('ward_id')
+                ->references('id')
+                ->on('wards')
+                ->cascadeOnDelete();
         });
     }
 

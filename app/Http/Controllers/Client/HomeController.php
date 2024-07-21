@@ -10,6 +10,7 @@ use App\Http\Repositories\ProductImageRepository;
 use App\Http\Repositories\ProductRepository;
 use App\Http\Repositories\TagRepository;
 use App\Models\Category;
+use App\Models\Banner;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Product;
 use App\Models\Post;
@@ -46,22 +47,26 @@ class HomeController extends Controller
 
         $categories = Category::with(['products' => function ($query) {
             $query->where('is_active', 1)
-                  ->where('is_home', 1)
-                  ->orderBy('id', 'desc');
+                ->where('is_home', 1)
+                ->orderBy('id', 'desc');
         }])->get();
 
         $categories->each(function ($category) {
             $category->products = $category->products->take(8);
         });
+        $banners = Banner::where('is_home', 1)
+            ->where('is_active', 1)
+            ->orderByDesc('id')
+            ->get(['image']);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories','banners'));
     }
 
     public function product($slug)
     {
         $product = Product::with(['brand', 'category', 'tags', 'product_images', 'comments', 'product_related'])
-                    ->where('slug', $slug)
-                    ->first();
+            ->where('slug', $slug)
+            ->first();
         $relatedProduct = $product->product_related;
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('product', 'relatedProduct'));
@@ -76,45 +81,31 @@ class HomeController extends Controller
         $maxPrice = $request->filled('maxPrice') > 0 ? $request->input('maxPrice') : 0;
 
         $category = Category::where('slug', $slug)
-                        ->first();
+            ->first();
 
         $stages = $this->pipelineFactory->make($searchTerm, $brandSlugs, $slug, $minPrice, $maxPrice, [$sort]);
 
         $productsQuery = Product::query()
-                            ->with(['brand', 'category'])
-                            ->where('category_id', $category->id);
+            ->with(['brand', 'category'])
+            ->where('category_id', $category->id);
 
         $products = app(Pipeline::class)
-                        ->send($productsQuery)
-                        ->through($stages)
-                        ->thenReturn()
-                        ->where('is_active', 1)
-                        ->latest('id')
-                        ->paginate(12);
+            ->send($productsQuery)
+            ->through($stages)
+            ->thenReturn()
+            ->where('is_active', 1)
+            ->latest('id')
+            ->paginate(12);
 
         $brands = $this->brandRepository->getAllWithRelations('products');
         $categories = $this->categoryRepository->getAllWithRelations('products');
 
         $priceLimits = Product::where('is_active', 1)
-                        ->selectRaw('MIN(price_sale) as min_price, MAX(price_sale) as max_price')
-                        ->first();
+            ->selectRaw('MIN(price_sale) as min_price, MAX(price_sale) as max_price')
+            ->first();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('category', 'brands', 'categories', 'products', 'priceLimits'));
     }
 
-    public function post()
-    {
-        $posts = Post::query()->get();
 
-        return view('client.post', compact('posts'));
-    }
-    
-    public function store(StorePostRequest $request)
-    {
-        $data = $request->except('image');
-        $data['image'] = $request->input('image');
-        $post = Post::create($data);
-        
-        return redirect()->route('post');
-    }
 }

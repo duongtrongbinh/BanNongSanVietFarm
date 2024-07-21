@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kjmtrue\VietnamZone\Models\District;
 
 class Provinces extends Model
 {
@@ -15,7 +16,7 @@ class Provinces extends Model
 
     public $timestamps = true;
 
-    public $fillable = ['name','gso_id','created_at','created_at'];
+    public $fillable = ['ProvinceID','ProvinceName','created_at','created_at'];
 
     public function district()
 {

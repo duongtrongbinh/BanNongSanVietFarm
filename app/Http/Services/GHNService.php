@@ -1,11 +1,14 @@
 <?php
 namespace App\Http\Services;
 
+use App\Enums\TransferStatus;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use App\Models\Product;
+use App\Models\TransferHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -13,18 +16,22 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+
 class GHNService
 {
     protected $apiUrl;
     protected $shopId;
     protected $token;
     protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
+    protected $ghnTranform;
 
-    public function __construct()
+    public function __construct(GHNTranform $ghnTranform)
     {
         $this->apiUrl = env('GHN_API_URL');
         $this->shopId = env('GHN_SHOP_ID');
         $this->token = env('GHN_API_TOKEN');
+        $this->ghnTranform = $ghnTranform;
     }
     public function store(OrderRequest $request)
     {
@@ -32,16 +39,17 @@ class GHNService
         DB::beginTransaction();
         try {
             $order = $this->saveData($value, session('cart'));
+            $ghnData = $this->createOrderGHN($value,session('cart'), $order->order_code);
+            $this->ghnTranform->saveOrderDataToStorage($ghnData, $order->order_code);
+
             if ($request['payment_method'] == 'VNPAYQR') {
-                $order->status = OrderStatus::PENDING_PAYMENT;
-                $order->expires_at = Carbon::now()->addDay();
-                $order->save();
                 $url = $this->paymentVNPAY($value['after_total_amount'], $order->order_code);
                 $routeUrl = redirect()->away($url);
             } else {
-                SendOrderToGHN::dispatch($order, $value, session('cart'));
-                $routeUrl = redirect()->route('home');
+                $routeUrl = redirect()->route('checkout.success',$order->order_code);
             }
+
+            dispatch(new SendOrderConfirmation($order));
             DB::commit();
             session()->forget('cart');
             return $routeUrl;
@@ -51,38 +59,6 @@ class GHNService
         }
     }
 
-    //     public function store(Request $request)
-    // {
-    //     $value = $this->fillterData($request->all());
-    //     $order_code = 200;
-    //     $order_code = $this->createOrderGHN($value,session('cart'));
-    //     if($order_code != 400) {
-    //         $data = Order::where('order_code',$order_code)->first();
-    //         $value['order_code'] = $order_code;
-    //         $value['user_id'] = Auth::id();
-    //         // dispatch(new SendOrderConfirmation($value));
-    //         if($request['payment_method'] != 'VNPAYQR'){
-    //             $this->saveData($value, session('cart'));
-    //             $routeUrl = redirect()->route('home');
-    //         }else{
-    //             // payment save data
-    //             $value['payment_method'] = 1;
-    //             $order = $this->saveData($value,session('cart'));
-    //            if(isset($order)){
-    //                $url = $this->paymentVNPAY($value['after_total_amount'],$order_code);
-    //                $routeUrl = redirect()->away($url);
-    //            }else{
-    //                $routeUrl = redirect()->route('home')->withErrors(['error'=>'error system']);
-    //            }
-    //         }
-
-    //         session()->forget('cart');
-    //         return $routeUrl;
-    // }else{
-    //         return redirect()->back()->with('error', 'Lỗi hệ thống,vui lòng đặt hàng lại sau.');
-    //     }
-    // }
-
 
     private function fillterData(array $data){
         $totalAmount = 0;
@@ -90,11 +66,9 @@ class GHNService
         $provinceParts = explode(' - ', $data['province']);
         $provinceName = isset($provinceParts[1]) ? $provinceParts[1] : '';
 
-        // Xử lý huyện
         $districtParts = explode(' - ', $data['district']);
         $districtName = isset($districtParts[1]) ? $districtParts[1] : '';
 
-        // Xử lý xã
         $wardParts = explode(' - ', $data['ward']);
         $wardName = isset($wardParts[1]) ? $wardParts[1] : '';
 
@@ -107,27 +81,26 @@ class GHNService
         $data['province'] = $provinceParts[0];
         $data['district'] = $districtParts[0];
         $data['ward'] = $wardParts[0];
-        foreach (session('cart') as $product) {
+        foreach (array_values(session('cart')) as $product) {
             $totalAmount += $product['quantity'] * intval($product['price_sale']);
-        }
-        $data['shipping'] = session('service_fee');
+        }  
+        $data['shipping'] = session('service_fee') ? session('service_fee') : 0;
         $data['before_total_amount'] = $totalAmount;
         $data['after_total_amount'] = $totalAmount + $data['shipping'];
         $data['address_detail'] = $data['specific_address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
         return $data;
     }
-    public function createOrderGHN($data,$items)
+    public function createOrderGHN($data, $items, $ordercode)
     {
-
         $product = $this->formatDataGHN($items);
 
         $jsonData = [
             "note" => $data['note'] ?? 'No',
             "required_note" => "KHONGCHOXEMHANG",
-            "client_order_code" => '',
+            "client_order_code" => $ordercode,
             "to_name" => $data['name'],
             "to_phone" => $data['phone'],
-            "to_address" => $data['address'],
+            "to_address" => $data['address_detail'],
             "to_ward_name" => $data['ward_name'],
             "to_district_name" => $data['district_name'],
             "to_province_name" => $data['province_name'],
@@ -148,7 +121,6 @@ class GHNService
             "items" => $product,
         ];
 
-        // Điều chỉnh loại thanh toán và COD
         if ($data['payment_method'] == 'VNPAYQR') {
             $jsonData["payment_type_id"] = 1;
             $jsonData["cod_amount"] = 0;
@@ -157,43 +129,19 @@ class GHNService
             $jsonData["cod_amount"] = intval($data['after_total_amount'] + $data['shipping'] );
         }
 
-
-        // Chuẩn bị header cho yêu cầu
-        $headers = [
-            'Content-Type' => 'application/json',
-            'ShopId'=>$this->shopId,
-            'token'=>$this->token,
-        ];
-            // Gửi yêu cầu POST tới GHN API
-            $response = Http::withHeaders($headers)->post($this->apiUrl, $jsonData);
-            // Xử lý phản hồi
-            Log::debug($response);
-            if ($response->successful()) {
-                $responseData = $response->json();
-
-                $orderCode = $responseData['data']['order_code'];
-                return $orderCode;
-            }
-
-            if ($response->failed()) {
-                $statusCode = $response->status();
-                $errorMessage = $response->json()['message'] ?? 'Unknown error';
-                return $statusCode;
-            }
-
-        // $data['address_detail'] = $data['address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
-        // return $data;
-
+        return $jsonData;
     }
-    public function formatDataGHN($data){
+
+    public function formatDataGHN($data)
+    {
         $items = [];
+
         foreach ($data as $key => $product) {
             $item = [
                 "name" => $product['name'],
                 "quantity" => (int) $product['quantity'],
                 "price" => intval($product['price']),
                 "code" => $key.'ABC',
-                "weight" => 100,
                 "length" => $product['length'],
                 "width" => $product['width'],
                 "height" => $product['height'],
@@ -204,6 +152,7 @@ class GHNService
 
             $items[] = $item;
         }
+
         return $items;
     }
     public function paymentVNPAY($after_total_amount, $order_code)
@@ -266,7 +215,11 @@ class GHNService
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
             $data['payment_method'] = $data['payment_method'] ? 1 : 2;
-            $data['user_id'] = Auth::user()->id;
+            if(Auth::user()->id){
+                $data['user_id'] = Auth::user()->id;
+            }else{
+                $data['user_id'] = 1;
+            }
             $data['address'] = $data['address_detail'];
             $order = Order::create($data);
             $products = [];
@@ -281,19 +234,23 @@ class GHNService
             }
             $this->updateQuantityProduct($products);
             $order->products()->attach($products);
+            OrderHistory::create([
+                'order_id' => $order->id,
+                'status' => OrderStatus::PENDING
+            ]);
             return $order;
         });
     }
 
     public function UpdateStatusOrder($status,$code){
-        try {
             $order = Order::query()->where('order_code',$code)->first();
-            $order->update([
-                'status' => $status,
-            ]);
-        }catch (\Exception $exception){
-            dd($exception);
-        }
+            if ($order->status != $status){
+                $order->update([
+                    'payment_status' => $status,
+                ]);
+                return $order;
+            }
+            return null;
     }
 
     private function updateQuantityProduct($products){
@@ -325,11 +282,11 @@ class GHNService
         }
     }
 
-     public function pay_return(Request $request){
+   public function pay_return(Request $request){
         $dd = $request->input('vnp_ResponseCode');
         $code = $request->input('vnp_TxnRef');
         if($dd == "00" ){
-            $this->UpdateStatusOrder(OrderStatus::PREPARE,$code);
+            $this->UpdateStatusOrder(OrderStatus::PENDING,$code);
             return redirect()->route('checkout.success',$code);
         }else{
             return redirect()->route('checkout.success',$code);
@@ -388,6 +345,31 @@ class GHNService
         $data['width'] = 40;
         $data['insurance_value'] = 0;
         return $data;
+    }
+
+ public function delivery(Request $request)
+    {
+        $Status = '';
+        $order = Order::query()->where('order_code',$request->OrderCode)->first();
+        if(!empty($order)){
+            foreach(TransferStatus::values() as $value => $name){
+                if (strtoupper($request->Status) == $name){
+                    $Status = $name;
+                }
+            }
+            if (empty($Status)){
+                TransferHistory::created([
+                    'order_id' => $order->id,
+                    'status' => $Status,
+                    'warehouse' => $request->Warehouse,
+                ]);
+                return response()->json('success',200);
+            }else{
+                return response()->json(['error', 'Không tìm thấy trạng thái đơn hàng.'],400);
+            }
+        }else{
+                return response()->json(['error', 'Không tìm thấy đơn hàng.'],400);
+        }
     }
 
 }
