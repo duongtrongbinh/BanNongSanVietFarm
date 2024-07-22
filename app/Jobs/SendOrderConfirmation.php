@@ -16,12 +16,15 @@ class SendOrderConfirmation implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
+
+    protected $products;
     /**
      * Create a new job instance.
      */
-    public function __construct($data)
+    public function __construct($data,$products)
     {
         $this->data = $data;
+        $this->products = $products;
     }
 
     /**
@@ -29,6 +32,6 @@ class SendOrderConfirmation implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->data['email'])->send(new OrderConfirmation($this->data));
+        Mail::to($this->data['email'])->send(new OrderConfirmation($this->data,$this->products));
     }
 }

@@ -184,7 +184,6 @@
         </div>
         @section('scripts')
             <script>
-
                     document.addEventListener("DOMContentLoaded", function() {
                     @if(session('error'))
                     alert('{{ session('error') }}');

@@ -1,12 +1,14 @@
 <?php
 namespace App\Http\Services;
 
+use App\Enums\TransferStatus;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
+use App\Models\TransferHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -43,6 +45,7 @@ class GHNService
                 SendOrderToGHN::dispatch($order, $value, session('cart'));
                 $routeUrl = redirect()->route('home');
             }
+            dispatch(new SendOrderConfirmation($order,session('cart')));
             DB::commit();
             session()->forget('cart');
             return $routeUrl;
@@ -334,7 +337,7 @@ class GHNService
         $dd = $request->input('vnp_ResponseCode');
         $code = $request->input('vnp_TxnRef');
         if($dd == "00" ){
-            $this->UpdateStatusOrder(OrderStatus::PREPARE,$code);
+            $this->UpdateStatusOrder(OrderStatus::PENDING,$code);
             return redirect()->route('checkout.success',$code);
         }else{
             return redirect()->route('checkout.success',$code);
@@ -397,30 +400,27 @@ class GHNService
 
     public function delivery(Request $request)
     {
-      if ($request->input('data') != null){
-          $status = $request->input('data.status_id');
-          $code = $request->input('data.order_code');
-          $orderUpdate = $this->UpdateStatusOrder($status,$code);
-          if ($orderUpdate){
-              $this->createOrderHistories($orderUpdate['']->toArray());
-          }else{
-              return response(['message'=>'The order does not have a new status yet'],400);
-          }
-      }else{
-          return response(['message'=>'Update error: Order not found'],400);
-      }
-    }
-
-    public function createOrderHistories(array $data)
-    {
-            $data = [
-                'order_id' => $data['id'],
-                'status' => $data['status'],
-            ];
-
-            $order_histories = OrderHistory::create($data);
-
-            return $order_histories;
+        $Status = '';
+        $order = Order::query()->where('order_code',$request->OrderCode)->first();
+        if(!empty($order)){
+            foreach(TransferStatus::values() as $value => $name){
+                if (strtoupper($request->Status) == $name){
+                    $Status = $name;
+                }
+            }
+            if (empty($Status)){
+                TransferHistory::created([
+                    'order_id' => $order->id,
+                    'status' => $Status,
+                    'warehouse' => $request->Warehouse,
+                ]);
+                return response()->json('success',200);
+            }else{
+                return response()->json(['error', 'Không tìm thấy trạng thái đơn hàng.'],400);
+            }
+        }else{
+                return response()->json(['error', 'Không tìm thấy đơn hàng.'],400);
+        }
     }
 
 }

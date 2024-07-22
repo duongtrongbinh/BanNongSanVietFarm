@@ -146,7 +146,7 @@
                                                         <div class="justify-content-between flex-lg-wrap">
                                                             <p class="text-dark fs-5 fw-bold mb-2">{{ number_format($product->price_sale) }} VNĐ</p>
                                                             <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                                                <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                                                <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                                                 Thêm vào giỏ
                                                             </a>
                                                         </div>
@@ -167,7 +167,7 @@
                             <div class="row g-4">
                                 <div class="col-lg-12">
                                     <div class="row g-4">
-                                        @foreach ($category->products as $product) 
+                                        @foreach ($category->products as $product)
                                             <div class="col-md-6 col-lg-4 col-xl-3">
                                                 <a href="{{ route('product', $product->slug) }}">
                                                     <div class="rounded position-relative fruite-item border border-secondary">
@@ -181,7 +181,7 @@
                                                             <div class="justify-content-between flex-lg-wrap">
                                                                 <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>
                                                                 <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                                                    <i class="fa fa-shopping-bag me-2 text-primary"></i> 
+                                                                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
                                                                     Thêm vào giỏ
                                                                 </a>
                                                             </div>
