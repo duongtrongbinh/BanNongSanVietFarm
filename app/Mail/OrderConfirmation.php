@@ -14,15 +14,12 @@ class OrderConfirmation extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
-
-    protected $products;
     /**
      * Create a new message instance.
      */
-    public function __construct($data,$products)
+    public function __construct($data)
     {
         $this->data = $data;
-        $this->products = $products;
     }
 
     /**
@@ -42,7 +39,9 @@ class OrderConfirmation extends Mailable
     {
         return new Content(
             view: 'admin.mails.send_order_mail',
-            with: ['data' => $this->data,'products' => $this->products],
+            with: [
+                'data' => $this->data,
+                ],
         );
     }
 }

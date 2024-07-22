@@ -23,14 +23,14 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
-        // Retrieve the user model from the route parameters
-        $userId = $this->user()->id;
+        // Retrieve the user ID from the route parameters
+        $userId = $this->route('id'); // Or use $this->route('user') depending on your route parameter name
 
         return [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'phone' => 'required|unique:users,phone,'.$userId,
-            'avatar' => 'nullable|max:2048',
+            'email' => 'required|email|unique:users,email,' . $userId,
+            'phone' => 'required|unique:users,phone,' . $userId,
+            'avatar' => 'nullable|string', // Optional: Add mime type validation if needed
             'address' => 'required',
         ];
     }
@@ -49,7 +49,6 @@ class UpdateUserRequest extends FormRequest
             'email.unique' => 'Email đã tồn tại.',
             'phone.required' => 'Số điện thoại không được để trống.',
             'phone.unique' => 'Số điện thoại đã tồn tại.',
-            'avatar.max' => 'Dung lượng của avatar không được lớn hơn 2MB.',
             'address.required' => 'Địa chỉ không được để trống.',
         ];
     }

@@ -21,7 +21,7 @@
                             <div class="col-md-12 col-lg-12">
                                 <div class="form-item w-100">
                                     <label class="form-label my-3">Full Name<sup>*</sup></label>
-                                    <input type="text" class="form-control" name="name" value="{{ Auth::user()->name }}">
+                                    <input type="text" class="form-control" name="name" value="{{ Auth::user()->name ?? '' }}">
                                     @error('name')
                                     <small id="name" class="form-text text-danger">{{ $message }}</small>
                                     @enderror
@@ -78,14 +78,14 @@
 
                         <div class="form-item">
                             <label class="form-label my-3">Mobile<sup>*</sup></label>
-                            <input type="tel" class="form-control" name="phone"  value="{{ Auth::user()->phone }}">
+                            <input type="tel" class="form-control" name="phone"  value="{{ Auth::user()->phone ?? '' }}">
                             @error('phone')
                             <small id="phone" class="form-text text-danger">{{ $message }}</small>
                             @enderror
                         </div>
                         <div class="form-item">
                             <label class="form-label my-3">Email Address<sup>*</sup></label>
-                            <input type="email" class="form-control" name="email" value="{{ Auth::user()->email }}">
+                            <input type="email" class="form-control" name="email" value="{{ Auth::user()->email ?? '' }}">
                             @error('email')
                             <small id="email" class="form-text text-danger">{{ $message }}</small>
                             @enderror
@@ -153,11 +153,7 @@
                             </div>
                         </div>
 
-                        <select class="form-select mt-5" aria-label="Default select example" name="voucher_id">
-                            @foreach($vouchers as $items)
-                                <option value="{{ $items->id }}" selected>{{ $items->title }}</option>
-                            @endforeach
-                        </select>
+                       
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">

@@ -7,13 +7,27 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileUserController extends Controller
 {
+    const token = '29ee235a-2fa2-11ef-8e53-0a00184fe694';
+    const url = 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province';
     public function profile()
     {
-        return view('admin.profile.index');
+        $headers = [
+            'Content-Type' => 'application/json',
+            'token'=>self::token,
+        ];
+        $response = Http::withHeaders($headers)->get(self::url);
+        if ($response->successful()) {
+            $provinces = $response->json();
+        }else{
+            $provinces = null;
+            dd('error system');
+        }
+        return view('admin.profile.index',compact('provinces'));
     }
 
     public function update(UpdateProfileRequest $request)

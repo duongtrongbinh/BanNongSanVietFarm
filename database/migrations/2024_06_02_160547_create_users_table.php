@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->string('token', 50)->nullable();
             $table->string('address', 255)->nullable();
-            $table->unsignedBigInteger('province_id')->nullable();
+$table->unsignedBigInteger('province_id')->nullable();
             $table->unsignedBigInteger('district_id')->nullable();
             $table->unsignedBigInteger('ward_id')->nullable();
             $table->timestamps();
@@ -46,7 +46,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('wards')
                 ->cascadeOnDelete();
-
         });
     }
 
