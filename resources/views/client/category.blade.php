@@ -146,12 +146,12 @@
                                         <div class="col-md-6 col-lg-6 col-xl-4">
                                             <a href="{{ route('product', $product->slug) }}">
                                                 <div class="rounded position-relative fruite-item border border-secondary">
-                                                    <div class="fruite-img">
+                                                    <div class="fruite-img" style="height: 215px">
                                                         <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
                                                     </div>
                                                     <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
                                                     <div class="p-4 border-top-0 rounded-bottom">
-                                                        <h4 class="text-truncate">{{ $product->name }}</h4>
+                                                        <h4 class="text-truncate" data-toggle="tooltip" data-placement="top" title="{{ $product->name }}">{{ $product->name }}</h4>
                                                         <p class="text-truncate">{{ $product->description }}</p>
                                                         <div class="d-flex justify-content-center flex-lg-wrap">
                                                             <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>

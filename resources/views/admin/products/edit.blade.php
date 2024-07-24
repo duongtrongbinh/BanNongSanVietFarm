@@ -62,12 +62,11 @@
                 <div class="col-3 mt-2">
                   <label for="brand_id">Thương hiệu</label>
                   <select class="form-select" name="brand_id" id="brand_id" aria-label="Default select example">
-                    <option value="" selected>Mở menu chọn này</option>
+                    <option value="" {{ is_null($product->brand_id) ? 'selected' : '' }}>Mở menu chọn này</option>
                     @foreach ($brands as $brand)
-                      @if ($product->brand_id == $brand->id)
-                        <option selected value="{{ $product->brand_id }}">{{ $product->brand->name }}</option>
-                      @endif
-                      <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                        <option value="{{ $brand->id }}" {{ $product->brand_id == $brand->id ? 'selected' : '' }}>
+                            {{ $brand->name }}
+                        </option>
                     @endforeach
                   </select>
                   @error('brand_id')
@@ -77,12 +76,11 @@
                 <div class="col-3 mt-2">
                   <label for="category_id">Danh mục</label>
                   <select class="form-select" name="category_id" id="category_id" aria-label="Default select example">
-                    <option value="" selected>Mở menu chọn này</option>
+                    <option value="" {{ is_null($product->category_id) ? 'selected' : '' }}>Mở menu chọn này</option>
                     @foreach ($categories as $category)
-                      @if ($product->category_id == $category->id)
-                        <option selected value="{{ $product->category_id }}">{{ $product->category->name }}</option>
-                      @endif
-                      <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
                     @endforeach
                   </select>
                   @error('category_id')
@@ -111,16 +109,16 @@
                     <div style="color: red">{{ $errors->first('image.0') }}</div>
                   @endif
                   <div>
-                   <img src="{{ $product->image}}" class="mt-2" width="200px">
-                   @foreach ($product->product_images as $product_image)
-                    <img src="{{ $product_image->image }}" class="mt-2" width="100px">  
-                   @endforeach
+                    <img src="{{ $product->image}}" class="mt-2" width="200px">
+                    @foreach ($product->product_images as $product_image)
+                      <img src="{{ $product_image->image }}" class="mt-2" width="100px">  
+                    @endforeach
                   </div>
                   <div id="holder" style="margin-top:15px;"></div>
                 </div>
                 <div class="col-6 mt-2">
-                  <label for="name">Nhãn</label>
-                  <select class="select2-multiple form-control" name="tags[]" multiple="multiple" id="select2Multiple">
+                  <label for="select2Multiple">Nhãn</label>
+                  <select class="form-control" name="tags[]" multiple="multiple" id="select2Multiple">
                     @foreach ($tags as $tag)
                       @php
                           $isSelected = false;
@@ -134,7 +132,13 @@
                           @endif
                       @endforeach
                       @if (!$isSelected)
-                          <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                        @php
+                          // Chỉ hiển thị sản phẩm nếu category_id của nó khớp với category_id của sản phẩm đã chọn
+                          $shouldDisplay = $relatedProduct->isEmpty() || $relatedProduct->first()->products->category_id == $product->category_id;
+                        @endphp
+                        @if ($shouldDisplay)
+                          <option value="{{ $product->id }}">{{ $product->name }}</option>
+                        @endif
                       @endif
                     @endforeach 
                   </select>
@@ -252,9 +256,6 @@
                           @endif
                         @endforeach       
                   </select>
-                  @error('products')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
                 </div>
                 <div class="col-12 mt-2">
                   <table id="productsTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
@@ -324,13 +325,13 @@
   <script>
     $(document).ready(function() {
       // Select2 Multiple
-      $('.select2-multiple').select2({
+      $('#select2Multiple').select2({
         them: 'bootstrap-5',
         placeholder: "Select",
         allowClear: true
       });
 
-      var select2Products = $('.select2-multiple');
+      var select2Products = $('#select2Products');
       select2Products.select2({
           placeholder: "Chọn sản phẩm",
           allowClear: true

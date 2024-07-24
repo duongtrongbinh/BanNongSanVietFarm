@@ -83,9 +83,10 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Product */
     Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
+    Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
     Route::resource('products', ProductController::class);
     Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
-    Route::get('export', [ProductController::class, 'export'])
+    Route::post('export', [ProductController::class, 'export'])
         ->name('products.export');
     Route::post('import', [ProductController::class, 'import'])
         ->name('products.import');

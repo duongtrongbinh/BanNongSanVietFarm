@@ -28,8 +28,9 @@
             <div class="card">
                 <div class="card-header border-0">
                   <div class="row align-items-center gy-3">
-                      <div class="col-sm-auto">
-                          <div class="d-flex gap-1 flex-wrap">
+                      <div class="col">
+                          <div class="d-flex justify-content-between">
+                            <div class="">
                               <a href="{{ route('products.create') }}" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Thêm mới</a>
                               <!-- Basic Modal -->
                               <button type="submit" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#basicModal">
@@ -47,6 +48,7 @@
                                       <div class="modal-body">
                                         <input type="file" name="product_file" >
                                       </div>
+                                      <a href="{{ asset('excel/Mẫu thêm sản phẩm.xlsx') }}" class="btn btn-link">Mẫu thêm sản phẩm.xlsx</a>
                                       <div class="modal-footer justify-content-center">
                                         <button type="submit" class="btn btn-primary">Nhập</button>
                                       </div>
@@ -64,7 +66,28 @@
                                 </div>
                               </div>
                               <!-- End Basic Modal-->
-                              <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up"></i> Xuất</a>
+                            </div>
+                            <div>
+                              <form action="{{ route('products.export') }}" method="post">
+                                @csrf
+                                <div class="d-flex">
+                                  <div style="margin-right: 5px;">
+                                    <select class="form-select" name="paginate" id="paginate">
+                                      <option value="10">10</option>
+                                      <option value="25">25</option>
+                                      <option value="50">50</option>
+                                      <option value="100">100</option>
+                                      <option value="all">Tất cả</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <button type="submit" id="export" class="btn btn-secondary">
+                                      <i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất
+                                    </button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
                           </div>
                       </div>
                   </div>
@@ -79,7 +102,7 @@
                               <th>Tên</th>
                               <th>Thương hiệu</th>
                               <th>Danh mục</th>
-                              <th>Tag</th>
+                              <th>Nhãn</th>
                               <th>Số lượng</th>
                               <th>Giá gốc</th>
                               <th>Giá giảm</th>
@@ -106,7 +129,6 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -155,12 +177,6 @@
             { responsivePriority: 100, targets: 10 }, // Is Home (least priority)
             { responsivePriority: 10, targets: 11 }  // Action
           ]
-        });
-
-        $('#export').click(function() {
-          var table = document.getElementById("productTable");
-          var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
-          XLSX.writeFile(wb, "products.xlsx");
         });
 
         //Show Message

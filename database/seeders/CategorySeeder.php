@@ -20,7 +20,7 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Rau, lá',
                 'slug' => 'rau-la',
-                'description' => 'Các loại rau, lá',
+                'description' => 'Các loại rau và lá',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
