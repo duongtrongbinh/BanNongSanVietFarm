@@ -54,6 +54,12 @@
 
         <!-- Template Javascript -->
         <script src="{{ asset('client/assets/js/main.js') }}"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!--ShowMessage js-->
+        <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
         <script>
             $(document).ready(function() {
                 function formatNumber(number) {
@@ -74,7 +80,12 @@
                             _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            alert(response.message);
+                            let title = 'Thêm vào giỏ';
+                            let message = 'Thêm sản phẩm vào giỏ hàng thành công!';
+                            let icon = 'success';
+
+                            showMessage(title, message, icon);
+
                             $('.cart-count').text(Object.keys(response.cart).length);
                         }
                     });
@@ -282,9 +293,10 @@
                 $(".remove-cart").on("click", function() {
                     let url = $(this).data("url");
                     let id = $(this).data("id");
-                    $(this).closest('tr').remove();
                     
                     if(confirm("Bạn có chắc muốn xóa không?")) {
+                        $(this).closest('tr').remove();
+                        
                         removeItemFromCart(url, id);
                     }
                 });

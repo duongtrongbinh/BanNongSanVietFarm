@@ -34,8 +34,6 @@ class ProductUpdateRequest extends FormRequest
             'weight' => 'integer|required|min:1|max:1600000',
             'tags' => 'required|array',
             'tags.*' => 'integer|exists:tags,id',
-            'products' => 'required|array',
-            'products.*' => 'integer|exists:App\Models\Product,id',
         ];
     }
 
@@ -80,10 +78,6 @@ class ProductUpdateRequest extends FormRequest
             'tags.array' => 'Nhãn phải là một mảng.',
             'tags.*.integer' => 'Mã nhãn phải là số nguyên.',
             'tags.*.exists' => 'Nhãn không tồn tại.',
-            'products.required' => 'Danh sách sản phẩm không được để trống.',
-            'products.array' => 'Mã danh sách sản phẩm phải là một mảng.',
-            'products.*.integer' => 'Mã sản phẩm phải là số nguyên.',
-            'products.*.exists' => 'Sản phẩm không tồn tại.',
         ];
     }
 }

@@ -78,18 +78,15 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Category */
     Route::resource('categories', CategoryController::class);
-
-    /* Route Product */
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
 
     /* Route Product */
     Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
+    Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
     Route::resource('products', ProductController::class);
     Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
-    Route::delete('products/{id}', [ProductController::class, 'delete'])
-        ->name('products.delete');
-    Route::get('export', [ProductController::class, 'export'])
+    Route::post('export', [ProductController::class, 'export'])
         ->name('products.export');
     Route::post('import', [ProductController::class, 'import'])
         ->name('products.import');
@@ -98,12 +95,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('groups', GroupController::class);
     Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
-        ->name('groups.delete');
-
-    /* Route Product Related */
-    Route::resource('products/{$product}/related', RelatedController::class);
-    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
         ->name('groups.delete');
 
     /* Route Tag */
@@ -153,8 +144,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('orders',OrderController::class);
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
-    Route::delete('orders/{id}', [OrderController::class, 'delete'])
-        ->name('orders.delete');
     Route::get('/bill/return', [GHNService::class,'pay_return'])
         ->name('bill.return');
 
@@ -164,6 +153,7 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('post.comment.markAsSpam');
     Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
         ->name('post.comment.unmarkAsSpam');
+
     /* Route Comment */
     Route::resource('comment', CommentController::class);
     Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])

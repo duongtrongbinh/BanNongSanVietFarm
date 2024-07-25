@@ -201,12 +201,9 @@
                   <label for="select2Products" class="mb-2">Sản phẩm</label>
                   <select class="form-control" name="products[]" multiple="multiple" id="select2Products">
                     @foreach ($products as $product)
-                      <option value="{{ $product->id }}" {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>{{ $product->name }}</option>
+                      <option value="{{ $product->id }}">{{ $product->name }}</option>
                     @endforeach   
                   </select>
-                  @error('products')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
                 </div>
                 <div class="col-12 mt-2">
                   <table id="productsTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
@@ -258,6 +255,39 @@
         them: 'bootstrap-5',
         placeholder: "Chọn nhãn",
         allowClear: true
+      });
+
+      $('#category_id').on('change', function() {
+        var categoryId = $(this).val();
+        
+        // Gửi yêu cầu AJAX để lấy sản phẩm theo category_id
+        $.ajax({
+            url: '{{ route('products.category') }}',
+            type: 'GET',
+            data: { 
+                category_id: categoryId
+            },
+            success: function(response) {
+                // Xóa tất cả các tùy chọn hiện có trong select2Products
+                $('#select2Products').empty();
+                
+                if (Array.isArray(response)) {
+                    // Thêm sản phẩm mới vào select2Products
+                    response.forEach(function(product) {
+                        $('#select2Products').append(new Option(product.name, product.id));
+                    });
+
+                    // Đồng bộ hóa lại Select2
+                    $('#select2Products').select2({
+                        placeholder: "Chọn sản phẩm",
+                        allowClear: true
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error('Có lỗi xảy ra khi lấy sản phẩm:', xhr);
+            }
+        });
       });
 
       var select2Products = $('#select2Products');

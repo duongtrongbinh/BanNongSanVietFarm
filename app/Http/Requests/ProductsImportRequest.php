@@ -14,7 +14,7 @@ class ProductsImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_file' => 'required|mimes:xlsx,xls|max:2048',
+            'product_file' => 'required|mimes:xlsx,xls|max:10240',
         ];
     }
 
@@ -23,7 +23,7 @@ class ProductsImportRequest extends FormRequest
         return [
             'product_file.required' => 'Tệp sản phẩm không được để trống.',
             'product_file.mimes' => 'Tệp sản phẩm phải có định dạng: xlsx, xls.',
-            'product_file.max' => 'Tệp sản phẩm không được vượt quá 2MB.',
+            'product_file.max' => 'Tệp sản phẩm không được vượt quá 10MB.',
         ];
     }
 }

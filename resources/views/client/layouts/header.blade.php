@@ -1,43 +1,50 @@
+<style>
+    .shadow {
+        top: 0 !important;
+    }
+    
+    .search-input {
+        width: 0;
+        padding-right: 0;
+        opacity: 0;
+        transition: width 0.3s ease, padding-right 0.3s ease, opacity 0.3s ease;
+    }
+
+    .search-form:hover .search-input {
+        width: 200px; /* Thay đổi kích thước khi hover */
+        padding-right: 45px; /* Cung cấp không gian cho biểu tượng tìm kiếm */
+        opacity: 1;
+    }
+</style>
 <!-- Navbar start -->
-<div class="container-fluid fixed-top">
-    <div class="container topbar bg-primary d-none d-lg-block">
-        <div class="d-flex justify-content-between">
-            <div class="top-info ps-2">
-                <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i> <a href="#"
-                                                                                                 class="text-white">123
-                        Street, New York</a></small>
-                <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
-            </div>
-            <div class="top-link pe-2">
-                <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
-            </div>
-        </div>
-    </div>
-    <div class="container px-0">
-        <nav class="navbar navbar-light bg-white navbar-expand-xl">
-            <a href="{{ route('home') }}" class="navbar-brand"><h1 class="text-primary display-6">Nông Sản Việt</h1></a>
-            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars text-primary"></span>
-            </button>
-            <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+<div class="fixed-top container-fluid">
+  <div class="container px-0">
+      <nav class="navbar navbar-light bg-white navbar-expand-xl">
+          <a href="{{ route('home') }}" class="navbar-brand"><h1 class="text-primary display-6">Nông Sản Việt</h1></a>
+          <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+              <span class="fa fa-bars text-primary"></span>
+          </button>
+          <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
                     <a href="{{ route('home') }}"
-                       class="nav-item nav-link @if(request()->routeIs('home')) active @endif">Trang chủ</a>
+                       class="nav-item nav-link @if(request()->routeIs('home')) active @endif"><b>Trang chủ</b></a>
                     <a href="{{ route('shop') }}"
-                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif">Cửa
-                        hàng</a>
+                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif"><b>Cửa
+                        hàng</b></a>
                     <a href="{{ route('postclient.index') }}"
-                       class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif">Bài viết</a>
-                    <a href="#" class="nav-item nav-link">Liên hệ</a>
-                    <a href="#" class="nav-item nav-link">Chính sách</a>
+                       class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif"><b>Bài viết</b></a>
+                    <a href="#" class="nav-item nav-link"><b>Liên hệ</b></a>
+                    <a href="#" class="nav-item nav-link"><b>Chính sách</b></a>
                 </div>
-                <div class="d-flex m-3 me-0">
-                    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white"
-                            data-bs-toggle="modal" data-bs-target="#searchModal"><i
-                            class="fas fa-search text-primary"></i></button>
+                <div class="d-flex align-items-center m-3 me-0">
+                    <div class="position-relative mx-auto">
+                        <form action="{{ route('shop') }}" method="GET" class="search-form">
+                            <input class="form-control border-2 border-secondary rounded-pill search-input" type="text" name="search" placeholder="Tìm kiếm..." style="padding-right: 45px;">
+                            <button type="submit" class="btn border-2 border-secondary position-absolute rounded-pill text-white h-100 search-button" style="top: 0; right: 0;">
+                                <i class="fas fa-search text-primary"></i>
+                            </button>
+                        </form>
+                    </div>                    
                     <div class="dropdown topbar-head-dropdown ms-1 header-item">
                         <button type="button"
                                 class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative my-auto cart-button"
@@ -166,23 +173,3 @@
     </div>
 </div>
 <!-- Navbar End -->
-
-<!-- Modal Search Start -->
-<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content rounded-0">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body d-flex align-items-center">
-                <div class="input-group w-75 mx-auto d-flex">
-                    <input type="search" class="form-control p-3" placeholder="keywords"
-                           aria-describedby="search-icon-1">
-                    <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
