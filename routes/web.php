@@ -77,6 +77,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
     Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
     Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
+
     /* Route Brand */
     Route::resource('brands', BrandController::class);
     Route::delete('brands/{id}', [BrandController::class, 'delete'])
@@ -84,31 +85,23 @@ Route::group(['prefix' => 'admin'], function () {
 
     /* Route Category */
     Route::resource('categories', CategoryController::class);
-
-    /* Route Product */
     Route::delete('categories/{id}', [CategoryController::class, 'delete'])
         ->name('categories.delete');
 
     /* Route Product */
     Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
+    Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
     Route::resource('products', ProductController::class);
     Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
-    Route::delete('products/{id}', [ProductController::class, 'delete'])
-        ->name('products.delete');
-    Route::get('export', [ProductController::class, 'export'])
+    Route::post('export', [ProductController::class, 'export'])
         ->name('products.export');
     Route::post('import', [ProductController::class, 'import'])
         ->name('products.import');
+
     /* Route Product Group */
     Route::resource('groups', GroupController::class);
     Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
     Route::delete('groups/{id}', [GroupController::class, 'delete'])
-        ->name('groups.delete');
-
-    /* Route Product Related */
-    Route::resource('products/{$product}/related', RelatedController::class);
-    Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-    Route::delete('groups/{id}', [RelatedController::class, 'delete'])
         ->name('groups.delete');
 
     /* Route Tag */
@@ -125,14 +118,15 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('purchases.import');
 
     /* Route Voucher */
-    Route::resource('vouchers', VoucherController::class);
-    Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
+    Route::resource('vouchers',VoucherController::class);
+    Route::get('adeleted/vouchers',[VoucherController::class,'deleted'])
         ->name('vouchers.deleted');
-    Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
+    Route::post('restore/vouchers/{id}',[VoucherController::class,'restore'])
         ->name('restore.vouchers');
 
     /* Route Flash Sale */
-    Route::resource('flash-sales', FlashSaleController::class);
+    Route::resource('flash-sales',FlashSaleController::class);
+
     /* Route Order */
     Route::get('orders/all', [OrderController::class, 'getAll'])
         ->name('orders.all');
@@ -154,12 +148,10 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('orders.returned');
     Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
         ->name('orders.updateStatus');
-    Route::resource('orders', OrderController::class);
+    Route::resource('orders',OrderController::class);
     Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
         ->name('orders.cancel');
-    Route::delete('orders/{id}', [OrderController::class, 'delete'])
-        ->name('orders.delete');
-    Route::get('/bill/return', [GHNService::class, 'pay_return'])
+    Route::get('/bill/return', [GHNService::class,'pay_return'])
         ->name('bill.return');
 
     /* Route Post */
@@ -168,6 +160,7 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('post.comment.markAsSpam');
     Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
         ->name('post.comment.unmarkAsSpam');
+
     /* Route Comment */
     Route::resource('comment', CommentController::class);
     Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
@@ -213,20 +206,25 @@ Route::group(['prefix' => ''], function () {
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
-    Route::get('/order', [OrderClientController::class, 'index'])->name('order.index');
-    Route::get('/order-detail/{order}', [OrderClientController::class, 'detail'])->name('order.detail');
-    Route::get('/check-out', [OrderClientController::class, 'orderCheckOut'])->name('checkout');
-    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
-    Route::get('/check-out/success/{order}', [OrderClientController::class, 'success'])->name('checkout.success');
+    Route::get('/order',[OrderClientController::class,'index'])->name('order.index');
+   Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+
+    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
+
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
+
         Route::get('login', 'showLoginForm')->name('login');
         Route::post('register', 'register');
         Route::post('login', 'login')->name('clientlogin');
+
         Route::post('logout', 'logout')->name('logout');
         Route::get('actived/{user}/{token}', 'activated')->name('user.activated');
     });
+
     /*  Route ForgotPasswordController*/
     Route::controller(ForgotPasswordController::class)->group(function () {
         Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -250,7 +248,9 @@ Route::group(['prefix' => ''], function () {
         Route::get('chinh-sach', 'index')->name('policy.index');
     });
 });
-/* Route 404 */
-Route::get('404', function () {
-    return view('client.layouts.404');
-})->name('404');
+
+
+    /* Route 404 */
+    Route::get('404', function () {
+        return view('client.layouts.404');
+    })->name('404');

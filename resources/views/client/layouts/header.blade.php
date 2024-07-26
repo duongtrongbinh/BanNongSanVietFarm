@@ -25,10 +25,10 @@
             <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
                     <a href="{{ route('home') }}"
-                       class="nav-item nav-link @if(request()->routeIs('home')) active @endif">Trang chủ</a>
+                       class="nav-item nav-link @if(request()->routeIs('home')) active @endif"><b>Trang chủ</b></a>
                     <a href="{{ route('shop') }}"
-                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif">Cửa
-                        hàng</a>
+                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif"><b>Cửa
+                        hàng</b></a>
                     <a href="{{ route('postclient.index') }}"
                        class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif">Bài viết</a>
                     <a href="{{route('contact.index')}}" class="nav-item nav-link">Liên hệ</a>
