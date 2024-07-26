@@ -31,8 +31,8 @@
                         hàng</a>
                     <a href="{{ route('postclient.index') }}"
                        class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif">Bài viết</a>
-                    <a href="#" class="nav-item nav-link">Liên hệ</a>
-                    <a href="#" class="nav-item nav-link">Chính sách</a>
+                    <a href="{{route('contact.index')}}" class="nav-item nav-link">Liên hệ</a>
+                    <a href="{{route('policy.index')}}" class="nav-item nav-link">Chính sách</a>
                 </div>
                 <div class="d-flex m-3 me-0">
                     <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white"

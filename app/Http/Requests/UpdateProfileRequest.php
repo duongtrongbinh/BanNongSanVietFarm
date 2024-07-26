@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -13,7 +12,7 @@ class UpdateProfileRequest extends FormRequest
      */
     public function authorize()
     {
-        return true; // Ensure you have the appropriate authorization logic here
+        return true; // Đảm bảo bạn có logic xác thực phù hợp ở đây
     }
 
     /**
@@ -23,15 +22,13 @@ class UpdateProfileRequest extends FormRequest
      */
     public function rules()
     {
-        // Retrieve the user model from the route parameters
-        $userId = $this->user()->id;
-
         return [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'phone' => 'required|unique:users,phone,'.$userId,
-            'avatar' => 'nullable|max:2048',
-            'address' => 'required',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+
+            'avatar' => 'nullable', // Thêm quy tắc kiểm tra kích thước hình ảnh
         ];
     }
 
@@ -49,7 +46,6 @@ class UpdateProfileRequest extends FormRequest
             'email.unique' => 'Email đã tồn tại.',
             'phone.required' => 'Số điện thoại không được để trống.',
             'phone.unique' => 'Số điện thoại đã tồn tại.',
-            'avatar.max' => 'Dung lượng của avatar không được lớn hơn 2MB.',
             'address.required' => 'Địa chỉ không được để trống.',
         ];
     }

@@ -26,14 +26,24 @@
                 <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
             </div>
             <span>Sử dụng email của bạn để đăng ký</span>
-            <input type="text" placeholder="Tên của bạn" name="name" value="{{ old('name') }}" >
-            <input type="email" placeholder="Email" name="email" value="{{ old('email') }}" >
-            <input type="password" placeholder="Mật khẩu" name="password" >
+            <input type="text" placeholder="Tên của bạn" name="name" value="{{ old('name') }}">
+            <div style="width: 100%; text-align: left">
+                {!! ShowError($errors, 'name') !!}
+            </div>
+            <input type="email" placeholder="Email" name="email" value="{{ old('email') }}">
+            <div style="width: 100%; text-align: left">
+                {!! ShowError($errors, 'email') !!}
+            </div>
+            <input type="password" placeholder="Mật khẩu" name="password">
+            <div style="width: 100%; text-align: left">
+                {!! ShowError($errors, 'password') !!}
+            </div>
             <div class="submit-button">
                 <button type="submit">Đăng ký</button>
             </div>
-            <div id="alert" style="display: none; color: red; margin: 10px;"></div>
+            <a href="{{ route('home') }}">Trang chủ</a>
         </form>
+
     </div>
     <!-- Overlay Container for Transition -->
     <div class="overlay-container">
@@ -41,7 +51,7 @@
             <div class="overlay-panel overlay-right">
                 <h1>Chào bạn!</h1>
                 <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
-                <a href="{{ route('clientlogin') }}">
+                <a href="{{ route('login') }}">
                     <button class="ghost" id="signUp">Đăng nhập</button>
                 </a>
             </div>
@@ -50,44 +60,27 @@
 </div>
 
 <script>
-    document.getElementById('register-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Ngăn chặn form gửi yêu cầu mặc định
-
-        const form = event.target;
-        const formData = new FormData(form);
-        const alertBox = document.getElementById('alert');
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alertBox.style.display = 'block';
-                    alertBox.innerHTML = data.message;
-                    if (data.user) {
-                        alertBox.style.color = 'green';
-                        // Redirect to login or update UI accordingly
-                        setTimeout(() => {
-                            window.location.href = '{{ route('clientlogin') }}';
-                        }, 2000);
-                    } else {
-                        alertBox.style.color = 'red';
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alertBox.style.display = 'block';
-                alertBox.style.color = 'red';
-                alertBox.innerHTML = 'Có lỗi xảy ra. Vui lòng thử lại.';
-            });
+    $(document).ready(function () {
+        // Hiển thị thông báo thành công nếu có
+        @if (session('success'))
+        Swal.fire({
+            title: 'Thành công',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+        @endif
+        // Hiển thị thông báo lỗi nếu có
+        @if (session('error'))
+        Swal.fire({
+            title: 'Lỗi',
+            text: '{{ session('error') }}',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+        @endif
     });
 </script>
+
 </body>
 </html>

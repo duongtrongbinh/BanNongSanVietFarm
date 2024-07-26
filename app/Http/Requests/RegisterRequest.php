@@ -27,15 +27,21 @@ class RegisterRequest extends FormRequest
             'password' => 'required|min:8',
         ];
     }
+
+    /**
+     * Get the custom validation messages for the request.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên không được để chống!',
-            'email.required'=> 'email không được để chống!',
-            'email.email'   => 'email không đúng định dạng!',
-            'email.unique'  => 'email đã được tồn tại!',
-            'password.required' => 'password không được để chống!',
-            'password.min'  => 'password không được nhỏ hơn 8 ký tự'
+            'name.required' => 'Tên của bạn không được để trống!',
+            'email.required'=> 'Email của bạn không được để trống!',
+            'email.email'   => 'Email của bạn không đúng định dạng!',
+            'email.unique'  => 'Email của bạn đã được sử dụng!',
+            'password.required' => 'Mật khẩu của bạn không được để trống!',
+            'password.min'  => 'Mật khẩu của bạn không được nhỏ hơn 8 ký tự',
         ];
     }
 }

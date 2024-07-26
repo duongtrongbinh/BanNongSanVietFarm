@@ -28,27 +28,29 @@ class StoreUserRequest extends FormRequest
             'phone' => 'required|unique:users,phone',
             'address' => 'required',
             'avatar' => 'required|max:2048',
-            'user_code'=> 'required|unique:users,user_code',
+            'province_id' => 'required',
+            'district_id' => 'required',
+            'ward_id' => 'required',
         ];
     }
-
     public function messages()
     {
         return [
-            'name.required' => 'Name không được để chống',
-            'name.main' => 'Name không được nhỏ hơn 4 ký tự',
-            'email.required' => 'email không được để chống',
-            'email.email' => 'email không đúng định dạng',
-            'email.unique' => 'email đã được tồn tại',
-            'password.required' => 'password không được để chống',
-            'password.min' => 'password không được nhỏ hơn 8 ký tự',
-            'phone.required' => 'phone không được để chống',
-            'phone.unique' => 'phone đã được tồn tại',
-            'address.required' => 'address không được để chống',
-            'user_code.required' => 'user code không được để chống',
-            'user_code.unique' => 'user code đã được tồn tại',
-            'avatar.required' => 'Vui lòng chọn một hình ảnh.',
-            'avatar.max' => 'Hình ảnh không được lớn hơn 2MB.',
+            'name.required' => 'Tên không được để trống',
+            'name.min' => 'Tên không được nhỏ hơn 4 ký tự',
+            'email.required' => 'Email không được để trống',
+            'email.email' => 'Email không đúng định dạng',
+            'email.unique' => 'Email đã tồn tại',
+            'password.required' => 'Mật khẩu không được để trống',
+            'password.min' => 'Mật khẩu không được nhỏ hơn 8 ký tự',
+            'phone.required' => 'Số điện thoại không được để trống',
+            'phone.unique' => 'Số điện thoại đã tồn tại',
+            'address.required' => 'Địa chỉ không được để trống',
+            'avatar.required' => 'Vui lòng chọn ảnh đại diện.',
+            'avatar.max' => 'Hình ảnh đã vượt 2MB.',
+            'province_id.required' => 'Tỉnh không được để trống',
+            'district_id.required' => 'Huyện không được để trống',
+            'ward_id.required' => 'Xã không được để trống',
         ];
     }
 }

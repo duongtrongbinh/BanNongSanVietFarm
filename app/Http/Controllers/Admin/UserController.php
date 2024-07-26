@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Province;
+use App\Models\Provinces;
 use App\Models\Ward;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -19,37 +19,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    const token = '29ee235a-2fa2-11ef-8e53-0a00184fe694';
-    const url = 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province';
-
     public function index()
     {
         $data['user'] = User::query()->orderByDesc('id')->paginate(10);
         return view('admin.user.index', $data);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $headers = [
-            'Content-Type' => 'application/json',
-            'token' => self::token,
-        ];
-        $response = Http::withHeaders($headers)->get(self::url);
-        if ($response->successful()) {
-            $provinces = $response->json();
-        } else {
-            $provinces = null;
-            dd('error system');
-        }
+        $provinces = Provinces::all();
         return view('admin.user.create', compact('provinces'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
     {
         $data = $request->except('avatar');
@@ -58,27 +37,13 @@ class UserController extends Controller
         $user = User::create($data);
         return redirect()->route('user.index')->with('created', 'Thêm khách hàng thành công!');
     }
-
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        $headers = [
-            'Content-Type' => 'application/json',
-            'token' => self::token,
-        ];
-        $response = Http::withHeaders($headers)->get(self::url);
-        if ($response->successful()) {
-            $provinces = $response->json();
-        } else {
-            $provinces = null;
-            dd('error system');
-        }
+        $provinces = Provinces::all();
         return view('admin.user.edit', compact('user','provinces'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, $id)
     {
         $user = User::findOrFail($id);

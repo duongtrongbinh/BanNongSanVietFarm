@@ -16,7 +16,7 @@
                         @foreach ($post as $row)
                             <article class="entry">
                                 <div class="entry-img">
-                                    <img src="{{asset($row->image)}}" alt="" class="img-fluid" style="max-height: 440px; width: 100%;">
+                                    <img src="{{ $row->image ? asset($row->image) : asset('client/assets/img/NoBanner.png') }}" alt="" class="img-fluid" style="max-height: 440px; width: 100%;">
                                 </div>
                                 <h2 class="entry-title">
                                     <a href="{{route('postclient.show',$row)}}">{{$row->title}}</a>
@@ -43,7 +43,7 @@
                             <div class="sidebar-item recent-posts">
                                 @foreach($post as $row)
                                     <div class="post-item clearfix">
-                                        <img src="{{asset($row->image)}}">
+                                        <img src="{{ $row->image ? asset($row->image) : asset('client/assets/img/NoBanner.png') }}">
                                         <h4><a href="{{route('postclient.show', $row)}}">{{$row->title}}</a></h4>
                                         <time datetime="{{$row->created_at}}">{{$row->created_at}}</time>
                                     </div>
