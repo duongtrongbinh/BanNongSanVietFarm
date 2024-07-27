@@ -3,13 +3,11 @@
 @section('css')
     <!--datatable css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-    <!--datatable responsive css-->
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 @endsection
 @php
   $created = session('created');
-  $importErrors = session('importErrors');
 @endphp
 @section('content')
     <div class="pagetitle">
@@ -167,15 +165,15 @@
             { responsivePriority: 1, targets: 0 },  // ID column
             { responsivePriority: 2, targets: 1 },  // Img Thumbnail
             { responsivePriority: 3, targets: 2 },  // Name
-            { responsivePriority: 4, targets: 3 },  // Brand
-            { responsivePriority: 5, targets: 4 },  // Category
-            { responsivePriority: 6, targets: 5 },  // Tag
-            { responsivePriority: 7, targets: 6 },  // Quantity
-            { responsivePriority: 8, targets: 7 },  // Price Regular
-            { responsivePriority: 9, targets: 8 },  // Price Sale
+            { responsivePriority: 100, targets: 3 },  // Brand
+            { responsivePriority: 100, targets: 4 },  // Category
+            { responsivePriority: 100, targets: 5 },  // Tag
+            { responsivePriority: 100, targets: 6 },  // Quantity
+            { responsivePriority: 6, targets: 7 },  // Price Regular
+            { responsivePriority: 5, targets: 8 },  // Price Sale
             { responsivePriority: 100, targets: 9 }, // Is Active (least priority)
             { responsivePriority: 100, targets: 10 }, // Is Home (least priority)
-            { responsivePriority: 10, targets: 11 }  // Action
+            { responsivePriority: 4, targets: 11 }  // Action
           ]
         });
 

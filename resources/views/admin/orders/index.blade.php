@@ -43,7 +43,7 @@
                         <div class="col-sm-auto">
                             <div class="d-flex gap-1 flex-wrap">
                                 {{-- <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a> --}}
-                                <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a>
+                                {{-- <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a> --}}
                             </div>
                         </div>
                     </div>
@@ -355,6 +355,7 @@
             
             function initializeDataTable(tableId) {
                 var table = $('#' + tableId).DataTable({
+                    responsive: true,
                     processing: true,
                     serverSide: true,
                     ajax: $('#' + tableId).data('url'),
@@ -382,7 +383,19 @@
                         });
 
                         $('#' + tableId + ' th:eq(0)').removeClass('sorting_asc');
-                    }
+                    },
+                    columnDefs: [
+                        { responsivePriority: 1, targets: 0 }, 
+                        { responsivePriority: 2, targets: 1 },  
+                        { responsivePriority: 3, targets: 2 },  
+                        { responsivePriority: 100, targets: 3 }, 
+                        { responsivePriority: 100, targets: 4 }, 
+                        { responsivePriority: 7, targets: 5 },  
+                        { responsivePriority: 6, targets: 6 }, 
+                        { responsivePriority: 100, targets: 7 }, 
+                        { responsivePriority: 5, targets: 8 }, 
+                        { responsivePriority: 4, targets: 9 },
+                    ]
                 });
 
                 order_ids = [];

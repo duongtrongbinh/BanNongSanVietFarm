@@ -54,12 +54,30 @@ class HomeController extends Controller
         $categories->each(function ($category) {
             $category->products = $category->products->take(8);
         });
+
         $banners = Banner::where('is_home', 1)
             ->where('is_active', 1)
             ->orderByDesc('id')
             ->get(['image']);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories','banners'));
+        $top10Products = Product::with(['comments', 'orderDetails'])
+        ->withCount([
+            'orderDetails as sales_count' => function ($query) {
+                $query->select(DB::raw('SUM(quantity)'));
+            },
+            'comments as average_rating' => function ($query) {
+                $query->select(DB::raw('AVG(ratting)'));
+            }
+        ])
+        ->orderByDesc('sales_count')
+        ->orderByDesc('average_rating')
+        ->take(10)
+        ->get();
+
+        $top6Products = $top10Products->take(6);
+        $next4Products = $top10Products->skip(6)->take(4);
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories','banners', 'top6Products', 'next4Products'));
     }
 
     public function product($slug)

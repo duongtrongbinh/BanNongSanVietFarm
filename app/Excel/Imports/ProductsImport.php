@@ -92,6 +92,9 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
         // Lấy tất cả các hình ảnh từ bảng tính
         $images = $this->getImagesFromSpreadsheet($spreadsheet, $product_names);
 
+        DB::beginTransaction();
+        $this->errors = [];
+
         try {
             foreach ($rows as $index => $row) {
                 $imageValue = isset($images[$index]) ? $images[$index] : null;
@@ -108,16 +111,6 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
                 // Tra cứu category_id và brand_id từ tên
                 $category = Category::where('name', $categoryName)->first();
                 $brand = Brand::where('name', $brandName)->first();
-
-                if (!$category) {
-                    $this->errors[] = "Danh mục không tồn tại cho sản phẩm {$row['ten_san_pham']}: {$row['ten_danh_muc']}";
-                    continue;
-                }
-
-                if (!$brand) {
-                    $this->errors[] = "Thương hiệu không tồn tại cho sản phẩm {$row['ten_san_pham']}: {$row['ten_thuong_hieu']}";
-                    continue;
-                }
 
                 $productData = [
                     'name' => $productName,
@@ -166,8 +159,8 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
     {
         return [
             'ten_san_pham' => 'required',
-            'ten_danh_muc' => 'required',
-            'ten_thuong_hieu' => 'required',
+            'ten_danh_muc' => 'required|exists:categories,name',
+            'ten_thuong_hieu' => 'required|exists:brands,name',
             'gia_goc_vnd' => 'required|numeric',
             'gia_giam_vnd' => 'required|numeric',
             'so_luong' => 'required',
@@ -175,6 +168,7 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
             'chieu_rong_cm' => 'integer|required|max:200',
             'chieu_cao_cm' => 'integer|required|max:200',
             'trong_luong_gam' => 'integer|required|max:1600000',
+            'ten_nhan' => 'exists:tags,name',
         ];
     }
 
@@ -184,7 +178,9 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
             'ten_san_pham.required' => 'Tên sản phẩm là bắt buộc.',
             'ten_san_pham.max' => 'Tên sản phẩm không được vượt quá :max ký tự.',
             'ten_danh_muc.required' => 'Danh mục là bắt buộc.',
+            'ten_danh_muc.exists' => 'Danh mục không tồn tại.',
             'ten_thuong_hieu.required' => 'Thương hiệu là bắt buộc.',
+            'ten_thuong_hieu.exists' => 'Thương hiệu không tồn tại.',
             'gia_goc_vnd.required' => 'Giá gốc là bắt buộc.',
             'gia_goc_vnd.numeric' => 'Giá gốc là số.',
             'gia_giam_vnd.required' => 'Giá giảm là bắt buộc.',
@@ -202,6 +198,7 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
             'trong_luong_gam.integer' => 'Trọng lượng phải là số nguyên.',
             'trong_luong_gam.required' => 'Trọng lượng là bắt buộc.',
             'trong_luong_gam.max' => 'Trọng lượng không được vượt quá :max.',
+            'ten_nhan.exists' => 'Nhãn không tồn tại.',
         ];
     }
 
