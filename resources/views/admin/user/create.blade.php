@@ -10,6 +10,15 @@
     }
 </style>
 @section('content')
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
+                 @csrf
+                    <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Thêm Mới Thành Viên</h5>
+
     <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
         <section class="section">
             <div class="row">
@@ -129,6 +138,36 @@
                                     </div>
                                 </div>
                             </div>
+                           <div class="card">
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Vai Trò:</h4>
+                                <div class="flex-shrink-0">
+
+                                </div>
+                            </div><!-- end card header -->
+                            <div class="card-body">
+                                <p class="text-muted">Danh vai trò:</p>
+                                @error('roles')
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                                <div class="live-preview">
+                                    <div class="row">
+                                        @foreach($roles as $key => $item)
+                                            <div class="col-md-4">
+                                                <div class="form-check mb-3">
+                                                    <input class="form-check-input permission-checkbox" type="checkbox" id="gridCheck1" name="roles[]" value="{{ $item->id }}" {{ $item->checked ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="gridCheck1">{{ \App\Enums\Roles::from($item->id)->label() }}</label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
                             <div class="row mb-3">
                                 <!-- Submit and Cancel Buttons -->
                                 <div class="col-md-12 text-end">

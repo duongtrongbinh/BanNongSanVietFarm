@@ -1,18 +1,21 @@
 <?php
 
 namespace App\Models;
-
-
+use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Uuid;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-    use SoftDeletes;
+
+    use SoftDeletes,HasRoles;
+
     public $table = 'users';
     public $timestamps = true;
     protected $fillable = [
@@ -48,7 +51,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-
     public function orders()
     {
         return $this->hasMany(Order::class, 'user_id', 'id');
@@ -59,6 +61,7 @@ class User extends Authenticatable
             $query->where('product_id', $productId);
         })->exists();
     }
+
     /**
      * The attributes that should be cast to native types.
      *

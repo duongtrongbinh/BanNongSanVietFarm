@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Provinces;
+use App\Models\Role;
 use App\Models\Ward;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -24,19 +25,33 @@ class UserController extends Controller
         $data['user'] = User::query()->orderByDesc('id')->paginate(10);
         return view('admin.user.index', $data);
     }
+
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $provinces = Provinces::all();
-        return view('admin.user.create', compact('provinces'));
+        $roles = Role::query()->get();
+        return view('admin.user.create', compact('provinces','roles'));
     }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(StoreUserRequest $request)
     {
         $data = $request->except('avatar');
         $data['avatar'] = $request->input('avatar');
         $data['password'] = Hash::make($request->input('password'));
         $user = User::create($data);
+        if($user){
+            $roleIds = array_map('intval', $request->roles);
+            $user->syncRoles($roleIds);
+        }
         return redirect()->route('user.index')->with('created', 'Thêm khách hàng thành công!');
     }
+
     public function edit($id)
     {
         $user = User::findOrFail($id);
@@ -44,6 +59,9 @@ class UserController extends Controller
         return view('admin.user.edit', compact('user','provinces'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(UpdateUserRequest $request, $id)
     {
         $user = User::findOrFail($id);

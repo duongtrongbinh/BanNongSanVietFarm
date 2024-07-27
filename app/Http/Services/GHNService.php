@@ -2,6 +2,7 @@
 namespace App\Http\Services;
 
 use App\Enums\TransferStatus;
+use App\Enums\TypeUnitEnum;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
@@ -48,12 +49,13 @@ class GHNService
             } else {
                 $routeUrl = redirect()->route('checkout.success',$order->order_code);
             }
-
+            Log::debug('message');
             dispatch(new SendOrderConfirmation($order));
             DB::commit();
             session()->forget('cart');
             return $routeUrl;
         } catch (\Exception $e) {
+            Log::debug($e);
             DB::rollBack();
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo đơn hàng.');
         }
@@ -83,7 +85,7 @@ class GHNService
         $data['ward'] = $wardParts[0];
         foreach (array_values(session('cart')) as $product) {
             $totalAmount += $product['quantity'] * intval($product['price_sale']);
-        }  
+        }
         $data['shipping'] = session('service_fee') ? session('service_fee') : 0;
         $data['before_total_amount'] = $totalAmount;
         $data['after_total_amount'] = $totalAmount + $data['shipping'];
@@ -244,13 +246,12 @@ class GHNService
 
     public function UpdateStatusOrder($status,$code){
             $order = Order::query()->where('order_code',$code)->first();
-            if ($order->status != $status){
-                $order->update([
+
+            $order->update([
                     'payment_status' => $status,
-                ]);
-                return $order;
-            }
-            return null;
+            ]);
+
+            return $order;
     }
 
     private function updateQuantityProduct($products){
@@ -286,7 +287,7 @@ class GHNService
         $dd = $request->input('vnp_ResponseCode');
         $code = $request->input('vnp_TxnRef');
         if($dd == "00" ){
-            $this->UpdateStatusOrder(OrderStatus::PENDING,$code);
+            $this->UpdateStatusOrder(PaymentStatus::SUCCESS_PAYMENT,$code);
             return redirect()->route('checkout.success',$code);
         }else{
             return redirect()->route('checkout.success',$code);
@@ -295,7 +296,6 @@ class GHNService
 
     public function shippingFee(Request $request)
     {
-
         $value = $this->fillterDataShipping($request->all());
         $product = $this->formatDataGHN(session('cart'));
         $jsonData = [
@@ -308,29 +308,28 @@ class GHNService
             "insurance_value" => $value['insurance_value'],
             "items" => $product,
         ];
-        // Chuẩn bị header cho yêu cầu
+
         $headers = [
             'Content-Type' => 'application/json',
             'ShopId'=> $this->shopId,
             'token'=> $this->token,
         ];
 
-        // Gửi yêu cầu POST tới GHN API
         $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
 
-        Log::debug($response);
-        // Xử lý phản hồi
         if ($response->successful()) {
             $responseData = $response->json();
             $total = $responseData['data']['total'];
-            // Kiểm tra và cập nhật session total_cart
             session(['service_fee' => $total]);
             return response()->json($responseData,200) ;
         }
         if ($response->failed()) {
-            $statusCode = $response->status();
-            $errorMessage = $response->json()['message'] ?? 'Unknown error';
-            return $response;
+            session(['service_fee' => TypeUnitEnum::SHIPPING_DEFAULT->value]);
+            $array = [
+                'message' => 'shipping_default',
+                'total' => intval(TypeUnitEnum::SHIPPING_DEFAULT->value)
+            ];
+            return response()->json($array,200) ;
         }
     }
 

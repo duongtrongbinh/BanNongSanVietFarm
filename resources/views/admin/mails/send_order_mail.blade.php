@@ -29,13 +29,13 @@
                                         <p style="color: #878a99; font-size: 13px; margin-bottom: 2px; font-weight: 400;">Mã đơn hàng.</p>
                                         <span>{{ $data['order_code'] }}</span>
                                     </th>
-                                   
+
                                     <th style="padding: 5px;">
                                         <p style="color: #878a99; font-size: 13px; margin-bottom: 2px; font-weight: 400;">Phương thức thanh toán:</p>
                                         <span>{{ $data['payment_status'] == 0 ? 'COD' : 'VNPAY' }}</span>
                                     </th>
                                 </tr>
-                                
+
                             </tbody>
                         </table>
                     </td>
@@ -63,7 +63,7 @@
                                 </td>
                             </tr>
                             @endforeach --}}
-                        
+
                                 <tr>
                                     <td colspan="2" style="padding: 8px; font-size: 13px; text-align: end;border-top: 1px solid #e9ebec;">
                                         Giá trị đơn hàng:

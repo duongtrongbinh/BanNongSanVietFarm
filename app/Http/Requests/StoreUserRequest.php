@@ -31,6 +31,7 @@ class StoreUserRequest extends FormRequest
             'province_id' => 'required',
             'district_id' => 'required',
             'ward_id' => 'required',
+            'user_code'=> 'required|unique:users,user_code',
         ];
     }
     public function messages()

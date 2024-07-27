@@ -16,6 +16,7 @@ class SendOrderConfirmation implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
+
     /**
      * Create a new job instance.
      */

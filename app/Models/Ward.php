@@ -9,7 +9,6 @@ class Ward extends Model
 {
     use HasFactory;
 
-
     protected $table = 'wards';
 
     protected $primaryKey = 'id';
