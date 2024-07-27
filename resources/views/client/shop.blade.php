@@ -92,7 +92,7 @@
                                                 <label for="minPrice">Giá từ:</label>
                                                 <input type="number" id="minPrice" name="minPrice" class="form-control" value="{{ request('minPrice') ?? (int)$priceLimits->min_price }}">
                                             </div>
-                                            <div class="col">
+                                            <div class="col mt-3">
                                                 <label for="maxPrice">Đến:</label>
                                                 <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="{{ request('maxPrice') ?? (int)$priceLimits->max_price }}">
                                             </div>
@@ -121,8 +121,8 @@
                                                     <div class="p-4 border-top-0 rounded-bottom">
                                                         <h4 class="text-truncate" data-toggle="tooltip" data-placement="top" title="{{ $product->name }}">{{ $product->name }}</h4>
                                                         <p class="text-truncate">{{ $product->description }}</p>
-                                                        <div class="d-flex justify-content-center flex-lg-wrap">
-                                                            <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>
+                                                        <div class="text-center flex-lg-wrap">
+                                                            <p class="text-dark fs-5 fw-bold mb-2">{{ number_format($product->price_sale) }} VNĐ</p>
                                                             <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
                                                                 <i class="fa fa-shopping-bag me-2 text-primary"></i> 
                                                                 Thêm vào giỏ

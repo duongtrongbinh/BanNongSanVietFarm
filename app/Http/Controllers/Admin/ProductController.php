@@ -253,10 +253,10 @@ class ProductController extends Controller
     public function import(ProductsImportRequest $request) 
     {
         $file = $request->file('product_file');
-
         $import = new ProductsImport($file);
+
         Excel::import($import, $file);
-        
+            
         return redirect()->back()->with('created', 'Thêm mới sản phẩm thành công!');
     }
 }

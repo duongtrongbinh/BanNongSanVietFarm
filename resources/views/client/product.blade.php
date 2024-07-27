@@ -38,12 +38,6 @@
         .fa-star-half-alt {
             margin-left: 2px; /* Điều chỉnh khoảng cách giữa ngôi sao đầy và nửa */
         }
-
-        .carousel-item img {
-            margin: 0 auto;
-            max-width: 100%;
-        }
-
     </style>
 @endsection
 @section('content')
@@ -67,19 +61,18 @@
             <div class="row g-4 mb-5">
                 <div class="col">
                     <div class="row g-4">
-                        <div class="col-lg-6">
+                        <div class="col-lg-8">
                             <div class="border rounded">
                                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
-                                            <img src="{{ $product->image }}" class="d-block w-100" alt="...">
+                                            <img src="{{ $product->image }}" class="d-block w-100">
                                         </div>
                                         @foreach ($product->product_images as $product_image)
                                             <div class="carousel-item">
-                                                <img src="{{ $product_image->image }}" class="d-block w-100" alt="...">
+                                                <img src="{{ $product_image->image }}" class="d-block w-100">
                                             </div>
                                         @endforeach
-
                                     </div>
                                     <button class="carousel-control-prev" type="button"
                                             data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -94,16 +87,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <h4 class="fw-bold mb-3">{{ $product->name }}</h4>
                             <p class="mb-3">Thương hiệu: {{ $product->brand->name }}</p>
                             <p class="mb-3">Loại: {{ $product->category->name }}</p>
-                            <h5 class="fw-bold mb-3">{{ number_format($product->price_sale) }} VND</h5>
+                            <div class="d-flex mb-3">
+                                <h5 class="fw-bold" >{{ number_format($product->price_sale) }} VND</h5>
+                                <h6 class="fw-bolder text-decoration-line-through" style="margin-left: 20px; padding-top: 5px;">{{ number_format($product->price_regular) }} VND</h6>
+                            </div>
                             <p class="mb-4">{{ $product->description }}</p>
                             <div class="d-flex">
-                                @foreach ($product->tags as $tag)
-                                    <p>#{{ $tag->name }},</p>
-                                @endforeach
+                                <p>#{{ $product->tags->pluck('name')->implode(',') }}</p>
                             </div>
                             @php
                                 $totalRatting = 0;
@@ -143,7 +137,7 @@
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
-                                <input type="text" class="form-control form-control-sm text-center border-0" value="1">
+                                <input type="text" name="quantity" class="form-control form-control-sm text-center border-0" value="1">
                                 <div class="input-group-btn">
                                     <button class="btn btn-sm btn-plus rounded-circle bg-light border">
                                         <i class="fa fa-plus"></i>
@@ -151,11 +145,13 @@
                                 </div>
                             </div>
                             <p>{{ $product->quantity }} sản phẩm có sẵn</p>
-                            <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart"
-                               data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
-                                <i class="fa fa-shopping-bag me-2 text-primary"></i>
-                                Thêm vào giỏ
-                            </a>
+                            <div class="text-center mt-5">
+                                <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart"
+                                data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}">
+                                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                    Thêm vào giỏ
+                                </a>
+                            </div>
                         </div>
                         <div class="col-lg-12">
                             <nav>
@@ -222,17 +218,7 @@
                                                 </div>
                                             </div>
                                         @endforeach
-
-
                                     </div>
-                                </div>
-                                <div class="tab-pane" id="nav-vision" role="tabpanel">
-                                    <p class="text-dark">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et
-                                        tempor sit. Aliqu diam
-                                        amet diam et eos labore. 3</p>
-                                    <p class="mb-0">Diam dolor diam ipsum et tempor sit. Aliqu diam amet diam et eos
-                                        labore.
-                                        Clita erat ipsum et lorem et sit</p>
                                 </div>
                             </div>
                         </div>

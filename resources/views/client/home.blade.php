@@ -16,8 +16,8 @@
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-md-12 col-lg-7">
-                    <h4 class="mb-3 text-secondary">100% Organic Foods</h4>
-                    <h1 class="mb-5 display-3 text-primary">Organic Veggies & Fruits Foods</h1>
+                    <h4 class="mb-3 text-secondary">Thực Phẩm Hữu Cơ 100%</h4>
+                    <h1 class="mb-5 display-3 text-primary">Thực Phẩm Rau Củ Quả Hữu Cơ</h1>
                     <div class="position-relative mx-auto">
                         <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number"
                                placeholder="Search">
@@ -151,7 +151,7 @@
                                                     <div class="p-4 border-top-0 rounded-bottom">
                                                         <h4 class="text-truncate" data-toggle="tooltip" data-placement="top" title="{{ $product->name }}">{{ $product->name }}</h4>
                                                         <p class="text-truncate">{{ $product->description }}</p>
-                                                        <div class="justify-content-between flex-lg-wrap">
+                                                        <div class="flex-lg-wrap">
                                                             <p class="text-dark fs-5 fw-bold mb-2">{{ number_format($product->price_sale) }} VNĐ</p>
                                                             <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
                                                                 <i class="fa fa-shopping-bag me-2 text-primary"></i>
@@ -423,200 +423,98 @@
                 <p>Các sản phẩm bán chạy này được lựa chọn dựa trên số lượng bán ra, đánh giá tích cực từ khách hàng và mức độ phổ biến.</p>
             </div>
             <div class="row g-4">
-                <div class="col-lg-6 col-xl-4">
-                    <div class="p-4 rounded bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <img src="{{ asset('client/assets/img/best-product-1.jpg') }}" class="img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="h5">Organic Tomato</a>
-                                <div class="d-flex my-3">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
+                @foreach ($top6Products as $product)
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="p-4 rounded bg-light">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    <img src="{{ $product->image }}" class="img-fluid rounded-circle w-100" alt="">
                                 </div>
-                                <h4 class="mb-3">3.12 $</h4>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-xl-4">
-                    <div class="p-4 rounded bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <img src="{{ asset('client/assets/img/best-product-2.jpg') }}" class="img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="h5">Organic Tomato</a>
-                                <div class="d-flex my-3">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
+                                <div class="col-6 text-truncate">
+                                    <a href="{{ route('product', $product->slug) }}" class="h5" data-toggle="tooltip" data-placement="top" title="{{ $product->name }}">{{ $product->name }}</a>
+                                    @php
+                                        $totalRatting = 0;
+                                        $totalCount = count($product->comments);
+
+                                        foreach ($product->comments as $comment) {
+                                            $totalRatting += $comment->ratting;
+                                        }
+                                        $averageRatting = $totalCount > 0 ? $totalRatting / $totalCount : 0;
+                                    @endphp
+                                    <div class="d-flex my-3">
+                                        @php
+                                            $fullStars = floor($averageRatting); // Số sao nguyên
+                                            $halfStar = ceil($averageRatting - $fullStars); // Số sao nửa
+                                            $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+                                        @endphp
+
+                                        @for ($i = 1; $i <= $fullStars; $i++)
+                                            <i class="fa fa-star text-secondary" data-ratting="{{ $i }}"></i>
+                                        @endfor
+
+                                        @if ($halfStar > 0)
+                                            <i class="fa fa-star-half-alt text-secondary" data-ratting="{{ $i }}"></i>
+                                            @php $i++; @endphp
+                                        @endif
+                                        @for ($j = 1; $j <= $emptyStars; $j++)
+                                            <i class="fa fa-star " data-ratting="{{ $i }}"></i>
+                                            @php $i++; @endphp
+                                        @endfor
+                                    </div>
+                                    <h4 class="mb-3" data-toggle="tooltip" data-placement="top" title="{{ number_format($product->price_sale) }} VNĐ">{{ number_format($product->price_sale) }} VNĐ</h4>
+                                    <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
+                                        <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                        Thêm vào giỏ
+                                    </a>
                                 </div>
-                                <h4 class="mb-3">3.12 $</h4>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 col-xl-4">
-                    <div class="p-4 rounded bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <img src="{{ asset('client/assets/img/best-product-3.jpg') }}" class="img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="h5">Organic Tomato</a>
-                                <div class="d-flex my-3">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
+                @endforeach
+                @foreach ($next4Products as $product)
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="text-center">
+                            <img src="{{ $product->image }}" class="img-fluid rounded" alt="">
+                            <div class="py-4 text-truncate">
+                                <a href="{{ route('product', $product->slug) }}" class="h5" data-toggle="tooltip" data-placement="top" title="{{ $product->name }}">{{ $product->name }}</a>
+                                @php
+                                    $totalRatting = 0;
+                                    $totalCount = count($product->comments);
+
+                                    foreach ($product->comments as $comment) {
+                                        $totalRatting += $comment->ratting;
+                                    }
+                                    $averageRatting = $totalCount > 0 ? $totalRatting / $totalCount : 0;
+                                @endphp
+                                <div class="d-flex my-3 justify-content-center">
+                                    @php
+                                        $fullStars = floor($averageRatting); // Số sao nguyên
+                                        $halfStar = ceil($averageRatting - $fullStars); // Số sao nửa
+                                        $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+                                    @endphp
+
+                                    @for ($i = 1; $i <= $fullStars; $i++)
+                                        <i class="fa fa-star text-secondary" data-ratting="{{ $i }}"></i>
+                                    @endfor
+
+                                    @if ($halfStar > 0)
+                                        <i class="fa fa-star-half-alt text-secondary" data-ratting="{{ $i }}"></i>
+                                        @php $i++; @endphp
+                                    @endif
+                                    @for ($j = 1; $j <= $emptyStars; $j++)
+                                        <i class="fa fa-star " data-ratting="{{ $i }}"></i>
+                                        @php $i++; @endphp
+                                    @endfor
                                 </div>
-                                <h4 class="mb-3">3.12 $</h4>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                <h4 class="mb-3" data-toggle="tooltip" data-placement="top" title="{{ number_format($product->price_sale) }} VNĐ">{{ number_format($product->price_sale) }} VNĐ</h4>
+                                <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
+                                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                    Thêm vào giỏ
+                                </a>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 col-xl-4">
-                    <div class="p-4 rounded bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <img src="{{ asset('client/assets/img/best-product-4.jpg') }}" class="img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="h5">Organic Tomato</a>
-                                <div class="d-flex my-3">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <h4 class="mb-3">3.12 $</h4>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-xl-4">
-                    <div class="p-4 rounded bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <img src="{{ asset('client/assets/img/best-product-5.jpg') }}" class="img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="h5">Organic Tomato</a>
-                                <div class="d-flex my-3">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <h4 class="mb-3">3.12 $</h4>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-xl-4">
-                    <div class="p-4 rounded bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-6">
-                                <img src="{{ asset('client/assets/img/best-product-6.jpg') }}" class="img-fluid rounded-circle w-100" alt="">
-                            </div>
-                            <div class="col-6">
-                                <a href="#" class="h5">Organic Tomato</a>
-                                <div class="d-flex my-3">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <h4 class="mb-3">3.12 $</h4>
-                                <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-6 col-xl-3">
-                    <div class="text-center">
-                        <img src="{{ asset('client/assets/img/fruite-item-1.jpg') }}" class="img-fluid rounded" alt="">
-                        <div class="py-4">
-                            <a href="#" class="h5">Organic Tomato</a>
-                            <div class="d-flex my-3 justify-content-center">
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h4 class="mb-3">3.12 $</h4>
-                            <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-6 col-xl-3">
-                    <div class="text-center">
-                        <img src="{{ asset('client/assets/img/fruite-item-2.jpg') }}" class="img-fluid rounded" alt="">
-                        <div class="py-4">
-                            <a href="#" class="h5">Organic Tomato</a>
-                            <div class="d-flex my-3 justify-content-center">
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h4 class="mb-3">3.12 $</h4>
-                            <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-6 col-xl-3">
-                    <div class="text-center">
-                        <img src="{{ asset('client/assets/img/fruite-item-3.jpg') }}" class="img-fluid rounded" alt="">
-                        <div class="py-4">
-                            <a href="#" class="h5">Organic Tomato</a>
-                            <div class="d-flex my-3 justify-content-center">
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h4 class="mb-3">3.12 $</h4>
-                            <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-6 col-xl-3">
-                    <div class="text-center">
-                        <img src="{{ asset('client/assets/img/fruite-item-4.jpg') }}" class="img-fluid rounded" alt="">
-                        <div class="py-2">
-                            <a href="#" class="h5">Organic Tomato</a>
-                            <div class="d-flex my-3 justify-content-center">
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star text-primary"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <h4 class="mb-3">3.12 $</h4>
-                            <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -661,95 +559,6 @@
         </div>
     </div>
     <!-- Fact Start -->
-
-
-    <!-- Tastimonial Start -->
-    <div class="container-fluid testimonial py-5">
-        <div class="container py-5">
-            <div class="testimonial-header text-center">
-                <h4 class="text-primary">Our Testimonial</h4>
-                <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
-            </div>
-            <div class="owl-carousel testimonial-carousel">
-                <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                    <div class="position-relative">
-                        <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                        <div class="mb-4 pb-4 border-bottom border-secondary">
-                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                            </p>
-                        </div>
-                        <div class="d-flex align-items-center flex-nowrap">
-                            <div class="bg-secondary rounded">
-                                <img src="{{ asset('client/assets/img/testimonial-1.jpg') }}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                            </div>
-                            <div class="ms-4 d-block">
-                                <h4 class="text-dark">Client Name</h4>
-                                <p class="m-0 pb-3">Profession</p>
-                                <div class="d-flex pe-5">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                    <div class="position-relative">
-                        <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                        <div class="mb-4 pb-4 border-bottom border-secondary">
-                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                            </p>
-                        </div>
-                        <div class="d-flex align-items-center flex-nowrap">
-                            <div class="bg-secondary rounded">
-                                <img src="{{ asset('client/assets/img/testimonial-1.jpg') }}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                            </div>
-                            <div class="ms-4 d-block">
-                                <h4 class="text-dark">Client Name</h4>
-                                <p class="m-0 pb-3">Profession</p>
-                                <div class="d-flex pe-5">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial-item img-border-radius bg-light rounded p-4">
-                    <div class="position-relative">
-                        <i class="fa fa-quote-right fa-2x text-secondary position-absolute" style="bottom: 30px; right: 0;"></i>
-                        <div class="mb-4 pb-4 border-bottom border-secondary">
-                            <p class="mb-0">Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,
-                            </p>
-                        </div>
-                        <div class="d-flex align-items-center flex-nowrap">
-                            <div class="bg-secondary rounded">
-                                <img src="{{ asset('client/assets/img/testimonial-1.jpg') }}" class="img-fluid rounded" style="width: 100px; height: 100px;" alt="">
-                            </div>
-                            <div class="ms-4 d-block">
-                                <h4 class="text-dark">Client Name</h4>
-                                <p class="m-0 pb-3">Profession</p>
-                                <div class="d-flex pe-5">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Tastimonial End -->
 @endsection
 @section('js')
     <script>
