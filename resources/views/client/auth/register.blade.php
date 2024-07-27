@@ -22,10 +22,9 @@
             @csrf
             <h1>Đăng ký</h1>
             <div class="social-container">
-                <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-            </div>
             <span>Sử dụng email của bạn để đăng ký</span>
+
+            </div>
             <input type="text" placeholder="Tên của bạn" name="name" value="{{ old('name') }}">
             <div style="width: 100%; text-align: left">
                 {!! ShowError($errors, 'name') !!}

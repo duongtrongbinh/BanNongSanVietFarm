@@ -12,7 +12,7 @@
               <li class="nav-item">
                   @foreach ($item['subtitle'] as $value)
                       @if (auth()->user()->hasAnyRole($value['roles']))
-                          @php if (str_contains(url()->current(), $value['route'])) $isActive = true; @endphp
+                          @php if (str_contains(url()->current(), $value['name'])) $isActive = true; @endphp
                       @endif
                   @endforeach
                   @if (auth()->user()->hasAnyRole(array_merge(array_column($item['subtitle'], 'roles'))))
@@ -25,7 +25,7 @@
                           @foreach($item['subtitle'] as $value)
                               @if (auth()->user()->hasAnyRole($value['roles']))
                                   <li>
-                                      <a href="{{ route($value['route']) }}" class="{{ str_contains(url()->current(), $value['route']) ? 'active' : '' }}">
+                                      <a href="{{ route($value['route']) }}" class="{{ str_contains(url()->current(), $value['name']) ? 'active' : '' }}">
                                           <i class="{{ $value['icon'] }}" style="font-size: 15px;"></i>
                                           <span>{{ $value['title'] }}</span>
                                       </a>

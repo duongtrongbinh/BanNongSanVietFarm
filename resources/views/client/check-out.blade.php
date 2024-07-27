@@ -97,7 +97,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-lg-6 col-xl-5">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -154,7 +154,7 @@
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">
-                                    <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="payment_method" value="2">
+                                    <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="payment_method" value="2" {{ !isset(Auth::user()->id) ? 'checked' : '' }} >
                                     <label class="form-check-label" for="Delivery-1">Thanh toán khi nhận hàng</label>
                                 </div>
                             </div>
@@ -162,7 +162,8 @@
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">
-                                    <input type="radio" class="form-check-input bg-primary border-0" id="2" name="payment_method" value="VNPAYQR">
+
+                                    <input type="radio" class="form-check-input bg-primary border-0" id="2" name="payment_method" value="VNPAYQR" {{ isset(Auth::user()->id) ? 'checked' : ''}} >
                                     <label class="form-check-label" for="Paypal-1">Thanh toán VNPAY</label>
                                 </div>
                             </div>

@@ -6,6 +6,7 @@ use App\Enums\TypeUnitEnum;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
+use App\Jobs\UpdateOrderStatusJob;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
@@ -294,10 +295,11 @@ class GHNService
         }
     }
 
-    public function shippingFee(Request $request)
+   public function shippingFee(Request $request)
     {
         $value = $this->fillterDataShipping($request->all());
         $product = $this->formatDataGHN(session('cart'));
+
         $jsonData = [
             "service_type_id" => $value["service_type_id"],
             "to_district_id" => (int)$value["to_district_id"],
@@ -316,7 +318,6 @@ class GHNService
         ];
 
         $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
-
         if ($response->successful()) {
             $responseData = $response->json();
             $total = $responseData['data']['total'];
@@ -350,18 +351,19 @@ class GHNService
     {
         $Status = '';
         $order = Order::query()->where('order_code',$request->OrderCode)->first();
-        if(!empty($order)){
-            foreach(TransferStatus::values() as $value => $name){
-                if (strtoupper($request->Status) == $name){
-                    $Status = $name;
+        if($order){
+            foreach(TransferStatus::values() as $key => $value){
+                if (strtoupper($request->Status) == $value){
+                    $Status = $key;
                 }
             }
-            if (empty($Status)){
-                TransferHistory::created([
+            if ($Status){
+                TransferHistory::create([
                     'order_id' => $order->id,
                     'status' => $Status,
                     'warehouse' => $request->Warehouse,
                 ]);
+                 UpdateOrderStatusJob::dispatch($order->order_id, $order->status);
                 return response()->json('success',200);
             }else{
                 return response()->json(['error', 'Không tìm thấy trạng thái đơn hàng.'],400);

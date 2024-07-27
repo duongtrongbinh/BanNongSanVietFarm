@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class OrderConfirmation extends Mailable
 {
@@ -20,6 +21,7 @@ class OrderConfirmation extends Mailable
     public function __construct($data)
     {
         $this->data = $data;
+        Log::info(session('cart'));
     }
 
     /**
@@ -41,6 +43,8 @@ class OrderConfirmation extends Mailable
             view: 'admin.mails.send_order_mail',
             with: [
                 'data' => $this->data,
+                'products' => session('cart'),
+                'service_fee' => session('service_fee'),
                 ],
         );
     }

@@ -121,27 +121,27 @@ return [
             ],
         ],
     ],
-    [
-        'title' => 'Quản lý nhập hàng',
-        'icon' => 'bi bi-house-up',
-        'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::WAREHOUSE_STAFF->name],
-        'subtitle' => [
-            [
-                'title' => 'Nhà cung cấp',
-                'icon' => 'bi bi-house-add',
-                'route' => 'supplier.index',
-                'name' => 'supplier',
-                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::WAREHOUSE_STAFF->name]
-            ],
-            [
-                'title' => 'Phiếu nhập hàng',
-                'icon' => 'bi bi-receipt',
-                'route' => 'purchase_receipt.index',
-                'name' => 'purchase_receipt',
-                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::WAREHOUSE_STAFF->name]
-            ],
-        ],
-    ],
+    // [
+    //     'title' => 'Quản lý nhập hàng',
+    //     'icon' => 'bi bi-house-up',
+    //     'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::WAREHOUSE_STAFF->name],
+    //     'subtitle' => [
+    //         [
+    //             'title' => 'Nhà cung cấp',
+    //             'icon' => 'bi bi-house-add',
+    //             'route' => 'supplier.index',
+    //             'name' => 'supplier',
+    //             'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::WAREHOUSE_STAFF->name]
+    //         ],
+    //         [
+    //             'title' => 'Phiếu nhập hàng',
+    //             'icon' => 'bi bi-receipt',
+    //             'route' => 'purchase_receipt.index',
+    //             'name' => 'purchase_receipt',
+    //             'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::WAREHOUSE_STAFF->name]
+    //         ],
+    //     ],
+    // ],
     [
         'title' => 'Quản lý đơn hàng',
         'icon' => 'bi bi-box-seam',
@@ -156,20 +156,20 @@ return [
             ],
         ],
     ],
-    [
-        'title' => 'Flash Sale',
-        'icon' => 'ri-flashlight-line',
-        'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::MARKETING->name],
-        'subtitle' => [
-            [
-                'title' => 'Danh sách Flash Sale',
-                'icon' => 'bi bi-activity',
-                'route' => 'flash-sales.index',
-                'name' => 'flash-sales',
-                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::MARKETING->name]
-            ],
-        ],
-    ],
+    // [
+    //     'title' => 'Flash Sale',
+    //     'icon' => 'ri-flashlight-line',
+    //     'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::MARKETING->name],
+    //     'subtitle' => [
+    //         [
+    //             'title' => 'Danh sách Flash Sale',
+    //             'icon' => 'bi bi-activity',
+    //             'route' => 'flash-sales.index',
+    //             'name' => 'flash-sales',
+    //             'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::MARKETING->name]
+    //         ],
+    //     ],
+    // ],
     [
         'title' => 'Quản lý nhân sự',
         'icon' => 'bi bi-person',
@@ -186,4 +186,3 @@ return [
     ],
 
 ];
-

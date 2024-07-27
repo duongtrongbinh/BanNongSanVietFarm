@@ -126,12 +126,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('groups/{id}', [GroupController::class, 'delete'])
                 ->name('groups.delete');
 
-            /* Route Product Related */
-            Route::resource('products/{$product}/related', RelatedController::class);
-            Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-            Route::delete('groups/{id}', [RelatedController::class, 'delete'])
-                ->name('groups.delete');
-
             /* Route Tag */
             Route::resource('tags', TagController::class);
             Route::delete('tags/{id}', [TagController::class, 'delete'])

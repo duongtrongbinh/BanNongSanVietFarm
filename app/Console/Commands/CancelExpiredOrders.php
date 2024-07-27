@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -31,7 +32,7 @@ class CancelExpiredOrders extends Command
     public function handle()
     {
         $expiredOrders = Order::where('expires_at', '<', Carbon::now())
-                              ->where('status', OrderStatus::PENDING_PAYMENT)
+                              ->where('status', PaymentStatus::PENDING_PAYMENT)
                               ->get();
 
         foreach ($expiredOrders as $order) {

@@ -2,10 +2,6 @@
 @section('title', 'Chính sách')
 @section('content')
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            color: #333;
-        }
         .section-title {
             color: #81c408;
             background-color: #fff;
