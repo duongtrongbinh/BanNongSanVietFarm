@@ -43,6 +43,27 @@
                                 <div class="row g-4">
                                     <div class="col-lg-12">
                                         <div class="mb-3">
+                                            <h4>Thương hiệu</h4>
+                                            <ul class="list-unstyled fruite-categorie">
+                                                @foreach ($brands as $brand)
+                                                    @if ($brand->products->isNotEmpty())
+                                                        <li>
+                                                            <div class="d-flex justify-content-between fruite-name">
+                                                                <div>
+                                                                    <a href="{{ route('brand', $brand->slug) }}" class="{{ $brand->slug == request()->route('slug') ? 'text-decoration-underline' : '' }}">
+                                                                        {{ $brand->name }}
+                                                                    </a>
+                                                                </div>
+                                                                <span>({{ count($brand->products) }})</span>
+                                                            </div>
+                                                        </li>  
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
                                             <h4>Danh mục</h4>
                                             <ul class="list-unstyled fruite-categorie">
                                                 @foreach ($categories as $category)
@@ -68,11 +89,11 @@
                                             <h4 class="mb-2">Giá (VNĐ)</h4>
                                             <div class="col">
                                                 <label for="minPrice">Giá từ:</label>
-                                                <input type="number" id="minPrice" name="minPrice" class="form-control" value="{{ request('minPrice') ?? 0 }}" placeholder="{{ number_format($priceLimits->min_price) }} VNĐ">
+                                                <input type="number" id="minPrice" name="minPrice" class="form-control" value="{{ request('minPrice') ?? 0 }}">
                                             </div>
-                                            <div class="col">
+                                            <div class="col mt-3">
                                                 <label for="maxPrice">Đến:</label>
-                                                <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="{{ request('maxPrice') ?? 0 }}" placeholder="{{ number_format($priceLimits->max_price) }} VNĐ">
+                                                <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="{{ request('maxPrice') ?? (int)$priceLimits->max_price }}">
                                             </div>
                                         </div>
                                     </div>
@@ -84,56 +105,23 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <h4 class="mb-3">Sản phẩm bán chạy</h4>
-                                        <div class="d-flex align-items-center justify-content-start">
-                                            <div class="rounded me-4" style="width: 100px; height: 100px;">
-                                                <img src="{{ asset('client/assets/img/featur-1.jpg') }}" class="img-fluid rounded" alt="">
-                                            </div>
-                                            <div>
-                                                <h6 class="mb-2">Big Banana</h6>
-                                                <div class="d-flex mb-2">
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star text-secondary"></i>
-                                                    <i class="fa fa-star"></i>
-                                                </div>
-                                                <div class="d-flex mb-2">
-                                                    <h5 class="fw-bold me-2">2.99 $</h5>
-                                                    <h5 class="text-danger text-decoration-line-through">4.11 $</h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-center my-4">
-                                            <a href="#" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">Xem thêm</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <div class="position-relative">
-                                            <img src="{{ asset('client/assets/img/banner-fruits.jpg') }}" class="img-fluid w-100 rounded" alt="">
-                                            <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);">
-                                                <h3 class="text-secondary fw-bold">Fresh <br> Fruits <br> Banner</h3>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-9">
-                                <div class="row g-4 justify-content-center">
+                                <div class="row g-4">
                                     @foreach ($products as $product)
                                         <div class="col-md-6 col-lg-6 col-xl-4">
                                             <a href="{{ route('product', $product) }}">
                                                 <div class="rounded position-relative fruite-item border border-secondary">
-                                                    <div class="fruite-img">
+                                                    <div class="fruite-img" style="height: 215px">
                                                         <img src="{{ $product->image }}" class="img-fluid w-100 rounded-top" alt="">
                                                     </div>
                                                     <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">{{ $product->category->name }}</div>
                                                     <div class="p-4 border-top-0 rounded-bottom">
-                                                        <h4 class="text-truncate">{{ $product->name }}</h4>
+                                                        <h4 class="text-truncate" data-toggle="tooltip" data-placement="top" title="{{ $product->name }}">{{ $product->name }}</h4>
                                                         <p class="text-truncate">{{ $product->description }}</p>
-                                                        <div class="d-flex justify-content-center flex-lg-wrap">
-                                                            <p class="text-dark fs-5 fw-bold mb-1">{{ number_format($product->price_sale) }} VNĐ</p>
+                                                        <div class="text-center flex-lg-wrap">
+                                                            <p class="text-dark fs-5 fw-bold mb-2">{{ number_format($product->price_sale) }} VNĐ</p>
                                                             <a class="btn border border-secondary rounded-pill px-3 text-primary add-to-cart" data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
                                                                 <i class="fa fa-shopping-bag me-2 text-primary"></i> 
                                                                 Thêm vào giỏ
@@ -145,7 +133,7 @@
                                         </div>
                                     @endforeach
                                 </div>
-                                {{ $products->links() }}
+                                {{ $products->appends(request()->query())->links() }}
                             </div>
                         </div>
                     </form>

@@ -78,8 +78,33 @@
                                         <td>{{ number_format($order_detail->price_sale) }} VNĐ</td>
                                         <td>{{ $order_detail->quantity }}</td>
                                         <td>
+                                            @php
+                                                $totalRatting = 0;
+                                                $totalCount = count($order_detail->product->comments);
+
+                                                foreach ($order_detail->product->comments as $comment) {
+                                                    $totalRatting += $comment->ratting;
+                                                }
+                                                $averageRatting = $totalCount > 0 ? $totalRatting / $totalCount : 0;
+                                            @endphp
                                             <div class="text-warning fs-15">
-                                                <i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-fill"></i><i class="ri-star-half-fill"></i>
+                                                @php
+                                                    $fullStars = floor($averageRatting); // Số sao nguyên
+                                                    $halfStar = ceil($averageRatting - $fullStars); // Số sao nửa
+                                                    $emptyStars = 5 - $fullStars - $halfStar; // Số sao trống
+                                                @endphp
+                                                @for ($i = 1; $i <= $fullStars; $i++)
+                                                    <i class="ri-star-fill" data-ratting="{{ $i }}"></i>
+                                                @endfor
+            
+                                                @if ($halfStar > 0)
+                                                    <i class="ri-star-half-fill" data-ratting="{{ $i }}"></i>
+                                                    @php $i++; @endphp
+                                                @endif
+                                                @for ($j = 1; $j <= $emptyStars; $j++)
+                                                    <i class="ri-star-line" data-ratting="{{ $i }}"></i>
+                                                    @php $i++; @endphp
+                                                @endfor
                                             </div>
                                         </td>
                                         <td class="fw-medium text-end">
@@ -143,19 +168,23 @@
                                     Đơn hàng đã bị hủy
                                 </div>
                             @else
-                                <form action="{{ route('orders.update', $order->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="btn btn-primary btn-sm align-items-center" style="font-size: 0.9rem; margin-right: 5px;">
-                                        Cập nhật trạng thái
-                                    </button>
-                                </form>
-                                <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
-                                        Hủy đơn hàng
-                                    </button>
-                                </form>
+                                @if ($order->status == OrderStatus::PENDING->value || $order->status == OrderStatus::DELIVERED->value)
+                                    <form action="{{ route('orders.update', $order->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="btn btn-primary btn-sm align-items-center" style="font-size: 0.9rem; margin-right: 5px;">
+                                            Cập nhật trạng thái
+                                        </button>
+                                    </form>
+                                @endif
+                                @if ($order->status < OrderStatus::PROCESSING->value)
+                                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
+                                            Hủy đơn hàng
+                                        </button>
+                                    </form>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -169,9 +198,13 @@
                                         <a class="accordion-button p-2 shadow-none {{ !$historyWithTransfers['showTransferHistory'] ? 'no-arrow' : '' }}" data-bs-toggle="collapse" href="#collapse{{ $key + 1 }}" aria-expanded="{{ $historyWithTransfers['showTransferHistory'] ? 'true' : 'false' }}" aria-controls="collapse{{ $key + 1 }}">
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 avatar-xs">
-                                                    <div class="avatar-title bg-success rounded-circle">
-                                                        <i class="ri-shopping-bag-line"></i>
-                                                    </div>
+                                                    @foreach (OrderStatus::cases() as $statusOrder)
+                                                        @if($historyWithTransfers['orderHistory']->status == $statusOrder->value)
+                                                            <div class="avatar-title bg-primary rounded-circle">
+                                                                <i class="{{ $statusOrder->icon() }}"></i>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 </div>
                                                 <div class="flex-grow-1 ms-3">
                                                     @foreach (OrderStatus::cases() as $statusOrder)
@@ -192,7 +225,7 @@
                                                     @foreach (TransferStatus::cases() as $statusTransfer)
                                                         @if($transfer_history->status == $statusTransfer->value)
                                                             <h6 class="">{{ $statusTransfer->label() }}</h6>
-                                                            <p class="text-muted">{{ Carbon::parse($transfer_history->created_at)->translatedFormat('H:i:s l, d/m/Y') }}</p>
+                                                            <p class="text-muted">{{ mb_convert_case(Carbon::parse($transfer_history->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8") }}</p>
                                                         @endif
                                                     @endforeach
                                                 @endforeach
@@ -215,7 +248,7 @@
                     <div class="d-flex">
                         <h5 class="card-title flex-grow-1 mb-0">Thông tin khách hàng</h5>
                         <div class="flex-shrink-0">
-                            <a href="" class="link-secondary">Xem hồ sơ</a>
+                            <a href="{{ route('user.edit', $order->user->id) }}" class="link-secondary">Xem hồ sơ</a>
                         </div>
                     </div>
                 </div>
@@ -234,17 +267,7 @@
                         </li>
                         <li><i class="ri-mail-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->email }}</li>
                         <li><i class="ri-phone-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->phone }}</li>
-                    </ul>
-                </div>
-            </div>
-            <!--end card-->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0"><i class="ri-map-pin-line align-middle me-1 text-muted"></i> Địa chỉ giao hàng</h5>
-                </div>
-                <div class="card-body pt-3">
-                    <ul class="list-unstyled vstack gap-2 fs-13 mb-0">
-                        <li>{{ $order->address }}</li>
+                        <li><i class="ri-map-pin-line align-middle me-2 text-muted fs-16"></i>{{ $order->address }}</li>
                     </ul>
                 </div>
             </div>

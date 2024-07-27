@@ -1,6 +1,5 @@
 @extends('client.layouts.master')
 @section('title', 'Giỏ hàng')
-
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
@@ -20,11 +19,11 @@
                     <table id="cart" class="table">
                         <thead>
                         <tr>
-                            <th scope="col">Products</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Total</th>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Tổng</th>
                             <th scope="col">Handle</th>
                         </tr>
                         </thead>
@@ -46,7 +45,17 @@
                                     </td>
                                     <td>
                                         <div class="input-group quantity mt-4" style="width: 100px;">
-                                            <input type="number" class="form-control form-control-sm text-center border-0 cart-quantity" name="quantity" min="1" value="{{ $details['quantity'] }}" data-id="{{ $id }}" data-price="{{ $details['price'] }}" data-url="{{ route('cart.update') }}">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-minus rounded-circle bg-light border" data-id="{{ $id }}" data-price="{{ $details['price'] }}" data-url="{{ route('cart.update') }}">
+                                                <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm text-center border-0" value="{{ $details['quantity'] }}" data-min="1" data-max="{{ $details['quantity'] }}">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-plus rounded-circle bg-light border" data-id="{{ $id }}" data-price="{{ $details['price'] }}" data-url="{{ route('cart.update') }}">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
@@ -68,7 +77,7 @@
                         <div class="bg-light rounded">
                             <div class="p-4">
                                 <div class="d-flex justify-content-between mb-4">
-                                    <h5 class="mb-0 me-4">Subtotal:</h5>
+                                    <h5 class="mb-0 me-4">Tổng tiền:</h5>
                                     <p class="mb-0" id="subtotal">{{ number_format($total) }}đ</p>
                                 </div>
                             </div>

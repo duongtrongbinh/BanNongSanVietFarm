@@ -54,12 +54,30 @@ class HomeController extends Controller
         $categories->each(function ($category) {
             $category->products = $category->products->take(8);
         });
+
         $banners = Banner::where('is_home', 1)
             ->where('is_active', 1)
             ->orderByDesc('id')
             ->get(['image']);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories','banners'));
+        $top10Products = Product::with(['comments', 'orderDetails'])
+        ->withCount([
+            'orderDetails as sales_count' => function ($query) {
+                $query->select(DB::raw('SUM(quantity)'));
+            },
+            'comments as average_rating' => function ($query) {
+                $query->select(DB::raw('AVG(ratting)'));
+            }
+        ])
+        ->orderByDesc('sales_count')
+        ->orderByDesc('average_rating')
+        ->take(10)
+        ->get();
+
+        $top6Products = $top10Products->take(6);
+        $next4Products = $top10Products->skip(6)->take(4);
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories','banners', 'top6Products', 'next4Products'));
     }
 
     public function product($slug)
@@ -77,14 +95,13 @@ class HomeController extends Controller
         $searchTerm = $request->filled('search') ? $request->input('search') : null;
         $sort = $request->filled('sort') ? $request->input('sort') : 'newest';
         $brandSlugs = $request->filled('brands') ? $request->input('brands') : [];
-        $categorySlugs = $request->filled('categories') ? $request->input('categories') : [];
         $minPrice = $request->filled('minPrice') > 0 ? $request->input('minPrice') : 0;
         $maxPrice = $request->filled('maxPrice') > 0 ? $request->input('maxPrice') : 0;
 
         $category = Category::where('slug', $slug)
             ->first();
 
-        $stages = $this->pipelineFactory->make($searchTerm, $brandSlugs, $categorySlugs, $minPrice, $maxPrice, [$sort]);
+        $stages = $this->pipelineFactory->make($searchTerm, $brandSlugs, $slug, $minPrice, $maxPrice, [$sort]);
 
         $productsQuery = Product::query()
             ->with(['brand', 'category'])

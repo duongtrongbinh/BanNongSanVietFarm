@@ -30,8 +30,12 @@ class TransferHistory extends Model
         static::creating(function ($transferHistory) {
             $order = Order::findOrFail($transferHistory->order_id);
 
-            if (in_array($order->status, [OrderStatus::COMPLETED->value, OrderStatus::CANCELLED->value])) {
-                throw new \Exception('Không thể thêm trạng thái vào bảng transfer_histories khi đơn hàng đã hoàn thành hoặc bị hủy.');
+            if (in_array($order->status, [OrderStatus::COMPLETED->value])) {
+                throw new \Exception('Không thể thêm trạng thái khi đơn hàng đã hoàn thành.');
+            }
+
+            if (in_array($order->status, [OrderStatus::CANCELLED->value])) {
+                throw new \Exception('Không thể thêm trạng thái khi đơn hàng đã bị hủy.');
             }
         });
     }

@@ -65,10 +65,9 @@ class ShopController extends Controller
     {
         $searchTerm = $request->filled('search') ? $request->input('search') : null;
         $sort = $request->filled('sort') ? $request->input('sort') : 'newest';
-        $brandSlugs = $request->filled('brands') ? $request->input('brands') : [];
         $categorySlugs = $request->filled('categories') ? $request->input('categories') : [];
-        $minPrice = $request->filled('minPrice') > 0 ? $request->input('minPrice') : 0;
-        $maxPrice = $request->filled('maxPrice') > 0 ? $request->input('maxPrice') : 0;
+        $minPrice = $request->filled('minPrice') ? $request->input('minPrice') : null;
+        $maxPrice = $request->filled('maxPrice') ? $request->input('maxPrice') : null;
 
         $brand = Brand::where('slug', $slug)
                     ->first();
@@ -77,7 +76,7 @@ class ShopController extends Controller
                             ->with(['brand', 'category'])
                             ->where('brand_id', $brand->id);
 
-        $stages = $this->pipelineFactory->make($searchTerm, $brandSlugs, $categorySlugs, $minPrice, $maxPrice, [$sort]);
+        $stages = $this->pipelineFactory->make($searchTerm, $slug, $categorySlugs, $minPrice, $maxPrice, [$sort]);
 
         $products = app(Pipeline::class)
             ->send($productsQuery)
@@ -87,7 +86,7 @@ class ShopController extends Controller
             ->latest('id')
             ->paginate(12);
 
-        $brands = $this->brandRepository->getLatestAll();
+        $brands = $this->brandRepository->getAllWithRelations('products');
         $categories = $this->categoryRepository->getAllWithRelations('products');
 
         $priceLimits = Product::where('is_active', 1)

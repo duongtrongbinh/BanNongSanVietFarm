@@ -11,7 +11,7 @@ enum OrderStatus: int
     case COMPLETED = 5;                    // Hoàn thành
     case CANCELLED = 6;                   // Đã hủy
     case RETURNED = 7;                    // Trả hàng/Hoàn tiền
-    case RETRY = 8;                    // Trả hàng/Hoàn tiền
+    case RETRY = 8;                    // Gửi yêu cầu lỗi
     
     public static function values(): array
     {
@@ -29,7 +29,21 @@ enum OrderStatus: int
             self::COMPLETED => 'Hoàn thành',
             self::CANCELLED => 'Đã hủy',
             self::RETURNED => 'Trả hàng/Hoàn tiền',
-            self::RETRY => 'Gửi yêu cầu lỗi ',
+            self::RETRY => 'Gửi yêu cầu lỗi',
+        };
+    }
+
+    public function icon(): string
+    {
+        return match($this) {
+            self::PENDING => 'ri-more-fill',
+            self::PROCESSING => 'ri-loader-2-fill',
+            self::SHIPPING => 'ri-truck-fill',
+            self::SHIPPED => 'ri-takeaway-fill',
+            self::DELIVERED => 'ri-user-received-fill',
+            self::COMPLETED => 'ri-checkbox-circle-fill',
+            self::CANCELLED => 'ri-close-circle-fill',
+            self::RETURNED => 'ri-reply-fill',
         };
     }
 }

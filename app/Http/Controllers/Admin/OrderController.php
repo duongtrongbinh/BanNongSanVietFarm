@@ -105,19 +105,9 @@ class OrderController extends Controller
         })
         ->addColumn('action', function($order) {
             return '<ul class="list-inline hstack gap-2 mb-0">
-                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chi tiết">
-                            <a href="'.route('orders.show', $order->id).'" class="text-primary d-inline-block">
-                                <i class="ri-eye-fill fs-16"></i>
-                            </a>
-                        </li>
                         <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chỉnh sửa">
                             <a href="'.route('orders.edit', $order->id).'" class="text-primary d-inline-block">
                                 <i class="ri-pencil-fill fs-16"></i>
-                            </a>
-                        </li>
-                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-                            <a data-url="'.route('orders.delete', $order->id).'" class="text-danger d-inline-block deleteProduct">
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
                             </a>
                         </li>
                     </ul>';
@@ -189,68 +179,6 @@ class OrderController extends Controller
         return self::getData($orders);
     }
 
-    public function show(Order $order)
-    {
-        $order = Order::with(['user', 'order_details.product.category', 'order_details.product.brand'])->find($order->id);
-
-        $statuses = $order->transfer_histories->pluck('status')->toArray();
-        $searchResult = array_search(TransferStatus::DELIVERED->value, $statuses);
-
-        if ($order->payment_method == 1 && $searchResult !== false) {
-            $statusData = [
-                'label' => 'Thanh toán thành công',
-                'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
-            ];
-        } else if ($order->payment_method == 0) {
-            $statusData = [
-                'label' => 'Thanh toán thành công',
-                'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
-            ];
-        } else {
-            $statusData = [
-                'label' => 'Chờ thanh toán',
-                'badgeClass' => 'badge bg-info-subtle text-info text-uppercase'
-            ];
-        }
-
-        $orderHistoriesWithTransfers = $order->order_histories->map(function($orderHistory) use ($order) {
-            $transferStatusRange = [];
-            $showTransferHistory = false;
-            switch ($orderHistory->status) {
-                case 1:
-                    $transferStatusRange = range(0, 4);
-                    $showTransferHistory = true;
-                    break;
-                case 2:
-                    $transferStatusRange = range(5, 8);
-                    $showTransferHistory = true;
-                    break;
-                case 3:
-                    $transferStatusRange = range(9, 10);
-                    $showTransferHistory = true;
-                    break;
-                default:
-                    $transferStatusRange = [];
-                    $showTransferHistory = false;
-            }
-    
-            $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
-                return in_array($transferHistory->status, $transferStatusRange);
-            });
-
-            $formattedOrderHistory = Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y');
-            
-            return [
-                'orderHistory' => $orderHistory,
-                'transferHistories' => $transferHistories,
-                'formattedOrderHistory' => $formattedOrderHistory,
-                'showTransferHistory' => $showTransferHistory
-            ];
-        });
-         
-        return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers'));
-    }
-
     private function isValidStatusTransition(Order $order, int $newStatus): bool
     {
         $currentStatus = $order->status;
@@ -262,13 +190,7 @@ class OrderController extends Controller
 
         // Transition from 1 to 2 requires checking order_histories for statuses 0 to 4
         if ($currentStatus === OrderStatus::PROCESSING->value && $newStatus === OrderStatus::SHIPPING->value) {
-            $validStatuses = [
-                TransferStatus::READY_TO_PICK->value,
-                TransferStatus::NEW_ORDER->value,
-                TransferStatus::PICKING->value,
-                TransferStatus::MONEY_COLLECT_PICKING->value,
-                TransferStatus::PICKED->value,
-            ];
+            $validStatuses = range(TransferStatus::READY_TO_PICK->value, TransferStatus::STORING->value);
 
             $historyCount = TransferHistory::where('order_id', $order->id)
                 ->whereIn('status', $validStatuses)
@@ -314,7 +236,7 @@ class OrderController extends Controller
         // Transition from 4 to 5 requires checking order_histories for statuses 0 to 10 and not having statuses 11 or higher
         if ($currentStatus === OrderStatus::DELIVERED->value && $newStatus === OrderStatus::COMPLETED->value) {
             $validStatuses = range(TransferStatus::READY_TO_PICK->value, TransferStatus::DELIVERED->value);
-            $invalidStatuses = range(TransferStatus::DELIVERY_FAIL->value, TransferStatus::CANCEL->value);
+            $invalidStatuses = range(TransferStatus::WAITING_TO_RETURN->value, TransferStatus::CANCEL->value);
 
             $validCount = TransferHistory::where('order_id', $order->id)
                 ->whereIn('status', $validStatuses)
@@ -339,14 +261,8 @@ class OrderController extends Controller
         $order = Order::with(['user', 'order_details.product.category', 'order_details.product.brand'])->find($order->id);
 
         $statuses = $order->transfer_histories->pluck('status')->toArray();
-        $searchResult = array_search(TransferStatus::DELIVERED->value, $statuses);
 
-        if ($order->payment_method == 1 && $searchResult !== false) {
-            $statusData = [
-                'label' => 'Thanh toán thành công',
-                'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
-            ];
-        } else if ($order->payment_method == 0) {
+        if ($order->payment_status == 1) {
             $statusData = [
                 'label' => 'Thanh toán thành công',
                 'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
@@ -362,16 +278,20 @@ class OrderController extends Controller
             $transferStatusRange = [];
             $showTransferHistory = false;
             switch ($orderHistory->status) {
-                case 1:
+                case OrderStatus::PROCESSING->value:
                     $transferStatusRange = range(0, 4);
                     $showTransferHistory = true;
                     break;
-                case 2:
+                case OrderStatus::SHIPPING->value:
                     $transferStatusRange = range(5, 8);
                     $showTransferHistory = true;
                     break;
-                case 3:
-                    $transferStatusRange = range(9, 10);
+                case OrderStatus::SHIPPED->value:
+                    $transferStatusRange = [9, 10, 11];
+                    $showTransferHistory = true;
+                    break;
+                case OrderStatus::RETURNED->value:
+                    $transferStatusRange = [12, 13, 14, 15, 16, 17, 18];
                     $showTransferHistory = true;
                     break;
                 default:
@@ -381,9 +301,9 @@ class OrderController extends Controller
     
             $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
                 return in_array($transferHistory->status, $transferStatusRange);
-            });
+            })->sortByDesc('created_at');
 
-            $formattedOrderHistory = Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y');
+            $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
             
             return [
                 'orderHistory' => $orderHistory,
@@ -391,6 +311,8 @@ class OrderController extends Controller
                 'formattedOrderHistory' => $formattedOrderHistory,
                 'showTransferHistory' => $showTransferHistory
             ];
+        })->sortByDesc(function($history) {
+            return $history['orderHistory']->created_at;
         });
          
         return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers'));
@@ -519,10 +441,7 @@ class OrderController extends Controller
 
     public function cancel(Order $order)
     {
-        // Kiểm tra xem có bản ghi nào trong transfer_histories với status = TransferStatus::CANCEL->value không
-        $hasCancelledTransferHistory = $order->transfer_histories->contains('status', TransferStatus::CANCEL->value);
-
-        if ($hasCancelledTransferHistory) {
+        if ($order->status < OrderStatus::PROCESSING->value) {
             // Cập nhật trạng thái của order
             $order = $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
 
@@ -540,14 +459,7 @@ class OrderController extends Controller
             // Nếu không, trả về thông báo lỗi
             return redirect()
                 ->back()
-                ->with('error', 'Không thể hủy đơn hàng vì không có trạng thái hủy trong transfer_histories.');
+                ->with('error', 'Không thể hủy đơn hàng vì đã qua trạng thái đang chờ xử lý!');
         }
-    }
-
-    public function delete(Order $order)
-    {
-        $this->orderRepository->delete($order->id);
-
-        return response()->json(true);
     }
 }

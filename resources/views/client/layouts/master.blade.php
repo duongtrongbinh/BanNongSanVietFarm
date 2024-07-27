@@ -54,6 +54,12 @@
 
         <!-- Template Javascript -->
         <script src="{{ asset('client/assets/js/main.js') }}"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!--ShowMessage js-->
+        <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
         <script>
             $(document).ready(function() {
                 function formatNumber(number) {
@@ -64,20 +70,31 @@
                     return Number(formattedNumber).toLocaleString('en-US');
                 }
 
-                function addToCart(product, url) {
+                function addToCart(product, url, quantity) {
                     $.ajax({
                         url: url,
                         method: 'POST',
                         data: {
                             product: product,
-                            quantity: 1,
+                            quantity: quantity,
                             _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            alert(response.message);
+                            let title = 'Thêm vào giỏ';
+                            let message = 'Thêm sản phẩm vào giỏ hàng thành công!';
+                            let icon = 'success';
+
+                            showMessage(title, message, icon);
+
                             $('.cart-count').text(Object.keys(response.cart).length);
                         }
                     });
+                }
+
+                // Cập nhật data-quantity khi giá trị của input thay đổi
+                function updateQuantity() {
+                    let quantity = $('input[name="quantity"]').val();
+                    $('.add-to-cart').data('quantity', quantity);
                 }
 
                 function renderCart(url) {
@@ -100,8 +117,8 @@
                                             <i class='bx bx-cart'></i>
                                         </div>
                                     </div>
-                                    <h5 class="mb-3">Your Cart is Empty!</h5>
-                                    <a href="{{ route('shop') }}" class="btn btn-success w-md mb-3">Shop Now</a>
+                                    <h5 class="mb-3">Giỏ hàng trống!</h5>
+                                    <a href="{{ route('shop') }}" class="btn btn-success w-md mb-3">Mua Ngay</a>
                                 `;
                                 cartDrop.appendChild(cartEmpty);
                             }else {
@@ -229,7 +246,7 @@
                         },
                         success: function(response) {
                             let totalPrice = 0;
-                            alert(response.message);
+
                             $('.cart-count').text(Object.keys(response.cart).length);
 
 
@@ -242,21 +259,41 @@
 
                             let subtotal = formatNumber(totalPrice);
                             $('#subtotal').text(subtotal + 'đ');
+
+                            let title = 'Đã xóa';
+                            let message = 'Xóa sản phẩm khỏi giỏ hàng thành công!';
+                            let icon = 'success';
+
+                            showMessage(title, message, icon);
                         }
                     });
                 }
 
+                // Cập nhật data-quantity khi giá trị của input thay đổi
+                $('.quantity button').on('click', function () {
+                    var button = $(this);
+                    var oldValue = button.parent().parent().find('input').val();
+                    var newVal;
+
+                    newVal = parseFloat(oldValue)
+
+                    button.parent().parent().find('input').val(newVal);
+                    updateQuantity(); // Cập nhật giá trị data-quantity
+                });
+
+
                 $(".add-to-cart").on("click", function() {
                     let url = $(this).data("url");
-
                     var ele = $(this);
                     var id = ele.data("id");
+                    let quantity = $(this).data("quantity");
+
                     var product = {
                         id: id,
                     };
 
                     setTimeout(function() {
-                        addToCart(product, url);
+                        addToCart(product, url, quantity);
                     }, 100);
                 });
 
@@ -266,10 +303,17 @@
                     renderCart(url);
                 });
 
-                $('.cart-quantity').on('change', function() {
+                $('.quantity button').on('click', function () {
                     let url = $(this).data("url");
                     let id = $(this).data("id");
-                    let quantity = $(this).val();
+
+                    var button = $(this);
+                    var inputField = button.parent().parent().find('input');
+                    var oldValue = button.parent().parent().find('input').val();
+                    var quantity;
+                    
+                    quantity = parseFloat(oldValue)
+
                     let price = $(this).data("price");
                     var $tr = $(this).closest('tr');
                     var totalPrice = quantity * price;
@@ -282,11 +326,24 @@
                 $(".remove-cart").on("click", function() {
                     let url = $(this).data("url");
                     let id = $(this).data("id");
-                    $(this).closest('tr').remove();
                     
-                    if(confirm("Bạn có chắc muốn xóa không?")) {
-                        removeItemFromCart(url, id);
-                    }
+                    Swal.fire({
+                        title: "Bạn có chắc không?",
+                        text: "Bạn sẽ không thể hoàn tác điều này!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Vâng, xóa nó đi!",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Thực hiện hành động xóa nếu người dùng xác nhận
+                            removeItemFromCart(url, id);
+
+                            // Xóa hàng trong bảng
+                            $(this).closest('tr').remove();
+                        }
+                    });
                 });
             });
         </script>

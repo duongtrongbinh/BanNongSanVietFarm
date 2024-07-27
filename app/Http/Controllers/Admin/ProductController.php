@@ -83,27 +83,16 @@ class ProductController extends Controller
         })
         ->addColumn('action', function($product) {
             return '<ul class="list-inline hstack gap-2 mb-0">
-                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chi tiết">
-                            <a href="'.route('products.show', $product->id).'" class="text-primary d-inline-block">
-                                <i class="ri-eye-fill fs-16"></i>
-                            </a>
-                        </li>
                         <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Chỉnh sửa">
                             <a href="'.route('products.edit', $product->id).'" class="text-primary d-inline-block">
                                 <i class="ri-pencil-fill fs-16"></i>
                             </a>
                         </li>
-                     
                     </ul>';
         })
         ->rawColumns(['image', 'tags', 'is_active', 'is_home', 'action'])
         ->make(true);
     }
-    //    <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-    //                         <a data-url="'.route('products.delete', $product->id).'" class="text-danger d-inline-block deleteProduct">
-    //                             <i class="ri-delete-bin-5-fill fs-16"></i>
-    //                         </a>
-    //                     </li>
 
     public function getProduct(Request $request)
     {
@@ -120,6 +109,16 @@ class ProductController extends Controller
         $tags = $this->tagRepository->getAll();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'brands', 'categories', 'tags'));
+    }
+
+    public function getProductsByCategory(Request $request)
+    {
+        $categoryId = $request->input('category_id');
+        
+        // Lấy sản phẩm theo category_id
+        $products = Product::where('category_id', $categoryId)->get(['id', 'name', 'image', 'price_sale']);
+
+        return response()->json($products);
     }
 
     public function store(ProductCreateRequest $request)
@@ -242,16 +241,22 @@ class ProductController extends Controller
         return response()->json(true);
     }
 
-    public function export() 
-    {
-        return Excel::download(new ProductsExport, 'products.xlsx');
+    public function export(Request $request) 
+    {   
+        $paginate = $request->input('paginate', 10);
+
+        $export = new ProductsExport($paginate);
+
+        return Excel::download($export, 'products.xlsx');
     }
 
     public function import(ProductsImportRequest $request) 
     {
-        $import = new ProductsImport;
-        Excel::import($import, $request->file('product_file'));
-        
+        $file = $request->file('product_file');
+        $import = new ProductsImport($file);
+
+        Excel::import($import, $file);
+            
         return redirect()->back()->with('created', 'Thêm mới sản phẩm thành công!');
     }
 }

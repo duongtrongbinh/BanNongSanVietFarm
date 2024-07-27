@@ -48,14 +48,14 @@
           <div class="tab-content mt-2">
             <div class="tab-pane fade show active product" id="product">
               <div class="row form-group">
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="name">Tên sản phẩm</label>
                   <input type="text" class="form-control mt-2" name="name" id="name" value="{{ old('name')}}">
                   @error('name')
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="brand_id">Thương hiệu</label>
                   <select class="form-select mt-2" name="brand_id" id="brand_id" aria-label="Default select example">
                     <option value="" selected>Mở menu chọn này</option>
@@ -67,7 +67,7 @@
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="category_id">Danh mục</label>
                   <select class="form-select mt-2" name="category_id" id="category_id" aria-label="Default select example">
                     <option value="" selected>Mở menu chọn này</option>
@@ -79,14 +79,59 @@
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="quantity">Số lượng</label>
                   <input type="number" class="form-control mt-2" name="quantity" id="quantity" value="{{ old('quantity', 0)}}">
                   @error('quantity')
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-4 mt-2 mb-3">
+                  <label for="price_regular">Giá gốc (VNĐ)</label>
+                  <input type="text" class="form-control mt-2" name="price_regular" id="price_regular" value="{{ old('price_regular', 0)}}">
+                  @error('price_regular')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-4 mt-2 mb-3">
+                  <label for="price_sale">Giá giảm (VNĐ)</label>
+                  <input type="text" class="form-control mt-2" name="price_sale" id="price_sale" value="{{ old('price_sale', 0)}}">
+                  @error('price_sale')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                  @error('price_sale.lt')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2">
+                  <label for="length mb-3">Chiều dài (Cm)</label>
+                  <input type="text" class="form-control mt-2" name="length" id="length" value="{{ old('length', 0)}}">
+                  @error('length')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="width">Chiều rộng (Cm)</label>
+                  <input type="text" class="form-control mt-2" name="width" id="width" value="{{ old('width', 0)}}">
+                  @error('width')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="height">Chiều cao (Cm)</label>
+                  <input type="text" class="form-control mt-2" name="height" id="height" value="{{ old('height', 0)}}">
+                  @error('height')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="weight">Trọng lượng (Gram)</label>
+                  <input type="text" class="form-control mt-2" name="weight" id="weight" value="{{ old('weight', 0)}}">
+                  @error('weight')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-6 mt-2 mb-3">
                   <label for="thumbnail">Ảnh</label>
                   <div class="input-group">
                     <span class="input-group-btn">
@@ -101,7 +146,7 @@
                   @endif
                   <div id="holder" style="margin-top:15px;"></div>
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-6 mt-2 mb-3">
                   <label for="select2Multiple" class="mb-2">Nhãn</label>
                   <select class="form-control" name="tags[]" multiple="multiple" id="select2Multiple">
                     @foreach ($tags as $tag)
@@ -115,66 +160,14 @@
                     <div style="color: red">{{ $message[0] }}</div>
                   @endforeach
                 </div>
-                <div class="col-4 mt-2">
-                  <label for="price_regular">Giá gốc (VNĐ)</label>
-                  <input type="text" class="form-control mt-2" name="price_regular" id="price_regular" value="{{ old('price_regular', 0)}}">
-                  @error('price_regular')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-4 mt-2">
-                  <label for="price_sale">Giá giảm (VNĐ)</label>
-                  <input type="text" class="form-control mt-2" name="price_sale" id="price_sale" value="{{ old('price_sale', 0)}}">
-                  @error('price_sale')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                  @error('price_sale.lt')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-4 mt-2">
-                  <label for="excerpt">Loại trừ</label>
-                  <input type="text" class="form-control mt-2" name="excerpt" id="excerpt" value="{{ old('excerpt')}}">
-                  @error('except')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="length">Chiều dài (Cm)</label>
-                  <input type="text" class="form-control mt-2" name="length" id="length" value="{{ old('length', 0)}}">
-                  @error('length')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="width">Chiều rộng (Cm)</label>
-                  <input type="text" class="form-control mt-2" name="width" id="width" value="{{ old('width', 0)}}">
-                  @error('width')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="height">Chiều cao (Cm)</label>
-                  <input type="text" class="form-control mt-2" name="height" id="height" value="{{ old('height', 0)}}">
-                  @error('height')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="weight">Trọng lượng (Gram)</label>
-                  <input type="text" class="form-control mt-2" name="weight" id="weight" value="{{ old('weight', 0)}}">
-                  @error('weight')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-12 mt-2">
+                <div class="col-12 mt-2 mb-3">
                   <label for="description">Mô tả</label>
                   <textarea class="form-control mt-2" name="description" id="description">{{ old('description')}}</textarea>
                   @error('description')
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-12 mt-2">
+                <div class="col-12 mt-2 mb-3">
                   <label for="content">Nội dung</label>
                   <textarea class="form-control mt-2 my-editor-tinymce4" name="content" id="content">{{ old('content')}}</textarea>
                   @error('content')
@@ -201,12 +194,9 @@
                   <label for="select2Products" class="mb-2">Sản phẩm</label>
                   <select class="form-control" name="products[]" multiple="multiple" id="select2Products">
                     @foreach ($products as $product)
-                      <option value="{{ $product->id }}" {{ in_array($product->id, old('products', [])) ? 'selected' : '' }}>{{ $product->name }}</option>
+                      <option value="{{ $product->id }}">{{ $product->name }}</option>
                     @endforeach   
                   </select>
-                  @error('products')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
                 </div>
                 <div class="col-12 mt-2">
                   <table id="productsTable" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
@@ -258,6 +248,39 @@
         them: 'bootstrap-5',
         placeholder: "Chọn nhãn",
         allowClear: true
+      });
+
+      $('#category_id').on('change', function() {
+        var categoryId = $(this).val();
+        
+        // Gửi yêu cầu AJAX để lấy sản phẩm theo category_id
+        $.ajax({
+            url: '{{ route('products.category') }}',
+            type: 'GET',
+            data: { 
+                category_id: categoryId
+            },
+            success: function(response) {
+                // Xóa tất cả các tùy chọn hiện có trong select2Products
+                $('#select2Products').empty();
+                
+                if (Array.isArray(response)) {
+                    // Thêm sản phẩm mới vào select2Products
+                    response.forEach(function(product) {
+                        $('#select2Products').append(new Option(product.name, product.id));
+                    });
+
+                    // Đồng bộ hóa lại Select2
+                    $('#select2Products').select2({
+                        placeholder: "Chọn sản phẩm",
+                        allowClear: true
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error('Có lỗi xảy ra khi lấy sản phẩm:', xhr);
+            }
+        });
       });
 
       var select2Products = $('#select2Products');

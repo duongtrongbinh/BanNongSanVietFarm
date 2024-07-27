@@ -90,6 +90,10 @@ Route::middleware(['auth'])->group(function () {
             /* Route Product */
             Route::delete('categories/{id}', [CategoryController::class, 'delete'])
                 ->name('categories.delete');
+            /* Route Category */
+             Route::resource('categories', CategoryController::class);
+             Route::delete('categories/{id}', [CategoryController::class, 'delete'])
+            ->name('categories.delete');
 
             /* Route Product */
             Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
@@ -101,6 +105,15 @@ Route::middleware(['auth'])->group(function () {
                 ->name('products.export');
             Route::post('import', [ProductController::class, 'import'])
                 ->name('products.import');
+    /* Route Product */
+    Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
+    Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
+    Route::resource('products', ProductController::class);
+    Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
+    Route::post('export', [ProductController::class, 'export'])
+        ->name('products.export');
+    Route::post('import', [ProductController::class, 'import'])
+        ->name('products.import');
 
             /* Route Product Group */
             Route::resource('groups', GroupController::class);
@@ -118,6 +131,10 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('tags', TagController::class);
             Route::delete('tags/{id}', [TagController::class, 'delete'])
                 ->name('tags.delete');
+    /* Route Tag */
+    Route::resource('tags', TagController::class);
+    Route::delete('tags/{id}', [TagController::class, 'delete'])
+        ->name('tags.delete');
 
             /* Route Voucher */
             Route::resource('vouchers',VoucherController::class);
@@ -193,6 +210,47 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/bill/return', [GHNService::class,'pay_return'])
                 ->name('bill.return');
         });
+    /* Route Order */
+    Route::get('orders/all', [OrderController::class, 'getAll'])
+        ->name('orders.all');
+    Route::get('orders/pending', [OrderController::class, 'getPending'])
+        ->name('orders.pending');
+    Route::get('orders/processing', [OrderController::class, 'getProcessing'])
+        ->name('orders.processing');
+    Route::get('orders/shipping', [OrderController::class, 'getShipping'])
+        ->name('orders.shipping');
+    Route::get('orders/shipped', [OrderController::class, 'getShipped'])
+        ->name('orders.shipped');
+    Route::get('orders/delivered', [OrderController::class, 'getDelivered'])
+        ->name('orders.delivered');
+    Route::get('orders/completed', [OrderController::class, 'getCompleted'])
+        ->name('orders.completed');
+    Route::get('orders/cancelled', [OrderController::class, 'getCancelled'])
+        ->name('orders.cancelled');
+    Route::get('orders/returned', [OrderController::class, 'getReturned'])
+        ->name('orders.returned');
+    Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
+        ->name('orders.updateStatus');
+    Route::resource('orders',OrderController::class);
+    Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->name('orders.cancel');
+    Route::get('/bill/return', [GHNService::class,'pay_return'])
+        ->name('bill.return');
+
+    /* Route Post */
+    Route::resource('post', PostController::class);
+    Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
+        ->name('post.comment.markAsSpam');
+    Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
+        ->name('post.comment.unmarkAsSpam');
+
+    /* Route Comment */
+    Route::resource('comment', CommentController::class);
+    Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
+        ->name('product.comment.destroy');
+
+    /* Route Rate */
+    Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
 
         //  Route::post('/orders/{order}/retry', 'OrderController@retryOrder')->name('orders.retry');
 
