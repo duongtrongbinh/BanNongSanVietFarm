@@ -10,9 +10,9 @@
         transition: width 0.3s ease, padding-right 0.3s ease, opacity 0.3s ease;
     }
 
-    .search-input.expanded {
-        width: 200px;
-        padding-right: 45px;
+    .search-form:hover .search-input {
+        width: 200px; /* Thay đổi kích thước khi hover */
+        padding-right: 45px; /* Cung cấp không gian cho biểu tượng tìm kiếm */
         opacity: 1;
     }
 </style>
@@ -36,18 +36,13 @@
                     <a href="{{route('contact.index')}}" class="nav-item nav-link">Liên hệ</a>
                     <a href="{{route('policy.index')}}" class="nav-item nav-link">Chính sách</a>
                 </div>
-                <div class="d-flex m-3 me-0">
-                    <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white"
-                            data-bs-toggle="modal" data-bs-target="#searchModal"><i
-                            class="fas fa-search text-primary"></i></button>
                 <div class="d-flex align-items-center m-3 me-0">
                     <div class="position-relative mx-auto">
                         <form action="{{ route('shop') }}" method="GET" class="search-form">
                             <input class="form-control border-2 border-secondary rounded-pill search-input" type="text" name="search" placeholder="Tìm kiếm..." style="padding-right: 45px;">
-                            <button type="button" class="btn border-2 border-secondary position-absolute rounded-pill text-white h-100 search-button" style="top: 0; right: 0;">
+                            <button type="submit" class="btn border-2 border-secondary position-absolute rounded-pill text-white h-100 search-button" style="top: 0; right: 0;">
                                 <i class="fas fa-search text-primary"></i>
                             </button>
-                            <button type="submit" class="d-none submit-btn"></button>
                         </form>
                     </div>
                     <div class="dropdown topbar-head-dropdown ms-1 header-item">
@@ -178,43 +173,3 @@
     </div>
 </div>
 <!-- Navbar End -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.querySelector('.search-input');
-        const searchButton = document.querySelector('.search-button');
-        const submitButton = document.querySelector('.submit-btn');
-        const searchForm = document.querySelector('.search-form');
-
-        let inputExpanded = false;
-
-        function handleClickOutside(event) {
-            if (!searchForm.contains(event.target)) {
-                // Nếu nhấp ra ngoài form, thu gọn ô nhập liệu
-                searchInput.classList.remove('expanded');
-                inputExpanded = false;
-            }
-        }
-
-        searchButton.addEventListener('click', function () {
-            if (!inputExpanded) {
-                // Mở rộng ô nhập liệu
-                searchInput.classList.add('expanded');
-                inputExpanded = true;
-            } else {
-                // Kiểm tra xem ô nhập liệu có dữ liệu không
-                if (searchInput.value.trim() !== '') {
-                    // Gửi form nếu có dữ liệu
-                    submitButton.click();
-                } else {
-                    // Ngược lại, thu gọn ô nhập liệu
-                    searchInput.classList.remove('expanded');
-                    inputExpanded = false;
-                }
-            }
-        });
-
-        // Thêm sự kiện để ẩn ô nhập liệu khi nhấp ra ngoài
-        document.addEventListener('click', handleClickOutside);
-    });
-</script>
