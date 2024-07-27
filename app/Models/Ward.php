@@ -15,7 +15,7 @@ class Ward extends Model
 
     public $timestamps = true;
 
-    public $fillable = ['DistrictID','WardCode','WardName','created_at','created_at'];
+    public $fillable = ['id','DistrictID','WardCode','WardName','created_at','created_at'];
 
     public function district()
     {

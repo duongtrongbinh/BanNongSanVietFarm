@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Province;
 use App\Models\Provinces;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;

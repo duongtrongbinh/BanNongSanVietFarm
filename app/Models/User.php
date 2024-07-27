@@ -35,7 +35,10 @@ class User extends Authenticatable
         'token',
         'status',
         'remember_token',
-        'birthday'
+        'birthday',
+        'province_id',
+        'district_id',
+        'ward_id',
     ];
 
     /**

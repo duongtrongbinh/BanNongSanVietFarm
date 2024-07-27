@@ -57,7 +57,7 @@
                           <div class="col-xl-4">
                               <div class="form-item">
                                   <label class="form-label my-3">Tỉnh/Thành Phố<sup class="text-danger">*</sup></label>
-                                 <select class="form-control" id="province" name="province" style="background-color: aliceblue" data-url="{{ route('districts.address') }}">
+                                 <select class="form-control" id="province" name="province" style="background-color: aliceblue" data-url="{{ route('districts.address.client') }}">
                                      <option value="0" selected>Chọn tỉnh/Thành phố</option>
                                      @foreach($provinces as $items)
                                      <option value="{{ $items->ProvinceID }} - {{ $items->ProvinceName }}">{{ $items->ProvinceName }}</option>
@@ -71,7 +71,7 @@
                             <div class="col-xl-4">
                                 <div class="form-item">
                                     <label class="form-label my-3">Quận/Huyện<sup class="text-danger">*</sup></label>
-                                    <select class="form-control" id="district" name="district" data-url="{{ route('wards.address') }}">
+                                    <select class="form-control" id="district" name="district" data-url="{{ route('wards.address.client') }}">
                                         <option value="0" selected>Chọn Quận/Huyện</option>
                                     </select>
                                     @error('district')
@@ -115,7 +115,6 @@
                                     <tr>
                                         <th scope="row">
                                             <div class="d-flex align-items-center mt-2">
-                                                {{--             anh san pha,m                                   --}}
                                                 <img src="{{ asset($items['image']) }}" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
                                             </div>
                                         </th>

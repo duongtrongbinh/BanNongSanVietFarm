@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Hiển thị trang đăng nhập.
      */
     public function index()
     {
@@ -17,22 +17,34 @@ class AuthController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Xử lý việc đăng nhập.
      */
     public function store(Request $request)
     {
+        // Validate input
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         $remember = $request->has('remember_token') ? true : false;
-        if (auth()->attempt([
+
+        if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password
         ], $remember)) {
-            return view('admin.dashboard');
+            return redirect()->route('dashboard'); // Chuyển hướng đến trang dashboard sau khi đăng nhập thành công
         }
+
+        return redirect()->back()->withErrors(['email' => 'Email hoặc mật khẩu không đúng.'])->withInput();
     }
 
+    /**
+     * Xử lý việc đăng xuất.
+     */
     public function logout()
     {
         Auth::logout();
-        return view('dashboard.admin.users.user');
+        return redirect()->route('admin.login'); // Chuyển hướng đến trang đăng nhập admin sau khi đăng xuất
     }
 }

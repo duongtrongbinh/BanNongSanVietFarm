@@ -70,4 +70,9 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
+    protected $routeMiddleware = [
+        // Các middleware khác
+        'admin.auth' => \App\Http\Middleware\AdminAuthenticate::class,
+        'client.auth' => \App\Http\Middleware\ClientAuthenticate::class,
+    ];
 }

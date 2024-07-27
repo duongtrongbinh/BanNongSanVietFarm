@@ -222,42 +222,53 @@
                                 </div>
                             </div>
                         </div>
-                        <form id="comment-form" action="{{ route('rating', $product->id) }}" method="post"
-                              onsubmit="return validateForm()">
-                            @csrf
-                            <h4 class="mb-5 fw-bold">Comment bài viết</h4>
-                            <div class="row g-4">
-                                <div class="col-lg-12">
-                                    <div class="border-bottom rounded my-4">
-                                        <textarea name="comment" class="form-control border-0" id="comment" cols="30"
-                                                  rows="8" placeholder="Comment Bài Viết  *" spellcheck="false"
-                                                  required></textarea>
+                                @if (!Auth::check())
+                                    <div class="alert alert-warning" role="alert">
+                                        Bạn cần đăng nhập để thực hiện bình luận. <a href="{{ route('login') }}">Đăng nhập tại đây</a>.
                                     </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="d-flex justify-content-between py-3 mb-5">
-                                        <div class="d-flex align-items-center">
-                                            <p class="mb-0 me-3">Please rate:</p>
-                                            <div class="d-flex align-items-center" style="font-size: 12px;">
-                                                <i class="fa fa-star fa-star1 text-muted" data-ratting="1"></i>
-                                                <i class="fa fa-star fa-star1" data-ratting="2"></i>
-                                                <i class="fa fa-star fa-star1" data-ratting="3"></i>
-                                                <i class="fa fa-star fa-star1" data-ratting="4"></i>
-                                                <i class="fa fa-star fa-star1" data-ratting="5"></i>
+                                @elseif (!Auth::user()->hasPurchasedProduct($product->id))
+                                    <div class="alert alert-warning" role="alert">
+                                        Bạn cần mua sản phẩm này trước khi được phép bình luận.
+                                    </div>
+                                @elseif ($product->comments()->where('user_id', Auth::id())->exists())
+                                    <div class="alert alert-warning" role="alert">
+                                        Bạn đã bình luận sản phẩm này trước đó.
+                                    </div>
+                                @else
+                                    <form id="comment-form" action="{{ route('rating') }}" method="post" onsubmit="return validateForm()">
+                                        @csrf
+                                        <h4 class="mb-5 fw-bold">Comment bài viết</h4>
+                                        <div class="row g-4">
+                                            <div class="col-lg-12">
+                                                <div class="border-bottom rounded my-4">
+                                <textarea name="comment" class="form-control border-0" id="comment" cols="30"
+                                          rows="8" placeholder="Comment Bài Viết  *" spellcheck="false" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="d-flex justify-content-between py-3 mb-5">
+                                                    <div class="d-flex align-items-center">
+                                                        <p class="mb-0 me-3">Please rate:</p>
+                                                        <div class="d-flex align-items-center" style="font-size: 12px;">
+                                                            <i class="fa fa-star fa-star1 text-muted" data-ratting="1"></i>
+                                                            <i class="fa fa-star fa-star1" data-ratting="2"></i>
+                                                            <i class="fa fa-star fa-star1" data-ratting="3"></i>
+                                                            <i class="fa fa-star fa-star1" data-ratting="4"></i>
+                                                            <i class="fa fa-star fa-star1" data-ratting="5"></i>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="ratting" id="ratting-input">
+                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                    <input type="hidden" name="user_id" id="user_id"
+                                                           value="{{ auth()->check() ? auth()->user()->id : '' }}">
+                                                    <button type="submit" class="btn border border-secondary text-primary rounded-pill px-4 py-3">
+                                                        Post Comment
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <input type="hidden" name="ratting" id="ratting-input">
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="user_id" id="user_id"
-                                               value="{{ auth()->check() ? auth()->user()->id : '' }}">
-                                        <button type="submit"
-                                                class="btn border border-secondary text-primary rounded-pill px-4 py-3">
-                                            Post Comment
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                                    </form>
+                                @endif
                     </div>
                 </div>
             </div>
