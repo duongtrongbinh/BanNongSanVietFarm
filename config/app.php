@@ -182,6 +182,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'SidebarHelper' => App\helper\SidebarHelper::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

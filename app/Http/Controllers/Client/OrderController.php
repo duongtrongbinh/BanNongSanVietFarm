@@ -29,14 +29,18 @@ class OrderController extends Controller
 
    public function index()
    {
-       $orderAll = Order::With('order_details')->where('user_id',Auth::user()->id)->get();
+       $orderAll = Order::With('order_details')->where('user_id',Auth::user()->id)->paginate();
        return view('client.order', compact('orderAll'));
    }
    public function orderCheckOut()
    {
        $provinces = Provinces::query()->get();
        $vouchers = $this->voucherRepository->getVoucherActive();
-       return view('client.check-out',compact(['vouchers','provinces']));
+       $total = 0;
+       foreach(session()->get('cart') as $items){
+           $total += $items['price'] * $items['quantity'];
+       }
+       return view('client.check-out',compact(['vouchers','provinces','total']));
    }
    public function detail(Order $order)
    {

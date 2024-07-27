@@ -18,7 +18,7 @@
         </ol>
     </div>
     <!-- End Page Title -->
-    <section class="container-lg section" style="margin-top:50px">
+    <section class="container-lg section" style="margin-top:50px ; height: 100vh">
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -98,7 +98,7 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -146,12 +146,20 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg></a>
                                             </td>
                                         </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @empty($orderAll)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endempty
                             </div>
                             <!-- Đang chuẩn bị -->
                             <div class="tab-pane fade delivered pt-3" id="pending">
@@ -166,13 +174,13 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody> @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $pending)
                                         @if($pending->status == OrderStatus::PENDING->value)
-                                        <tr>
+                                        <tr> @php $hasOrder = $key;  @endphp
                                             <td>
                                                 {{ $key }}
                                             </td>
@@ -199,13 +207,21 @@
                                                     <span class="badge bg-secondary-subtle text-secondary text-uppercase">{{  OrderStatus::PENDING->label() }}</span>
                                             </td>
                                               <td>
-                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg></a>
                                             </td>
                                         </tr>
                                         @endif
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Chờ thanh toán  -->
@@ -221,13 +237,13 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody> @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $processing)
                                         @if($processing->status == OrderStatus::PROCESSING->value)
-                                        <tr>
+                                        <tr> @php $hasOrder = $key;  @endphp
                                             <td>
                                                 {{ $key }}
                                             </td>
@@ -254,13 +270,22 @@
                                                     <span class="badge bg-info-subtle text-info text-uppercase">{{  OrderStatus::PROCESSING->label() }}</span>
                                             </td>
                                               <td>
-                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </a>
                                             </td>
                                         </tr>
                                         @endif
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Sẵn sàng lấy hàng -->
@@ -276,13 +301,13 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody> @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $shipping)
                                         @if($shipping->status == OrderStatus::SHIPPING->value)
-                                        <tr>
+                                        <tr> @php $hasOrder = $key;  @endphp
                                             <td>
                                                 {{ $key }}
                                             </td>
@@ -309,13 +334,22 @@
                                                     <span class="badge bg-success-subtle text-success text-uppercase">{{ OrderStatus::SHIPPING->label() }}</span>
                                             </td>
                                               <td>
-                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                 <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </a>
                                             </td>
                                         </tr>
                                         @endif
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Cancelled -->
@@ -331,13 +365,13 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody> @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $shipped)
                                         @if($shipped->status == OrderStatus::SHIPPED->value)
-                                        <tr>
+                                        <tr> @php $hasOrder = $key;  @endphp
                                             <td>
                                                 {{ $key }}
                                             </td>
@@ -363,15 +397,23 @@
                                             <td>
                                                     <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::SHIPPED->label() }}</span>
                                             </td>
-                                              <td>
-                                                <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                            <td>
+                                              <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </a>
                                             </td>
-
                                         </tr>
                                         @endif
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="tab-pane fade cancelled pt-3" id="delivered">
@@ -386,13 +428,13 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody> @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $delivered)
                                         @if($delivered->status == OrderStatus::DELIVERED->value)
-                                            <tr>
+                                            <tr> @php $hasOrder = $key;  @endphp
                                                 <td>
                                                     {{ $key }}
                                                 </td>
@@ -419,7 +461,11 @@
                                                     <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::DELIVERED->label() }}</span>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                     <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </a>
                                                 </td>
 
                                             </tr>
@@ -427,6 +473,11 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="tab-pane fade cancelled pt-3" id="completed">
@@ -441,13 +492,13 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody>  @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $completed)
                                         @if($completed->status == OrderStatus::COMPLETED->value)
-                                            <tr>
+                                            <tr>  @php $hasOrder = $key;  @endphp
                                                 <td>
                                                     {{ $key }}
                                                 </td>
@@ -474,7 +525,11 @@
                                                     <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::COMPLETED->label() }}</span>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                     <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                    </a>
                                                 </td>
 
                                             </tr>
@@ -482,6 +537,11 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="tab-pane fade cancelled pt-3" id="cancelled">
@@ -496,7 +556,7 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                        <th>Chi tiết</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -529,7 +589,11 @@
                                                     <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::CANCELLED->label() }}</span>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                    <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </a>
                                                 </td>
 
                                             </tr>
@@ -537,6 +601,11 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="tab-pane fade cancelled pt-3" id="returned">
@@ -551,12 +620,14 @@
                                         <th>Tổng tiền</th>
                                         <th>Phương thức thanh toán</th>
                                         <th>Trạng thái</th>
-                                        <th></th>
+                                       <th>Chi tiết</th>
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    @php $hasOrder = false;  @endphp
                                     @foreach ($orderAll as $key => $returned)
                                         @if($returned->status == OrderStatus::RETURNED->value)
+                                            @php $hasOrder = $key;  @endphp
                                             <tr>
                                                 <td>
                                                     {{ $key }}
@@ -584,7 +655,11 @@
                                                     <span class="badge bg-danger-subtle text-danger text-uppercase">{{  OrderStatus::RETURNED->label() }}</span>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('order.detail',$order->id) }}">view</a>
+                                                     <a href="{{ route('order.detail',$order->id) }}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-indent" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H3.5A.5.5 0 0 1 3 8"/>
+                                                        <path fill-rule="evenodd" d="M12.5 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5"/>
+                                                    </svg>
+                                                </a>
                                                 </td>
 
                                             </tr>
@@ -592,6 +667,11 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @if($hasOrder == false)
+                                    <div class="mt-5">
+                                        <h5  class="text-center">Không có đơn hàng nào</h5>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <!-- End Bordered Tabs -->
@@ -609,12 +689,19 @@
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!--Delete js-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
+
+    <!--ShowMessage js-->
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
 
     <script>
         $(document).ready(function() {

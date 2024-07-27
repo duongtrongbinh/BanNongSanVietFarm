@@ -80,9 +80,15 @@ $(document).ready(function() {
             }),
             success: function (response) {
                 var total_after = $("#total_cart").data('total');
-                var total_befor = total_after + response.data.total;
-
-                $("#service_fee").html(number_format(response.data.total));
+                var total_befor = 0;
+                console.log(total_after + response.total)
+                if(response.message === 'Success'){
+                     total_befor = total_after + response.data.total;
+                     $("#service_fee").html(number_format(response.data.total));
+                }else{
+                     total_befor = total_after + response.total;
+                     $("#service_fee").html(number_format(response.total));
+                };
                 $("#total_cart").html(number_format(total_befor, 2, '.', ','));
             },
             error: function (xhr, status, error) {

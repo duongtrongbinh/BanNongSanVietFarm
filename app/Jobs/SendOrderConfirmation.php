@@ -17,14 +17,12 @@ class SendOrderConfirmation implements ShouldQueue
 
     protected $data;
 
-    protected $products;
     /**
      * Create a new job instance.
      */
-    public function __construct($data,$products)
+    public function __construct($data)
     {
         $this->data = $data;
-        $this->products = $products;
     }
 
     /**
@@ -32,6 +30,6 @@ class SendOrderConfirmation implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->data['email'])->send(new OrderConfirmation($this->data,$this->products));
+        Mail::to($this->data['email'])->send(new OrderConfirmation($this->data));
     }
 }

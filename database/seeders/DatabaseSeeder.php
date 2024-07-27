@@ -56,6 +56,12 @@ class DatabaseSeeder extends Seeder
         // ];
         // DB::table('users')->insert($users);
 
+
+        /**
+         * Bước 2: Chạy phân quyền sau khi tao users.
+          Lệnh : php artisan db:seed --class=PermissionSeeder
+         */
+
         // $this->call(BrandSeeder::class);
         // $this->call(CategorySeeder::class);
         // $this->call(TagSeeder::class);

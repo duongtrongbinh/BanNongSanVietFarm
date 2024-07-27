@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Province;
+use App\Models\Permission;
+use App\Models\Provinces;
+use App\Models\Role;
 use App\Models\Ward;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -24,8 +26,8 @@ class UserController extends Controller
 
     public function index()
     {
-        $data['user'] = User::query()->orderByDesc('id')->paginate(10);
-        return view('admin.user.index', $data);
+        $user = User::query()->orderByDesc('id')->paginate(10);
+        return view('admin.user.index',compact(['user']));
     }
 
     /**
@@ -44,7 +46,9 @@ class UserController extends Controller
             $provinces = null;
             dd('error system');
         }
-        return view('admin.user.create', compact('provinces'));
+
+        $roles = Role::query()->get();
+        return view('admin.user.create', compact('provinces','roles'));
     }
 
     /**
@@ -56,6 +60,10 @@ class UserController extends Controller
         $data['avatar'] = $request->input('avatar');
         $data['password'] = Hash::make($request->input('password'));
         $user = User::create($data);
+        if ($request->has('roles')){
+            $roles = array_map('intval',$request->roles);
+            $user->syncRoles($roles);
+        }
         return redirect()->route('user.index')->with('created', 'Thêm khách hàng thành công!');
     }
 

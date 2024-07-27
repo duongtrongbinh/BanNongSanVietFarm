@@ -24,6 +24,7 @@ class Order extends Model
         'address',
         'payment_method',
         'payment_status',
+        'payment_status',
         'before_total_amount',
         'shipping',
         'after_total_amount',
@@ -76,7 +77,7 @@ class Order extends Model
             }
         });
     }
-  
+
     public function order_histories()
     {
         return $this->hasMany(OrderHistory::class, 'order_id', 'id');

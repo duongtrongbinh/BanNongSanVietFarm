@@ -6,11 +6,12 @@
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
+                <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
+                 @csrf
+                    <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Thêm Mới Thành Viên</h5>
-                        <form action="{{ route('user.store') }}" method="post" enctype="multipart/form-data">
-                            @csrf
+
                             <div class="row mb-3">
                                 <!-- Name Field -->
                                 <div class="col-md-6">
@@ -143,6 +144,36 @@
                                     </div>
                                 </div>
                             </div>
+                           <div class="card">
+                            <div class="card-header align-items-center d-flex">
+                                <h4 class="card-title mb-0 flex-grow-1">Vai Trò:</h4>
+                                <div class="flex-shrink-0">
+
+                                </div>
+                            </div><!-- end card header -->
+                            <div class="card-body">
+                                <p class="text-muted">Danh vai trò:</p>
+                                @error('roles')
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                                <div class="live-preview">
+                                    <div class="row">
+                                        @foreach($roles as $key => $item)
+                                            <div class="col-md-4">
+                                                <div class="form-check mb-3">
+                                                    <input class="form-check-input permission-checkbox" type="checkbox" id="gridCheck1" name="roles[]" value="{{ $item->id }}" {{ $item->checked ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="gridCheck1">{{ \App\Enums\Roles::from($item->id)->label() }}</label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
                             <div class="row mb-3">
                                 <!-- Submit and Cancel Buttons -->
                                 <div class="col-md-12 text-end">
@@ -150,9 +181,11 @@
                                     <button type="submit" class="btn btn-primary">Submit Form</button>
                                 </div>
                             </div>
-                        </form>
+
                     </div>
                 </div>
+
+                </form>
             </div>
         </div>
     </section>
@@ -165,6 +198,14 @@
     <script src="/path-to-your-tinymce/tinymce.min.js"></script>
     <script src="{{ asset('admin/assets/vendor/select2/index.min.js')}}"></script>
     <script>
+        document.getElementById('checked-all').addEventListener('click', function() {
+            const isChecked = this.checked;
+            const checkboxes = document.querySelectorAll('.permission-checkbox');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        });
+
         $(document).ready(function () {
             // Select2 Multiple
             $('.select2-multiple').select2({

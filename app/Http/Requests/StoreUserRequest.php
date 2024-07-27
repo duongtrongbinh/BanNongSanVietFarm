@@ -29,6 +29,7 @@ class StoreUserRequest extends FormRequest
             'address' => 'required',
             'avatar' => 'required|max:2048',
             'user_code'=> 'required|unique:users,user_code',
+//            'roles' => ['required', 'array', 'min:0'],
         ];
     }
 

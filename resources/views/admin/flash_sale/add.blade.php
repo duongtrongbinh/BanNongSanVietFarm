@@ -13,8 +13,6 @@
             <h5 class="card-title">Create Flash Sale</h5>
             <div class="d-flex justify-content-end mt-2 mb-2">
             </div>
-
-
             @error('success')
             <div class="alert alert-success" role="alert">
                 {{ $message }}
