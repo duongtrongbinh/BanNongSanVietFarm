@@ -190,13 +190,7 @@ class OrderController extends Controller
 
         // Transition from 1 to 2 requires checking order_histories for statuses 0 to 4
         if ($currentStatus === OrderStatus::PROCESSING->value && $newStatus === OrderStatus::SHIPPING->value) {
-            $validStatuses = [
-                TransferStatus::READY_TO_PICK->value,
-                TransferStatus::NEW_ORDER->value,
-                TransferStatus::PICKING->value,
-                TransferStatus::MONEY_COLLECT_PICKING->value,
-                TransferStatus::PICKED->value,
-            ];
+            $validStatuses = range(TransferStatus::READY_TO_PICK->value, TransferStatus::STORING->value);
 
             $historyCount = TransferHistory::where('order_id', $order->id)
                 ->whereIn('status', $validStatuses)
@@ -242,7 +236,7 @@ class OrderController extends Controller
         // Transition from 4 to 5 requires checking order_histories for statuses 0 to 10 and not having statuses 11 or higher
         if ($currentStatus === OrderStatus::DELIVERED->value && $newStatus === OrderStatus::COMPLETED->value) {
             $validStatuses = range(TransferStatus::READY_TO_PICK->value, TransferStatus::DELIVERED->value);
-            $invalidStatuses = range(TransferStatus::DELIVERY_FAIL->value, TransferStatus::CANCEL->value);
+            $invalidStatuses = range(TransferStatus::WAITING_TO_RETURN->value, TransferStatus::CANCEL->value);
 
             $validCount = TransferHistory::where('order_id', $order->id)
                 ->whereIn('status', $validStatuses)
@@ -267,14 +261,8 @@ class OrderController extends Controller
         $order = Order::with(['user', 'order_details.product.category', 'order_details.product.brand'])->find($order->id);
 
         $statuses = $order->transfer_histories->pluck('status')->toArray();
-        $searchResult = array_search(TransferStatus::DELIVERED->value, $statuses);
 
-        if ($order->payment_method == 1 && $searchResult !== false) {
-            $statusData = [
-                'label' => 'Thanh toán thành công',
-                'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
-            ];
-        } else if ($order->payment_method == 0) {
+        if ($order->payment_status == 1) {
             $statusData = [
                 'label' => 'Thanh toán thành công',
                 'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
@@ -290,16 +278,20 @@ class OrderController extends Controller
             $transferStatusRange = [];
             $showTransferHistory = false;
             switch ($orderHistory->status) {
-                case 1:
+                case OrderStatus::PROCESSING->value:
                     $transferStatusRange = range(0, 4);
                     $showTransferHistory = true;
                     break;
-                case 2:
+                case OrderStatus::SHIPPING->value:
                     $transferStatusRange = range(5, 8);
                     $showTransferHistory = true;
                     break;
-                case 3:
-                    $transferStatusRange = range(9, 10);
+                case OrderStatus::SHIPPED->value:
+                    $transferStatusRange = [9, 10, 11];
+                    $showTransferHistory = true;
+                    break;
+                case OrderStatus::RETURNED->value:
+                    $transferStatusRange = [12, 13, 14, 15, 16, 17, 18];
                     $showTransferHistory = true;
                     break;
                 default:
@@ -309,9 +301,9 @@ class OrderController extends Controller
     
             $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
                 return in_array($transferHistory->status, $transferStatusRange);
-            });
+            })->sortByDesc('created_at');
 
-            $formattedOrderHistory = Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y');
+            $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
             
             return [
                 'orderHistory' => $orderHistory,
@@ -319,6 +311,8 @@ class OrderController extends Controller
                 'formattedOrderHistory' => $formattedOrderHistory,
                 'showTransferHistory' => $showTransferHistory
             ];
+        })->sortByDesc(function($history) {
+            return $history['orderHistory']->created_at;
         });
          
         return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers'));

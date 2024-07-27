@@ -52,14 +52,14 @@
           <div class="tab-content mt-2">
             <div class="tab-pane fade show active product" id="product">
               <div class="row form-group">
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="name">Tên sản phẩm</label>
                   <input type="text" class="form-control" name="name" id="name" value="{{ $product->name}}">
                   @error('name')
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="brand_id">Thương hiệu</label>
                   <select class="form-select" name="brand_id" id="brand_id" aria-label="Default select example">
                     <option value="" {{ is_null($product->brand_id) ? 'selected' : '' }}>Mở menu chọn này</option>
@@ -73,7 +73,7 @@
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="category_id">Danh mục</label>
                   <select class="form-select" name="category_id" id="category_id" aria-label="Default select example">
                     <option value="" {{ is_null($product->category_id) ? 'selected' : '' }}>Mở menu chọn này</option>
@@ -87,14 +87,56 @@
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-3 mt-2">
+                <div class="col-4 mt-2 mb-3">
                   <label for="name">Số lượng</label>
                   <input type="text" class="form-control" name="quantity" value="{{ $product->quantity}}">
                   @error('quantity')
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-4 mt-2 mb-3">
+                  <label for="name">Giá gốc</label>
+                  <input type="number" class="form-control" name="price_regular" value="{{ intval($product->price_regular) }}">
+                  @error('price_regular')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-4 mt-2 mb-3">
+                  <label for="name">Giá giảm</label>
+                  <input type="number" class="form-control" name="price_sale" value="{{ intval($product->price_sale) }}">
+                  @error('price_sale')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="name">Chiều dài (Cm)</label>
+                  <input type="text" class="form-control" name="length" value="{{ $product->length }}">
+                  @error('length')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="name">Chiều rộng (Cm)</label>
+                  <input type="text" class="form-control" name="width" value="{{ $product->width }}">
+                  @error('width')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="name">Chiều cao (Cm)</label>
+                  <input type="text" class="form-control" name="height" value="{{ $product->height }}">
+                  @error('height')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-3 mt-2 mb-3">
+                  <label for="name">Trọng lượng (Gram)</label>
+                  <input type="text" class="form-control" name="weight" value="{{ $product->weight }}">
+                  @error('weight')
+                    <div style="color: red">{{ $message }}</div>
+                  @enderror
+                </div>
+                <div class="col-6 mt-2 mb-3">
                   <label for="name">Ảnh</label>
                   <div class="input-group">
                     <span class="input-group-btn">
@@ -116,7 +158,7 @@
                   </div>
                   <div id="holder" style="margin-top:15px;"></div>
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-6 mt-2 mb-3">
                   <label for="select2Multiple">Nhãn</label>
                   <select class="form-control" name="tags[]" multiple="multiple" id="select2Multiple">
                     @foreach ($tags as $tag)
@@ -149,63 +191,14 @@
                     <div style="color: red">{{ $message[0] }}</div>
                   @endforeach
                 </div>
-                <div class="col-4 mt-2">
-                  <label for="name">Giá gốc</label>
-                  <input type="number" class="form-control" name="price_regular" value="{{ intval($product->price_regular) }}">
-                  @error('price_regular')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-4 mt-2">
-                  <label for="name">Giá giảm</label>
-                  <input type="number" class="form-control" name="price_sale" value="{{ intval($product->price_sale) }}">
-                  @error('price_sale')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-4 mt-2">
-                  <label for="name">Loại trừ</label>
-                  <input type="text" class="form-control" name="excerpt" value="{{ $product->excerpt }}">
-                  @error('except')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="name">Chiều dài (Cm)</label>
-                  <input type="text" class="form-control" name="length" value="{{ $product->length }}">
-                  @error('length')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="name">Chiều rộng (Cm)</label>
-                  <input type="text" class="form-control" name="width" value="{{ $product->width }}">
-                  @error('width')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="name">Chiều cao (Cm)</label>
-                  <input type="text" class="form-control" name="height" value="{{ $product->height }}">
-                  @error('height')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-3 mt-2">
-                  <label for="name">Trọng lượng (Gram)</label>
-                  <input type="text" class="form-control" name="weight" value="{{ $product->weight }}">
-                  @error('weight')
-                    <div style="color: red">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-12 mt-2">
+                <div class="col-12 mt-2 mb-3">
                   <label for="name">Mô tả</label>
                   <textarea class="form-control" name="description">{{ $product->description }}</textarea>
                   @error('description')
                     <div style="color: red">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-12 mt-2">
+                <div class="col-12 mt-2 mb-3">
                   <label for="name">Nội dung</label>
                   <textarea class="form-control my-editor-tinymce4" name="content">{{ $product->content }}</textarea>
                   @error('content')
