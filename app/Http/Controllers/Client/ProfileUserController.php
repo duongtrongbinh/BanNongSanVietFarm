@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\UpdateBannerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use App\Models\District;
-use App\Models\Ward;
+use App\Http\Requests\UpdateProfileRequest;
 
 class ProfileUserController extends Controller
 {
@@ -32,7 +33,7 @@ class ProfileUserController extends Controller
         return view('client.profile.index', compact('provinces'));
     }
 
-    public function update(Request $request)
+    public function update(UpdateBannerRequest $request)
     {
         $user = Auth::user();
         $data = $request->except('avatar');
@@ -49,23 +50,12 @@ class ProfileUserController extends Controller
 
     public function showChangePasswordForm()
     {
-        return view('client.profile.change-password');
+        $user = Auth::user();
+        return view('client.profile.change-password',compact('user'));
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
-        $user = Auth::user();
-        if ($user->social_id) {
-            return redirect()->back()->with('error', 'Bạn không thể đổi mật khẩu khi đăng nhập bằng Google.');
-        }
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
-        if (!Hash::check($request->current_password, Auth::user()->password)) {
-            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
-        }
-
         Auth::user()->update(['password' => Hash::make($request->new_password)]);
 
         return redirect()->back()->with('update', 'Đổi mật khẩu thành công.');

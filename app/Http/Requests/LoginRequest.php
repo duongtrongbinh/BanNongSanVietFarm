@@ -26,12 +26,18 @@ class LoginRequest extends FormRequest
             'password' => 'required',
         ];
     }
+
+    /**
+     * Get the custom validation messages.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
-          'email.required'  => 'email không được để chống!',
-          'email.email'     => 'email không đúng định dạng',
-          'password.required' => 'password không được để chống!',
+            'email.required' => 'Email của bạn  không được để trống!',
+            'email.email' => 'Email của bạn không đúng định dạng.',
+            'password.required' => 'Password của bạn không được để trống!',
         ];
     }
 }

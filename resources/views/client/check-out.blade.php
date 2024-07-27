@@ -38,7 +38,6 @@
 
                         <div class="row">
                           <div class="col-xl-4">
-
                               <div class="form-item">
                                   <label class="form-label my-3">City<sup>*</sup></label>
                                  <select class="form-control" id="province" name="province" style="background-color: aliceblue" data-url="{{ route('districts.address') }}">
@@ -153,7 +152,7 @@
                             </div>
                         </div>
 
-                       
+
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">

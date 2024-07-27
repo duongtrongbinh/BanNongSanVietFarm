@@ -11,7 +11,7 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return true; // Đảm bảo bạn đã thêm logic phân quyền phù hợp ở đây nếu cần
     }
 
     /**
@@ -21,18 +21,30 @@ class UpdatePostRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Lấy ID bài viết từ tham số route
+        $postId = $this->route('id');
+
         return [
-            'title'=> 'required',
-            'description'=> 'required',
-            'content'=> 'required',
+            'title' => 'required',
+            'description' => 'required',
+            'content' => 'required',
+            'image' => 'nullable|image|max:2048',
         ];
     }
-    public function messages()
+
+    /**
+     * Get custom error messages for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
         return [
-            'title.required'=> 'Title không được để chống',
-            'description'  => 'Description không được để chống',
-            'content'      => 'Content không được để chống',
+            'title.required' => 'Tiêu đề không được để trống.',
+            'description.required' => 'Miêu tả không được để trống.',
+            'content.required' => 'Nội dung không được để trống.',
+            'image.image' => 'Hình ảnh không hợp lệ.',
+            'image.max' => 'Hình ảnh không được lớn hơn 2MB.',
         ];
     }
 }

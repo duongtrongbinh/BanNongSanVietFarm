@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -23,16 +22,17 @@ return new class extends Migration
             $table->string('user_code', 255)->nullable();
             $table->tinyInteger('type_social')->default(0)->comment('0: Unsocial, 1: Google');
             $table->boolean('active')->default(0);
+            $table->tinyInteger('is_spam')->default(0)->comment('0: không bị spam, 1: bị spam');
             $table->boolean('status')->default(false);
             $table->string('token', 50)->nullable();
             $table->string('address', 255)->nullable();
-$table->unsignedBigInteger('province_id')->nullable();
+            $table->unsignedBigInteger('province_id')->nullable();
             $table->unsignedBigInteger('district_id')->nullable();
             $table->unsignedBigInteger('ward_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-$table->foreign('province_id')
+            $table->foreign('province_id')
                 ->references('ProvinceID')
                 ->on('provinces')
                 ->cascadeOnDelete();

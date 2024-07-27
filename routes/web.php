@@ -15,6 +15,7 @@ use App\Http\Controllers\Client\ShopController;
 use App\Http\Services\GHNService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
+use App\Http\Controllers\client\FaceBookLoginController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\OrderController;
 use \App\Http\Controllers\Admin\FlashSaleController;
@@ -24,13 +25,13 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\ProfileUserController;
-
 use App\Http\Controllers\Client\ProfileUserController as ProfileUserClientController;
 use App\Http\Controllers\Client\PostController as PostClientController;
-
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Client\ForgotPasswordController;
 use App\Http\Controllers\Client\CommentClientController;
+use App\Http\Controllers\client\ContactController;
+use App\Http\Controllers\client\PolicyController;
 
 
 /*
@@ -62,8 +63,14 @@ Route::group(['prefix' => 'admin'], function () {
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
     /* Route Login Admin */
-    Route::get('login', [AuthController::class, 'index'])->name('login');
-    Route::post('login', [AuthController::class, 'store'])->name('admin.login');
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [AuthController::class, 'index'])->name('admin.login.form');
+        Route::post('login', [AuthController::class, 'store'])->name('admin.login');
+    });
+    /* Route Logout */
+    Route::middleware('auth')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
+    });
 
     /* Profile */
     Route::put('/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
@@ -166,18 +173,16 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 /* Route Client */
+
 /* Route Home */
 Route::group(['prefix' => ''], function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
         Route::get('/san-pham/{slug}', 'product')->name('product');
         Route::get('/danh-muc/{slug}', 'category')->name('category');
-
     });
-
     /* Route Rating */
     Route::post('/rating', [CommentClientController::class, 'rating'])->name('rating');
-
     /* Route Shop */
     Route::controller(ShopController::class)->group(function () {
         Route::get('/cua-hang', 'shop')->name('shop');
@@ -231,6 +236,16 @@ Route::group(['prefix' => ''], function () {
     Route::controller(GoogleLoginController::class)->group(function () {
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
         Route::get('/auth/google/callback', 'handleGoogleCallback');
+    });
+    Route::controller(FaceBookLoginController::class)->group(function () {
+        Route::get('/auth/facebook', 'redirectToFacebook')->name('auth.facebook');
+        Route::get('/auth/facebook/callback', 'handleFacebookCallback');
+    });
+    Route::controller(ContactController::class)->group(function () {
+        Route::get('lien-he', 'index')->name('contact.index');
+    });
+    Route::controller(PolicyController::class)->group(function () {
+        Route::get('chinh-sach', 'index')->name('policy.index');
     });
 });
 

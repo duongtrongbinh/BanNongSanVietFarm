@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreBannerRequest;
+use App\Http\Requests\UpdateBannerRequest;
 
 class BannerController extends Controller
 {
@@ -20,21 +22,20 @@ class BannerController extends Controller
         return view('admin.banner.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreBannerRequest $request)
     {
         $data = $request->except('image');
         $data['image'] = $request->input('image');
         $banner = Banner::create($data);
         return redirect()->route('banners.index')->with('created', 'bạn đã thêm thành công !');
     }
-
     public function edit($id)
     {
         $banner = Banner::findOrFail($id);
         return view('admin.banner.edit', compact('banner'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateBannerRequest $request, $id)
     {
         $banner = Banner::findOrFail($id);
         $data = $request->except('image');
