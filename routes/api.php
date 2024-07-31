@@ -30,5 +30,3 @@ Route::post('nongsanvietfam/delivery-status', [App\Http\Services\GHNService::cla
 Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('provinces.address');
 Route::get('/districts/{provinceId}', [AddressController::class, 'getDistricts'])->name('districts.address');
 Route::get('/wards/{districtId}', [AddressController::class, 'getWards'])->name('wards.address');
-
-
