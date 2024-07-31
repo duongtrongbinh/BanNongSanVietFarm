@@ -90,15 +90,22 @@
                                                         </a>
                                                     </li>
                                                     <li class="list-inline-item" data-bs-toggle="tooltip"
-                                                        data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                                        data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
                                                         <a data-url="{{ route('user.destroy', $row->id) }}"
                                                            class="btn btn-danger btn-sm deletepost">
                                                             <i class="ri-delete-bin-5-fill fs-16"></i>
                                                         </a>
                                                     </li>
+                                                    <li class="list-inline-item" >
+                                                    <a href="{{ route('roles.create', $row) }}"
+                                                           class="btn btn-success btn-sm" title="Vai trò">
+                                                            <i class="bi bi-person fs-16"></i>
+                                                    </a>
+                                                    </li>
                                                 </ul>
                                             </td>
                                         </tr>
+                                        <!-- Default Modals -->
                                     @endforeach
                                     </tbody>
                                 </table>

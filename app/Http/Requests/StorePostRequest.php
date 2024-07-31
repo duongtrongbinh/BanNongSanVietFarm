@@ -25,14 +25,16 @@ class StorePostRequest extends FormRequest
             'title'=> 'required',
             'description'=> 'required',
             'content'=> 'required',
+            'image' => 'required|nullable'
         ];
     }
     public function messages()
     {
         return [
-            'title.required'=> 'Title không được để chống',
-            'description'  => 'Description không được để chống',
-            'content'      => 'Content không được để chống',
+            'title.required'=> 'Tiêu không được để chống',
+            'description.required'  => 'Miêu tả không được để chống',
+            'content.required'      => 'Nôi dung không được để chống',
+            'image.required' => 'Hình ảnh không được để chống! ',
         ];
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('voucher_id')->constrained()->onDelete('cascade');
+            $table->foreignId('voucher_id')->constrained()->onDelete('cascade')->nullable();
             $table->string('address');
             $table->string('name');
             $table->string('phone');
@@ -31,6 +31,7 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
         });
     }
 

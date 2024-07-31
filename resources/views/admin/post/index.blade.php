@@ -11,6 +11,10 @@
 @endsection
 
 @section('content')
+    @php
+        $created = session('created');
+        $update = session('update');
+    @endphp
     <div class="pagetitle">
         <h1>Danh sách bài viết</h1>
         <nav>
@@ -37,7 +41,6 @@
                                         <th data-ordering="false">ID</th>
                                         <th>Tiêu đề</th>
                                         <th>Hình ảnh</th>
-                                        <th>Miêu tả</th>
                                         <th>Tổng số sao</th>
                                         <th>Tổng đánh giá</th>
                                         <th>Chỉnh sửa</th>
@@ -55,7 +58,6 @@
                                                     <span class="text-muted">Không có ảnh</span>
                                                 @endif
                                             </td>
-                                            <td scope="row">{{ $row->description }}</td>
                                             <td>
                                                 @php
                                                     $totalRatting = 0;
@@ -151,6 +153,8 @@
     <!--Delete js-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
     <script>
         $(document).ready(function () {
             $('#table1').DataTable();
@@ -159,6 +163,20 @@
             $('#table4').DataTable();
         });
         new DataTable("#example");
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+            let createdStatus = @json($created);
+            let updatedStatus = @json($update);
+            let status = createdStatus || updatedStatus;
+            let title = createdStatus ? 'Thêm mới' : 'Cập nhật';
+            let message = status;
+            let icon = 'success';
 
+            if (status) {
+                showMessage(title, message, icon);
+            }
+        });
     </script>
 @endsection

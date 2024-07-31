@@ -19,20 +19,18 @@
         </ol>
     </div>
     <!-- End Page Title -->
-    <section class="section container-lg mt-5">
-        <div class="row">
+    <section class="section container-lg" style="height: 100vh">
+        <div class="row mt-5">
             <div class="col-9">
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <h5 class="card-title flex-grow-1 mb-0">Đơn hàng #{{ $order->order_code }}</h5>
-                            <div class="flex-shrink-0">
-                                <a href="apps-invoices-details.html" class="btn btn-success btn-sm"><i class="ri-download-2-fill align-middle me-1"></i> Invoice</a>
-                            </div>
+
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive table-card table-container" table-container>
+                        <div class="table-responsive table-card table-container">
                             <table class="table table-nowrap align-middle table-borderless mb-0 table-container">
                                 <thead class="table-light text-muted">
                                 <tr>
@@ -146,70 +144,6 @@
                                     @endforeach
                                 @endforeach
 
-                                {{-- <div class="accordion-item border-0">
-                                    <div class="accordion-header" id="headingTwo">
-                                        <a class="p-2 shadow-none">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-xs">
-                                                    <div class="avatar-title bg-success rounded-circle">
-                                                        <i class="bi bi-gift"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="fs-15 mb-1 fw-semibold">Packed - <span class="fw-normal">Thu, 16 Dec 2021</span></h6>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="accordion-item border-0">
-                                    <div class="accordion-header" id="headingThree">
-                                        <a class="p-2 shadow-none">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-xs">
-                                                    <div class="avatar-title bg-success rounded-circle">
-                                                        <i class="bi bi-truck"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="fs-15 mb-1 fw-semibold">Shipping - <span class="fw-normal">Thu, 16 Dec 2021</span></h6>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="accordion-item border-0">
-                                    <div class="accordion-header" id="headingFour">
-                                        <a class="p-2 shadow-none">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-xs">
-                                                    <div class="avatar-title bg-light text-success rounded-circle">
-                                                        <i class="ri-takeaway-fill"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="fs-14 mb-0 fw-semibold">Out For Delivery</h6>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="accordion-item border-0">
-                                    <div class="accordion-header" id="headingFive">
-                                        <a class="p-2 shadow-none">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-xs">
-                                                    <div class="avatar-title bg-light text-success rounded-circle">
-                                                        <i class="bi bi-box-seam-fill"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="fs-14 mb-0 fw-semibold">Delivered</h6>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div> --}}
                             </div>
                             <!--end accordion-->
                         </div>
@@ -223,9 +157,6 @@
                     <div class="card-header">
                         <div class="d-flex">
                             <h5 class="card-title flex-grow-1 mb-0">Thông tin khách hàng</h5>
-                            <div class="flex-shrink-0">
-                                <a href="" class="link-secondary">Xem hồ sơ</a>
-                            </div>
                         </div>
                     </div>
                     <div class="card-body pt-3">
@@ -235,14 +166,21 @@
                                     <div class="flex-shrink-0">
                                         <img src="{{ $order->user->avatar }}" alt="" class="avatar-sm rounded" width="100px">
                                     </div>
-                                    <div class="flex-grow-1 ms-3">
+                                    <div class="flex-grow-1 ms-3 ml-3">
                                         <h6 class="fs-14 mb-1">{{ $order->user->name }}</h6>
                                         <p class="text-muted mb-0">Khách hàng</p>
                                     </div>
                                 </div>
                             </li>
-                            <li><i class="ri-mail-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->email }}</li>
-                            <li><i class="ri-phone-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->phone }}</li>
+                            <div class="mt-2">
+                                <li>
+                                   Email: <i class="ri-mail-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->email }}
+                                </li>
+
+                                <li>
+                                   Số điện thoại:  <i class="ri-phone-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->phone }}
+                                </li>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -253,7 +191,7 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled vstack gap-2 fs-13 mb-0">
-                            <li>{{ $order->address}},{{ $order->ward}},{{ $order->district}},{{ $order->province }}</li>
+                            <li>{{ $order->address}}</li>
                         </ul>
                     </div>
                 </div>

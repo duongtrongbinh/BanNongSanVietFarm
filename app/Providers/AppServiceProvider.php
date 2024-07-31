@@ -26,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
-
         Validator::extend('requiredexists', function ($attribute, $value, $parameters, $validator) {
             $model = array_shift($parameters);
             $column = array_shift($parameters) ?: 'id';

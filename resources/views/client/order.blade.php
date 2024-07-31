@@ -119,7 +119,7 @@
         </ol>
     </div>
     <!-- End Page Title -->
-    <section class="container-lg section" style="margin-top:50px">
+    <section class="container-lg section" style="margin-top:50px ; height: 100vh">
         <div class="row">
             <div class="col">
                 <div class="card">

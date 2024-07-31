@@ -1,4 +1,4 @@
-<style>
+  <style>
     .shadow {
         top: 0 !important;
     }
@@ -33,8 +33,8 @@
                         hàng</b></a>
                     <a href="{{ route('postclient.index') }}"
                        class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif"><b>Bài viết</b></a>
-                    <a href="#" class="nav-item nav-link"><b>Liên hệ</b></a>
-                    <a href="#" class="nav-item nav-link"><b>Chính sách</b></a>
+                   <a href="{{route('contact.index')}}" class="nav-item nav-link @if(request()->is('*lien-he*')) active @endif"><b>Liên hệ</b></a>
+                    <a href="{{route('policy.index')}}" class="nav-item nav-link @if(request()->is('*chinh-sach*')) active @endif"><b>Chính sách</b></a>
                 </div>
                 <div class="d-flex align-items-center m-3 me-0">
                     <div class="position-relative mx-auto">
