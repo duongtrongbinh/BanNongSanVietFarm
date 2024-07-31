@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Jobs\UpdateOrderStatusJob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,6 +38,10 @@ class TransferHistory extends Model
             if (in_array($order->status, [OrderStatus::CANCELLED->value])) {
                 throw new \Exception('Không thể thêm trạng thái khi đơn hàng đã bị hủy.');
             }
+        });
+
+        static::created(function ($transferHistory) {
+            UpdateOrderStatusJob::dispatch($transferHistory);
         });
     }
 }

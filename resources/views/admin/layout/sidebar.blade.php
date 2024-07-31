@@ -22,7 +22,6 @@
                     @foreach ($item['subtitle'] as $value)
                         <li>
                             <a href="{{ route($value['route']) }}" class="{{ str_contains(url()->current(), $value['name']) ? 'active' : '' }}">
-                                
                                 <i class="{{ $value['icon'] }}" style="font-size: 15px; "></i>
                                 <span>{{ $value['title'] }}</span>
                             </a>
