@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\NotificationSystem;
+use App\Events\SystemNotificationEvent;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
 use App\Http\Services\GHNService;
+use App\Jobs\SendOrderConfirmation;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\client\FaceBookLoginController;
@@ -37,6 +40,10 @@ use \App\Http\Controllers\Admin\PermissionController;
 use \App\Http\Controllers\Admin\RoleController;
 use \App\Enums\Roles;
 
+use \App\Http\Controllers\Admin\SystemNotificationController;
+
+use App\Notifications\SystemNotification;
+use \Illuminate\Support\Facades\Notification;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,13 +56,14 @@ use \App\Enums\Roles;
 */
 
 /* Route Admin */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['admin.auth'])->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         /* Route Dashboard */
         Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
-        // Quản hệ thống
+        Route::post('notifications',[SystemNotificationController::class,'destroy'])->name('notifications.destroy');
+        // quản hệ thống
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
             /* Route User */
             Route::get('/users', [UserController::class, 'index'])->name('user.index');
@@ -82,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
         Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
 
-        // Quản lý sản phâm
+        // quản lý sản phâm
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::PRODUCT_MANAGE->name]], function () {
             /* Route Brand */
             Route::resource('brands', BrandController::class);
@@ -113,11 +121,12 @@ Route::middleware(['auth'])->group(function () {
 
             /* Route Voucher */
             Route::resource('vouchers', VoucherController::class);
+
             Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
                 ->name('vouchers.deleted');
             Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
                 ->name('restore.vouchers');
-                
+
             /* Route Flash Sale */
             Route::resource('flash-sales', FlashSaleController::class);
 
@@ -223,6 +232,7 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+
 /* Route Client */
 Route::group(['prefix' => ''], function () {
     /* Route Home */
@@ -241,7 +251,7 @@ Route::group(['prefix' => ''], function () {
     /* Route Post */
     Route::resource('bai-viet', PostClientController::class)->names('postclient');
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
-    
+
     /* Route Cart */
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'index')->name('cart.index');
@@ -304,3 +314,20 @@ Route::group(['prefix' => ''], function () {
     Route::get('404', function () {
         return view('client.layouts.404');
     })->name('404');
+
+Route::get('/notify', function () {
+
+    $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
+
+    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+
+//
+
+//
+//    Notification::send(Roles::admins(),new SystemNotification($order));
+//
+//    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
+//
+//    dd('done');
+
+})->name('404');

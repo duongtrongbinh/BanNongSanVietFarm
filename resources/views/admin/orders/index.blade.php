@@ -67,49 +67,49 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">
-                                <i class="ri-more-fill me-1 align-bottom"></i> 
+                                <i class="ri-more-fill me-1 align-bottom"></i>
                                 Đang chờ xử lý
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#processing">
-                                <i class="ri-loader-2-fill me-1 align-bottom"></i> 
+                                <i class="ri-loader-2-fill me-1 align-bottom"></i>
                                 Đang xử lý
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping">
-                                <i class="ri-truck-fill me-1 align-bottom"></i> 
+                                <i class="ri-truck-fill me-1 align-bottom"></i>
                                 Vận chuyển
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipped">
-                                <i class="ri-takeaway-fill me-1 align-bottom"></i> 
+                                <i class="ri-takeaway-fill me-1 align-bottom"></i>
                                 Giao hàng
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
-                                <i class="ri-user-received-fill me-1 align-bottom"></i> 
+                                <i class="ri-user-received-fill me-1 align-bottom"></i>
                                 Đã nhận hàng
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed">
-                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i> 
+                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i>
                                 Hoàn thành
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
-                                <i class="ri-close-circle-fill me-1 align-bottom"></i> 
+                                <i class="ri-close-circle-fill me-1 align-bottom"></i>
                                 Đã hủy
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returned">
-                                <i class="ri-reply-fill me-1 align-bottom"></i> 
+                                <i class="ri-reply-fill me-1 align-bottom"></i>
                                 Trả hàng/Hoàn tiền
                             </button>
                         </li>
@@ -119,7 +119,7 @@
                         <div class="tab-content pt-2">
                             <!-- All Orders -->
                             <div class="tab-pane fade pt-3 show active all-orders" id="all-orders">
-                                <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%" 
+                                <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                         data-url="{{ route('orders.all') }}">
                                     <thead>
                                         <tr>
@@ -360,7 +360,7 @@
         $(document).ready(function() {
             var order_ids = [];
             var selectedIds = {};
-            
+
             function initializeDataTable(tableId) {
                 var table = $('#' + tableId).DataTable({
                     responsive: true,
@@ -397,15 +397,15 @@
                         $('#' + tableId + ' th:eq(0)').removeClass('sorting_asc');
                     },
                     columnDefs: [
-                        { responsivePriority: 1, targets: 0 }, 
-                        { responsivePriority: 2, targets: 1 },  
-                        { responsivePriority: 3, targets: 2 },  
-                        { responsivePriority: 100, targets: 3 }, 
-                        { responsivePriority: 100, targets: 4 }, 
-                        { responsivePriority: 7, targets: 5 },  
-                        { responsivePriority: 6, targets: 6 }, 
-                        { responsivePriority: 100, targets: 7 }, 
-                        { responsivePriority: 5, targets: 8 }, 
+                        { responsivePriority: 1, targets: 0 },
+                        { responsivePriority: 2, targets: 1 },
+                        { responsivePriority: 3, targets: 2 },
+                        { responsivePriority: 100, targets: 3 },
+                        { responsivePriority: 100, targets: 4 },
+                        { responsivePriority: 7, targets: 5 },
+                        { responsivePriority: 6, targets: 6 },
+                        { responsivePriority: 100, targets: 7 },
+                        { responsivePriority: 5, targets: 8 },
                         { responsivePriority: 4, targets: 9 },
                     ]
                 });
@@ -452,8 +452,8 @@
                     }
 
                     if (isChecked && selectedIds[tableId].indexOf(id) === -1) {
-                        selectedIds[tableId].push(id); 
-                        order_ids.push(id); 
+                        selectedIds[tableId].push(id);
+                        order_ids.push(id);
                     } else if (!isChecked && selectedIds[tableId].indexOf(id) !== -1) {
                         // selectedIds[tableId].splice(selectedIds[tableId].indexOf(id), 1);
                         // order_ids.splice(order_ids.indexOf(id), 1);

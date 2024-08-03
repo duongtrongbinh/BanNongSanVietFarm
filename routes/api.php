@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AddressController;
@@ -15,7 +14,6 @@ use App\Http\Controllers\Admin\AddressController;
 |
 */
 
-
 // address order api
 Route::middleware(['web'])->post('/shipping-fee', [App\Http\Services\GHNService::class, 'shippingFee'])->name('shipping.check');
 
@@ -24,6 +22,9 @@ Route::post('districts', [App\Http\Controllers\Api\ShippingAddressController::cl
 Route::post('wards', [App\Http\Controllers\Api\ShippingAddressController::class, 'wards'])->name('wards.address.client');
 
 Route::post('nongsanvietfam/delivery-status', [App\Http\Services\GHNService::class, 'delivery'])->name('delivery.order');
+
+
+Route::post('voucher/apply', [App\Http\Controllers\Api\VoucherController::class, 'apply'])->name('voucher.apply');
 
 
 // AddressController

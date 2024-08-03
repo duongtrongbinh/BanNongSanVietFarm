@@ -68,6 +68,7 @@ class VoucherRequest extends FormRequest
                 Rule::when($this->has('active'),1, 0)
             ],
             'type_unit' => 'required|integer|in:0,1', // Ensure type_unit is provided and is either 0 or 1
+            'code' => 'required',
         ];
         if ($this->isMethod('patch') || $this->isMethod('put')) {
             $rules['title'] = [
@@ -125,6 +126,7 @@ class VoucherRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+
         if ($this->input('infinite')) {
             $this->merge([
                 'start_date' => null,

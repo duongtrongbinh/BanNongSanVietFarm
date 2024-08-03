@@ -59,11 +59,6 @@
                                 <i class="ri-pencil-fill fs-16"></i>
                               </a>
                           </li>
-                          <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
-                              <a data-url="{{ route('tags.delete', $tag->id) }}" class="text-danger d-inline-block deleteTag">
-                                <i class="ri-delete-bin-5-fill fs-16"></i>
-                              </a>
-                          </li>
                         </ul>
                       </td>
                     </tr>
@@ -90,7 +85,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+
   <!--Delete js-->
   <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
 

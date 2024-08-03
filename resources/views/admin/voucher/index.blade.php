@@ -8,8 +8,8 @@
         <h1>Dashboard</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Home</a></li>
-                <li class="breadcrumb-item active">Vouchers</li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Mã giảm giá</li>
             </ol>
         </nav>
     </div>
@@ -20,9 +20,9 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="{{ route('flash-sales.create') }}">
+                            <a href="{{ route('vouchers.create') }}">
                                 <i class="bi bi-plus-circle"></i>
-                                Create Sale
+                                 Tạo mã giảm giá
                             </a>
                         </h5>
                         <div class="d-flex justify-content-between">
@@ -37,13 +37,13 @@
                         <table class="table datatable">
                             <thead>
                             <tr>
-                                <th scope="col">Title</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Start Date</th>
-                                <th scope="col">End Date</th>
-                                <th scope="col">Is active</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">Tiêu đề</th>
+                                <th scope="col">Số lượng </th>
+                                <th scope="col">Giá trị</th>
+                                <th scope="col">Ngày bắt đầu </th>
+                                <th scope="col">Ngày kết thúc </th>
+                                <th scope="col">Đang hoạt động</th>
+                                <th scope="col">Thao tác</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -68,15 +68,25 @@
                                         </td>
                                         <td>
                                             <div class="d-flex" style="gap: 10px">
-                                                <a href="{{ route('vouchers.show',$items->id) }}"><button class="btn btn-outline-secondary">Detail</button></a>
-                                                <a href="{{ route('vouchers.edit',$items->id) }}"><button class="btn btn-outline-warning">edit</button></a>
-                                                <form action="{{ route('vouchers.destroy', $items->id) }}" method="post" class="deleteVouchers" data-url="{{ route('vouchers.destroy', $items->id) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-outline-danger">
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                                <ul class="list-inline hstack gap-2 mb-0">
+                                                    <li class="list-inline-item edit" data-bs-toggle="tooltip"
+                                                        data-bs-trigger="hover" data-bs-placement="top" title="Sửa">
+                                                        <a href="{{ route('vouchers.edit',$items->id) }}">
+                                                            <i class="ri-pencil-fill fs-16"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="list-inline-item" data-bs-toggle="tooltip"
+                                                        data-bs-trigger="hover" data-bs-placement="top" title="Xóa">
+                                                        <form action="{{ route('vouchers.destroy', $items->id) }}" method="post" class="deleteVouchers" data-url="{{ route('vouchers.destroy', $items->id) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn">
+                                                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                                                            </button>
+                                                        </form>
+                                                    </li>
+
+                                                </ul>
                                             </div>
                                         </td>
                                     </tr>
@@ -86,8 +96,6 @@
                         </table>
                         <!-- End Table with stripped rows -->
                         <div class="pagination justify-content-center">
-
-
                         </div>
                     </div>
                 </div>
@@ -95,4 +103,20 @@
             </div>
         </div>
     </section>
+@endsection
+@section('js')
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+    <!--Delete js-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
 @endsection
