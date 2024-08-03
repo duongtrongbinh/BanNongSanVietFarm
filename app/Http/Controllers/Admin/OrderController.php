@@ -63,46 +63,46 @@ class OrderController extends Controller
             return number_format($order->after_total_amount) . ' VNĐ';
         })
         ->addColumn('payment', function ($order) {
-            return $order->payment_status == 0 ? 'VNPAY' : 'COD';
+            return $order->payment_method == 0 ? 'VNPAY' : 'COD';
         })
         ->addColumn('status', function ($order) {
             $statusData = [
                 OrderStatus::PENDING->value => [
-                    'label' => 'Đang chờ xử lý',
-                    'badgeClass' => 'badge bg-warning-subtle text-warning text-uppercase'
+                    'label' => 'Đang chờ xử lý', 
+                    'badgeClass' => 'badge bg-warning text-white text-uppercase'
                 ],
                 OrderStatus::PROCESSING->value => [
-                    'label' => 'Đang xử lý',
-                    'badgeClass' => 'badge bg-secondary-subtle text-secondary text-uppercase'
+                    'label' => 'Đang xử lý', 
+                    'badgeClass' => 'badge bg-secondary text-white text-uppercase'
                 ],
                 OrderStatus::SHIPPING->value => [
-                    'label' => 'Vận chuyển',
-                    'badgeClass' => 'badge bg-info-subtle text-info text-uppercase'
+                    'label' => 'Vận chuyển', 
+                    'badgeClass' => 'badge bg-info text-white text-uppercase'
                 ],
                 OrderStatus::SHIPPED->value => [
-                    'label' => 'Giao hàng',
-                    'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
+                    'label' => 'Giao hàng', 
+                    'badgeClass' => 'badge bg-success text-white text-uppercase'
                 ],
                 OrderStatus::DELIVERED->value => [
-                    'label' => 'Đã nhận hàng',
-                    'badgeClass' => 'badge bg-primary-subtle text-primary text-uppercase'
+                    'label' => 'Đã nhận hàng', 
+                    'badgeClass' => 'badge bg-primary text-white text-uppercase'
                 ],
                 OrderStatus::COMPLETED->value => [
                     'label' => 'Hoàn thành',
                     'badgeClass' => 'badge bg-primary text-white text-uppercase'
                 ],
                 OrderStatus::CANCELLED->value => [
-                    'label' => 'Đã hủy',
-                    'badgeClass' => 'badge bg-danger-subtle text-danger text-uppercase'
+                    'label' => 'Đã hủy', 
+                    'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
                 OrderStatus::RETURNED->value => [
                     'label' => 'Trả hàng/Hoàn tiền',
                     'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
             ];
-
-            $status = $statusData[$order->status] ?? ['label' => 'Không xác định', 'badgeClass' => 'badge bg-danger-subtle text-danger text-uppercase'];
-
+            
+            $status = $statusData[$order->status] ?? ['label' => 'Không xác định', 'badgeClass' => 'badge bg-danger text-white text-uppercase'];
+    
             return '<span class="'.$status['badgeClass'].'">'.$status['label'].'</span>';
         })
         ->addColumn('action', function($order) {
@@ -258,14 +258,14 @@ class OrderController extends Controller
         return false;
     }
 
-    public function edit(Request $request,Order $order)
-    {
-        if($request->has('query')){
-            $notification = Auth::user()->notifications()->find($request->query('query'));
-            if ($notification){
-                $notification->markAsRead();
-            }
-        };
+    public function edit(Order $order, Request $request)
+    {   $return = $request->route('return');
+        $show = false;
+
+        if ($return) {
+            $show = true;
+        }
+
         $order = Order::with(['user', 'order_details.product.category', 'order_details.product.brand'])->find($order->id);
 
         $statuses = $order->transfer_histories->pluck('status')->toArray();
@@ -287,19 +287,31 @@ class OrderController extends Controller
             $showTransferHistory = false;
             switch ($orderHistory->status) {
                 case OrderStatus::PROCESSING->value:
-                    $transferStatusRange = range(0, 4);
+                    $transferStatusRange = range(TransferStatus::READY_TO_PICK->value, TransferStatus::PICKED->value);
                     $showTransferHistory = true;
                     break;
                 case OrderStatus::SHIPPING->value:
-                    $transferStatusRange = range(5, 8);
+                    $transferStatusRange = range(TransferStatus::STORING->value, TransferStatus::DELIVERING->value);
                     $showTransferHistory = true;
                     break;
                 case OrderStatus::SHIPPED->value:
-                    $transferStatusRange = [9, 10, 11];
+                    $transferStatusRange = [
+                        TransferStatus::MONEY_COLLECT_DELIVERING->value, 
+                        TransferStatus::DELIVERED->value, 
+                        TransferStatus::DELIVERY_FAIL->value
+                    ];
                     $showTransferHistory = true;
                     break;
                 case OrderStatus::RETURNED->value:
-                    $transferStatusRange = [12, 13, 14, 15, 16, 17, 18];
+                    $transferStatusRange = [
+                        TransferStatus::WAITING_TO_RETURN->value, 
+                        TransferStatus::RETURN->value, 
+                        TransferStatus::RETURN_TRANSPORTING->value, 
+                        TransferStatus::RETURN_SORTING->value, 
+                        TransferStatus::RETURNING->value, 
+                        TransferStatus::RETURN_FAIL->value, 
+                        TransferStatus::RETURNED->value
+                    ];
                     $showTransferHistory = true;
                     break;
                 default:
@@ -322,8 +334,8 @@ class OrderController extends Controller
         })->sortByDesc(function($history) {
             return $history['orderHistory']->created_at;
         });
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers'));
+         
+        return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers', 'show'));
     }
 
     public function update(Order $order)

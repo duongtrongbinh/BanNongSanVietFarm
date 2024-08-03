@@ -33,7 +33,6 @@ class UpdateOrderStatusJob implements ShouldQueue
             Log::info('Order not found', ['order_id' => $this->transferHistory->order_id]);
             return;
         }
-
         
         // Lấy tất cả các trạng thái transfer hiện tại của đơn hàng
         $transferStatuses = TransferHistory::where('order_id', $order->id)

@@ -92,8 +92,8 @@
                             <p class="mb-3">Thương hiệu: {{ $product->brand->name }}</p>
                             <p class="mb-3">Loại: {{ $product->category->name }}</p>
                             <div class="d-flex mb-3">
-                                <h5 class="fw-bold" >{{ number_format($product->price_sale) }} VND</h5>
-                                <h6 class="fw-bolder text-decoration-line-through" style="margin-left: 20px; padding-top: 5px;">{{ number_format($product->price_regular) }} VND</h6>
+                                <h5 class="text-danger fw-bold" style="margin-right: 10px">{{ number_format($product->price_sale) }} VND</h5>
+                                <h5 class="fw-bolder text-decoration-line-through">{{ number_format($product->price_regular) }} VND</h5>
                             </div>
                             <p class="mb-4">{{ $product->description }}</p>
                             <div class="d-flex">

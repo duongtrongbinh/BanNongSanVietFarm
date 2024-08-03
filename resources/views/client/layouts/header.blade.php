@@ -20,7 +20,9 @@
 <div class="fixed-top container-fluid">
   <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <a href="{{ route('home') }}" class="navbar-brand"><h1 class="text-primary display-6">Nông Sản Việt</h1></a>
+          <a href="{{ route('home') }}" class="navbar-brand">
+            <img src="{{ asset('client/assets/img/logo.png') }}" height="100px">
+          </a>
           <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
               <span class="fa fa-bars text-primary"></span>
           </button>
@@ -29,11 +31,10 @@
                     <a href="{{ route('home') }}"
                        class="nav-item nav-link @if(request()->routeIs('home')) active @endif"><b>Trang chủ</b></a>
                     <a href="{{ route('shop') }}"
-                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif"><b>Cửa
-                        hàng</b></a>
+                       class="nav-item nav-link @if(request()->is('*thuong-hieu*') || request()->is('*danh-muc*') || request()->is('*san-pham*') || request()->is('*cua-hang*')) active @endif"><b>Cửa hàng</b></a>
                     <a href="{{ route('postclient.index') }}"
                        class="nav-item nav-link @if(request()->is('*bai-viet*')) active @endif"><b>Bài viết</b></a>
-                   <a href="{{route('contact.index')}}" class="nav-item nav-link @if(request()->is('*lien-he*')) active @endif"><b>Liên hệ</b></a>
+                    <a href="{{route('contact.index')}}" class="nav-item nav-link @if(request()->is('*lien-he*')) active @endif"><b>Liên hệ</b></a>
                     <a href="{{route('policy.index')}}" class="nav-item nav-link @if(request()->is('*chinh-sach*')) active @endif"><b>Chính sách</b></a>
                 </div>
                 <div class="d-flex align-items-center m-3 me-0">

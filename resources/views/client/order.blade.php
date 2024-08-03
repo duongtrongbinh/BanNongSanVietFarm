@@ -119,7 +119,7 @@
         </ol>
     </div>
     <!-- End Page Title -->
-    <section class="container-lg section" style="margin-top:50px ; height: 100vh">
+    <section class="container-lg section" style="margin-top:50px;">
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -282,7 +282,7 @@
                                         <span class="text-success me-2">
                                             ${new Date(order.created_at).toLocaleString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                         </span>
-                                        <span class="separator">|</span>
+                                        <span class="separator me-2">|</span>
                                         <span class="${status.badgeClass}">
                                             ${status.label}
                                         </span>
@@ -293,7 +293,7 @@
                                 </div>
                                 <div class="order-footer d-flex justify-content-between align-items-center">
                                     <div>
-                                        <a href="/order-detail/${order.id}" class="btn btn-secondary">Xem chi tiết</a>
+                                        <a href="/chi-tiet-don-hang/${order.id}" class="btn btn-secondary">Xem chi tiết</a>
                                     </div>
                                     <div class="d-flex">
                                         <p class="me-1">Thành tiền:</p>

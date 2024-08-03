@@ -1,35 +1,38 @@
 @extends('client.layouts.master')
 @section('title', 'Check Out')
 @section('css')
-      sup {
+    <style>
+        .sup {
           color: red;
-      }
-      .coupon .kanan {
-      border-left: 1px dashed #ddd;
-      width: 40% !important;
-      position:relative;
-      }
+        }
+        .coupon .kanan {
+        border-left: 1px dashed #ddd;
+        width: 40% !important;
+        position:relative;
+        }
 
-      .coupon .kanan .info::after, .coupon .kanan .info::before {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: #dedede;
-      border-radius: 100%;
-      }
-      .coupon .kanan .info::before {
-      top: -10px;
-      left: -10px;
-      }
+        .coupon .kanan .info::after, .coupon .kanan .info::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #dedede;
+            border-radius: 100%;
+        }
+        .coupon .kanan .info::before {
+            top: -10px;
+            left: -10px;
+        }
 
-      .coupon .kanan .info::after {
-      bottom: -10px;
-      left: -10px;
-      }
-      .coupon .time {
-      font-size: 1.6rem;
-      }
+        .coupon .kanan .info::after {
+            bottom: -10px;
+            left: -10px;
+        }
+
+        .coupon .time {
+            font-size: 1.6rem;
+        }
+    </style>
 @endsection
 
 @section('content')
