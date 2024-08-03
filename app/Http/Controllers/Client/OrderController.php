@@ -216,73 +216,81 @@ class OrderController extends Controller
         $order_code = $request->query('order_code');
         $order = Order::with(['order_details.product.category', 'order_details.product.brand'])->where('order_code', $order_code)->first();
 
-        $statuses = $order->transfer_histories->pluck('status')->toArray();
+        if($order) {
+            $statuses = $order->transfer_histories->pluck('status')->toArray();
 
-        if ($order->payment_status == 1) {
-            $statusData = [
-                'label' => 'Thanh toán thành công',
-                'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
-            ];
+            if ($order->payment_status == 1) {
+                $statusData = [
+                    'label' => 'Thanh toán thành công',
+                    'badgeClass' => 'badge bg-success-subtle text-success text-uppercase'
+                ];
+            } else {
+                $statusData = [
+                    'label' => 'Chờ thanh toán',
+                    'badgeClass' => 'badge bg-info-subtle text-info text-uppercase'
+                ];
+            }
+
+            $orderHistoriesWithTransfers = $order->order_histories->map(function($orderHistory) use ($order) {
+                $transferStatusRange = [];
+                $showTransferHistory = false;
+                switch ($orderHistory->status) {
+                    case OrderStatus::PROCESSING->value:
+                        $transferStatusRange = range(TransferStatus::READY_TO_PICK->value, TransferStatus::PICKED->value);
+                        $showTransferHistory = true;
+                        break;
+                    case OrderStatus::SHIPPING->value:
+                        $transferStatusRange = range(TransferStatus::STORING->value, TransferStatus::DELIVERING->value);
+                        $showTransferHistory = true;
+                        break;
+                    case OrderStatus::SHIPPED->value:
+                        $transferStatusRange = [
+                            TransferStatus::MONEY_COLLECT_DELIVERING->value, 
+                            TransferStatus::DELIVERED->value, 
+                            TransferStatus::DELIVERY_FAIL->value
+                        ];
+                        $showTransferHistory = true;
+                        break;
+                    case OrderStatus::RETURNED->value:
+                        $transferStatusRange = [
+                            TransferStatus::WAITING_TO_RETURN->value, 
+                            TransferStatus::RETURN->value, 
+                            TransferStatus::RETURN_TRANSPORTING->value, 
+                            TransferStatus::RETURN_SORTING->value, 
+                            TransferStatus::RETURNING->value, 
+                            TransferStatus::RETURN_FAIL->value, 
+                            TransferStatus::RETURNED->value
+                        ];
+                        $showTransferHistory = true;
+                        break;
+                    default:
+                        $transferStatusRange = [];
+                        $showTransferHistory = false;
+                }
+        
+                $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
+                    return in_array($transferHistory->status, $transferStatusRange);
+                })->sortByDesc('created_at');
+
+                $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
+                
+                return [
+                    'orderHistory' => $orderHistory,
+                    'transferHistories' => $transferHistories,
+                    'formattedOrderHistory' => $formattedOrderHistory,
+                    'showTransferHistory' => $showTransferHistory
+                ];
+            })->sortByDesc(function($history) {
+                return $history['orderHistory']->created_at;
+            });
+
+            return view('client.order-detail', compact('order', 'statusData', 'orderHistoriesWithTransfers'));
         } else {
-            $statusData = [
-                'label' => 'Chờ thanh toán',
-                'badgeClass' => 'badge bg-info-subtle text-info text-uppercase'
-            ];
+            return redirect()
+                ->back()
+                ->with('error', 'Không tìm thấy đơn hàng!');
         }
 
-        $orderHistoriesWithTransfers = $order->order_histories->map(function($orderHistory) use ($order) {
-            $transferStatusRange = [];
-            $showTransferHistory = false;
-            switch ($orderHistory->status) {
-                case OrderStatus::PROCESSING->value:
-                    $transferStatusRange = range(TransferStatus::READY_TO_PICK->value, TransferStatus::PICKED->value);
-                    $showTransferHistory = true;
-                    break;
-                case OrderStatus::SHIPPING->value:
-                    $transferStatusRange = range(TransferStatus::STORING->value, TransferStatus::DELIVERING->value);
-                    $showTransferHistory = true;
-                    break;
-                case OrderStatus::SHIPPED->value:
-                    $transferStatusRange = [
-                        TransferStatus::MONEY_COLLECT_DELIVERING->value, 
-                        TransferStatus::DELIVERED->value, 
-                        TransferStatus::DELIVERY_FAIL->value
-                    ];
-                    $showTransferHistory = true;
-                    break;
-                case OrderStatus::RETURNED->value:
-                    $transferStatusRange = [
-                        TransferStatus::WAITING_TO_RETURN->value, 
-                        TransferStatus::RETURN->value, 
-                        TransferStatus::RETURN_TRANSPORTING->value, 
-                        TransferStatus::RETURN_SORTING->value, 
-                        TransferStatus::RETURNING->value, 
-                        TransferStatus::RETURN_FAIL->value, 
-                        TransferStatus::RETURNED->value
-                    ];
-                    $showTransferHistory = true;
-                    break;
-                default:
-                    $transferStatusRange = [];
-                    $showTransferHistory = false;
-            }
-    
-            $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
-                return in_array($transferHistory->status, $transferStatusRange);
-            })->sortByDesc('created_at');
-
-            $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
-            
-            return [
-                'orderHistory' => $orderHistory,
-                'transferHistories' => $transferHistories,
-                'formattedOrderHistory' => $formattedOrderHistory,
-                'showTransferHistory' => $showTransferHistory
-            ];
-        })->sortByDesc(function($history) {
-            return $history['orderHistory']->created_at;
-        });
-
-        return view('client.order-detail', compact('order', 'statusData', 'orderHistoriesWithTransfers'));
+        
     }
 }

@@ -7,6 +7,9 @@
         }
     </style>
 @endsection
+@php
+    $error = session('error');
+@endphp
 @section('content')
     @php
         $updated= session('update');
@@ -359,14 +362,19 @@
     </div>
     <!-- Fact Start -->
 @endsection
-@section('js')
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--ShowMessage js-->
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
     <script>
         $(document).ready(function(){
-            $('.pagination a').on('click', function (e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                $('#initiated').load(url + ' div#initiated');
-            });
+            if (error) {
+            let title = 'Lỗi';
+            let message = error;
+            let icon = 'error';
+            showMessage(title, message, icon);
+        }
         });
     </script>
 @endsection
