@@ -58,8 +58,8 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_details')
-                    ->withPivot('quantity', 'price_regular', 'price_sale', 'image', 'name')
-                    ->withTimestamps();
+            ->withPivot('quantity', 'price_regular', 'price_sale', 'image', 'name')
+            ->withTimestamps();
     }
 
     public static function boot()
@@ -67,12 +67,12 @@ class Order extends Model
         parent::boot();
 
         static::creating(function ($order) {
-            $order->order_code = 'PH'.fake()->imei;
+            $order->order_code = 'PH' . fake()->imei;
         });
 
 
         static::updating(function ($order) {
-            if($order->status == OrderStatus::PROCESSING->value){
+            if ($order->status == OrderStatus::PROCESSING->value) {
                 dispatch(new SendOrderToGHN($order));
             }
         });
@@ -86,5 +86,18 @@ class Order extends Model
     public function transfer_histories()
     {
         return $this->hasMany(TransferHistory::class, 'order_id', 'id');
+    }
+
+    public static function getStatusMap()
+    {
+        return [
+            0 => 'Đang chờ xử lý',
+            1 => 'Đang xử lý',
+            2 => 'Vận chuyển',
+            3 => 'Giao hàng',
+            4 => 'Đã nhận hàng',
+            5 => 'Hoàn thành',
+            6 => 'Đã hủy',
+        ];
     }
 }
