@@ -9,19 +9,22 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class OrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $data;
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($data)
+    public $order;
+
+    public $products;
+    public $price_ship;
+
+    public function __construct($order,$products,$price_ship)
     {
-        $this->data = $data;
-        Log::info(session('cart'));
+        $this->order = $order;
+        $this->products = $products;
+        $this->price_ship = $price_ship;
     }
 
     /**
@@ -30,7 +33,7 @@ class OrderConfirmation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Confirmation Email',
+            subject: 'Thông báo mua hàng thành công',
         );
     }
 
@@ -42,10 +45,11 @@ class OrderConfirmation extends Mailable
         return new Content(
             view: 'admin.mails.send_order_mail',
             with: [
-                'data' => $this->data,
-                'products' => session('cart'),
-                'service_fee' => session('service_fee'),
+                'data' => $this->order,
+                'products' => $this->products,
+                'service_fee' => $this->price_ship,
                 ],
         );
     }
+
 }

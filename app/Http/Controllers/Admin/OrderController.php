@@ -13,6 +13,8 @@ use App\Models\OrderHistory;
 use App\Models\TransferHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
@@ -35,7 +37,7 @@ class OrderController extends Controller
     }
 
     public static function getData($orders)
-    {   
+    {
         $stt = 1;
 
         return DataTables::of($orders)
@@ -86,7 +88,7 @@ class OrderController extends Controller
                     'badgeClass' => 'badge bg-primary text-white text-uppercase'
                 ],
                 OrderStatus::COMPLETED->value => [
-                    'label' => 'Hoàn thành', 
+                    'label' => 'Hoàn thành',
                     'badgeClass' => 'badge bg-primary text-white text-uppercase'
                 ],
                 OrderStatus::CANCELLED->value => [
@@ -94,7 +96,7 @@ class OrderController extends Controller
                     'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
                 OrderStatus::RETURNED->value => [
-                    'label' => 'Trả hàng/Hoàn tiền', 
+                    'label' => 'Trả hàng/Hoàn tiền',
                     'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
             ];
@@ -316,13 +318,13 @@ class OrderController extends Controller
                     $transferStatusRange = [];
                     $showTransferHistory = false;
             }
-    
+
             $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
                 return in_array($transferHistory->status, $transferStatusRange);
             })->sortByDesc('created_at');
 
             $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
-            
+
             return [
                 'orderHistory' => $orderHistory,
                 'transferHistories' => $transferHistories,
@@ -465,7 +467,7 @@ class OrderController extends Controller
 
             // Thêm bản ghi vào order_histories
             $data = [
-                'order_id' => $order->id, 
+                'order_id' => $order->id,
                 'status' => OrderStatus::CANCELLED->value,
             ];
             $this->orderHistoryRepository->create($data);

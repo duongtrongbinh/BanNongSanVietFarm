@@ -86,7 +86,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+
   <!--Delete js-->
   <script src="{{ asset('admin/assets/js/deleteAll/delete.js') }}"></script>
 

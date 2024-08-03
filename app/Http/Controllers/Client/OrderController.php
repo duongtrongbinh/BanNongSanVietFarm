@@ -14,14 +14,12 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class OrderController extends Controller
 {
     public $orderRepository;
     public $orderHistoryRepository;
     public $voucherRepository;
-
-    const token = '29ee235a-2fa2-11ef-8e53-0a00184fe694';
-    const url = 'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province';
 
     public function __construct(OrderRepository $orderRepository, OrderHistoryRepository $orderHistoryRepository, VoucherRepository $voucherRepository)
     {
@@ -30,10 +28,6 @@ class OrderController extends Controller
         $this->voucherRepository = $voucherRepository;
     }
 
-    public function index()
-    {
-        return view('client.order');
-    }
 
     public function fetchOrders(Request $request)
     {

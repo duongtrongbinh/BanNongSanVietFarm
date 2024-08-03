@@ -2,6 +2,10 @@
 
 namespace App\Enums;
 
+use App\Models\User;
+use Illuminate\Support\Collection;
+
+
 enum  Roles: string
 {
     case SYSTEM_ADMINISTRATOR = '1'; // Quản lý hệ thống
@@ -37,4 +41,24 @@ enum  Roles: string
             self::MARKETING => 'Nhân viên tiếp thị',
         };
     }
+
+    public static function allRoles(): array
+    {
+        $array = [];
+        foreach (self::values() as $value => $name) {
+            $array[] = $name;
+        }
+        return $array;
+    }
+
+    public static function admins() : Collection
+    {
+        $users = User::query()->get();
+        $admins = $users->filter(function ($user) {
+            return $user->hasAnyRole(self::allRoles());
+        });
+        return $admins;
+    }
+
+
 }

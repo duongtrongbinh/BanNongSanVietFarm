@@ -16,7 +16,6 @@ class RoleController extends Controller
         $roles = Role::query()->get();
         $userHasRole = $user->roles->pluck('id')->toArray();
         foreach ($roles as $item) {
-            // Kiểm tra nếu quyền hiện tại có trong danh sách quyền đã liên kết
             $item->checked = in_array($item->id, $userHasRole);
         }
         return view('admin.user.role',compact('roles','user'));
@@ -24,8 +23,8 @@ class RoleController extends Controller
 
     public function store(RoleRequest $request,User $user)
     {
-        $roles = array_map('intval', $request->roles);
-        $user->syncRoles($roles);
+        $roleIds = array_map('intval', $request->roles);
+        $user->syncRoles($roleIds);
         return redirect()->route('user.index')->with('created', 'Thêm mới thành công!');
     }
 }
