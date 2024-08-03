@@ -1,4 +1,9 @@
 <!-- ======= Header ======= -->
+<style>
+    .bg-custom-light {
+        background-color: #f0f0f0; /* Chọn màu tối hơn */
+    }
+</style>
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
@@ -25,146 +30,67 @@
                 </a>
             </li><!-- End Search Icon-->
 
-            <li class="nav-item dropdown">
-
+            <li class="nav-item dropdown" >
+                @php $notifications = \Illuminate\Support\Facades\Auth::user()->notifications @endphp
                 <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                     <i class="bi bi-bell"></i>
-                    <span class="badge bg-primary badge-number">4</span>
+                    <span class="badge bg-primary badge-number" id="total-notification-new">{{  Auth::user()->notifications()->count() }}</span>
                 </a><!-- End Notification Icon -->
 
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style="max-height: 400px; overflow-y: auto; width: 50vh" >
                     <li class="dropdown-header">
-                        You have 4 new notifications
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                        Bạn có <span id="total-notification">{{  Auth::user()->unreadNotifications()->count() }}</span> thông báo mới.
                     </li>
+
+                    <div id="notification">
+                    @foreach (Auth::user()->unreadNotifications as $notification)
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-exclamation-circle text-warning"></i>
-                        <div>
-                            <h4>Lorem Ipsum</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>30 min. ago</p>
-                        </div>
-                    </li>
-
+                            <a href="{{ route('orders.edit',$notification->data['order_id'])}}?query={{ $notification->id }}">
+                                <li class="notification-item bg-custom-light">
+                                    <i class="bi bi-bag-check-fill text-success"></i>
+                                    <div>
+                                        <h4>{{ $notification->data['type'] }}</h4>
+                                        <span>{{ $notification->data['message'] }}
+                                            <span>{{ $notification->data['customer'] }}</span>
+                                        </span>
+                                        <p class="mt-2">#{{ $notification->data['order_code'] }}</p>
+                                        <p>{{ mb_convert_case($notification->created_at->diffForHumans(), MB_CASE_TITLE, "UTF-8") }}</p>
+                                    </div>
+                                </li>
+                            </a>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-x-circle text-danger"></i>
-                        <div>
-                            <h4>Atque rerum nesciunt</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>1 hr. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-check-circle text-success"></i>
-                        <div>
-                            <h4>Sit rerum fuga</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>2 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="notification-item">
-                        <i class="bi bi-info-circle text-primary"></i>
-                        <div>
-                            <h4>Dicta reprehenderit</h4>
-                            <p>Quae dolorem earum veritatis oditseno</p>
-                            <p>4 hrs. ago</p>
-                        </div>
-                    </li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li class="dropdown-footer">
-                        <a href="#">Show all notifications</a>
-                    </li>
-
-                </ul><!-- End Notification Dropdown Items -->
-
-            </li><!-- End Notification Nav -->
-
-            <li class="nav-item dropdown">
-
-                <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-                    <i class="bi bi-chat-left-text"></i>
-                    <span class="badge bg-success badge-number">3</span>
-                </a><!-- End Messages Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                    <li class="dropdown-header">
-                        You have 3 new messages
-                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ asset('admin/assets/img/messages-1.jpg') }}" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Maria Hudson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>4 hrs. ago</p>
-                            </div>
+                    @endforeach
+                    </div>
+                    @foreach (Auth::user()->readNotifications as $notification)
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <a href="{{ route('orders.edit',$notification->data['order_id'])}}?query={{ $notification->id }}">
+                            <li class="notification-item text-dark">
+                                <i class="bi bi-bag-check-fill text-success"></i>
+                                <div>
+                                    <h4>{{ $notification->data['type'] }}</h4>
+                                    <span>{{ $notification->data['message'] }}
+                                             <span>{{ $notification->data['customer'] }}</span>
+                                     </span>
+                                        <p class="mt-2">#{{ $notification->data['order_code'] }}</p>
+                                    <p>{{ mb_convert_case($notification->created_at->diffForHumans(), MB_CASE_TITLE, "UTF-8") }}</p>
+                                </div>
+                            </li>
                         </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                    @endforeach
 
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ asset('admin/assets/img/messages-2.jpg') }}" alt="" class="rounded-circle">
-                            <div>
-                                <h4>Anna Nelson</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>6 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+                </ul><!-- End Notification Dropdown Items --><!-- End Notification Dropdown Items -->
 
-                    <li class="message-item">
-                        <a href="#">
-                            <img src="{{ asset('admin/assets/img/messages-3.jpg') }}" alt="" class="rounded-circle">
-                            <div>
-                                <h4>David Muldon</h4>
-                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                                <p>8 hrs. ago</p>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+            </li>
 
-                    <li class="dropdown-footer">
-                        <a href="#">Show all messages</a>
-                    </li>
-
-                </ul><!-- End Messages Dropdown Items -->
-
-            </li><!-- End Messages Nav -->
             <li class="nav-item dropdown pe-3">
                 <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                     <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="rounded-circle ">
@@ -174,7 +100,7 @@
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
                         <h6>{{ auth()->user()->name }}</h6>
-                        <span>Web Designer</span>
+                        <span>Quản trị viên</span>
                     </li>
                     <li>
                         <hr class="dropdown-divider">
@@ -183,7 +109,7 @@
                     <li>
                         <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.profile')}}">
                             <i class="bi bi-person"></i>
-                            <span>My Profile</span>
+                            <span>Hồ sơ</span>
                         </a>
                     </li>
                     <li>
@@ -193,12 +119,6 @@
                         <hr class="dropdown-divider">
                     </li>
 
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                            <i class="bi bi-question-circle"></i>
-                            <span>Need Help?</span>
-                        </a>
-                    </li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -208,12 +128,21 @@
                         </form>
                         <a class="dropdown-item d-flex align-items-center" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
+                            <span>Đăng xuất</span>
                         </a>
                     </li>
                 </ul><!-- End Profile Dropdown Items -->
             </li><!-- End Profile Nav -->
         </ul>
     </nav><!-- End Icons Navigation -->
-
 </header><!-- End Header -->
+<script>
+        document.getElementById('checked-all').addEventListener('click', function() {
+            const isChecked = this.checked;
+            const checkboxes = document.querySelectorAll('.permission-checkbox');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = isChecked;
+            });
+        });
+</script>
+

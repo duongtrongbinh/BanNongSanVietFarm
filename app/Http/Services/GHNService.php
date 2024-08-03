@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services;
 
+use App\Enums\NotificationSystem;
 use App\Enums\TransferStatus;
 use App\Enums\TypeUnitEnum;
 use App\Http\Requests\OrderRequest;
@@ -10,6 +11,7 @@ use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
 use App\Models\TransferHistory;
+use Barryvdh\Debugbar\Twig\Extension\Debug;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -18,13 +20,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\Roles;
+use App\Notifications\SystemNotification;
+use \Illuminate\Support\Facades\Notification;
+use \App\Events\SystemNotificationEvent;
 
 class GHNService
 {
     protected $apiUrl;
     protected $shopId;
+
     protected $token;
-    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
+    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee/2232';
     protected $ghnTranform;
 
     public function __construct(GHNTranform $ghnTranform)
@@ -36,6 +43,9 @@ class GHNService
     }
     public function store(OrderRequest $request)
     {
+        if(!session('cart')){
+            return redirect()->route('home');
+        }
         $value = $this->fillterData($request->all());
         DB::beginTransaction();
         try {
@@ -49,10 +59,15 @@ class GHNService
             } else {
                 $routeUrl = redirect()->route('checkout.success',$order->order_code);
             }
-            Log::debug('message');
-            dispatch(new SendOrderConfirmation($order));
+            dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+
+            Notification::send(Roles::admins(),new SystemNotification($order));
+
+            broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
+
             DB::commit();
             session()->forget('cart');
+            session()->forget('service_fee');
             return $routeUrl;
         } catch (\Exception $e) {
             Log::debug($e);
@@ -216,7 +231,7 @@ class GHNService
 
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
-            $data['payment_method'] = $data['payment_method'] ? 1 : 2;
+            $data['payment_method'] = ($data['payment_method'] == 'VNPAYQR') ? 1 : 0;
             if(Auth::user()->id){
                 $data['user_id'] = Auth::user()->id;
             }else{
@@ -246,11 +261,9 @@ class GHNService
 
     public function UpdateStatusOrder($status,$code){
             $order = Order::query()->where('order_code',$code)->first();
-
             $order->update([
                     'payment_status' => $status,
             ]);
-
             return $order;
     }
 
@@ -298,6 +311,7 @@ class GHNService
     {
         $value = $this->fillterDataShipping($request->all());
         $product = $this->formatDataGHN(session('cart'));
+
         $jsonData = [
             "service_type_id" => $value["service_type_id"],
             "to_district_id" => (int)$value["to_district_id"],
@@ -315,20 +329,27 @@ class GHNService
             'token'=> $this->token,
         ];
 
-        $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
-
-        if ($response->successful()) {
-            $responseData = $response->json();
-            $total = $responseData['data']['total'];
-            session(['service_fee' => $total]);
-            return response()->json($responseData,200) ;
-        }
-        if ($response->failed()) {
-            session(['service_fee' => TypeUnitEnum::SHIPPING_DEFAULT->value]);
+        if ($value['to_ward_code']){
+            $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
+            if ($response->successful()) {
+                $responseData = $response->json();
+                $total = $responseData['data']['total'];
+                session(['service_fee' => $total]);
+                return response()->json($responseData,200) ;
+            }
+            if ($response->failed()){
+                session(['service_fee' => TypeUnitEnum::SHIPPING_DEFAULT->value]);
+                $array = [
+                    'message' => 'shipping_default',
+                    'total' => intval(TypeUnitEnum::SHIPPING_DEFAULT->value)
+                ];
+                return response()->json($array,200) ;
+            }
+        }else{
             $array = [
-                'message' => 'shipping_default',
-                'total' => intval(TypeUnitEnum::SHIPPING_DEFAULT->value)
+                'message' => 'missing',
             ];
+            session(['service_fee' => 0]);
             return response()->json($array,200) ;
         }
     }
@@ -349,15 +370,18 @@ class GHNService
  public function delivery(Request $request)
     {
         $Status = '';
+
         $order = Order::query()->where('order_code',$request->OrderCode)->first();
+
         if(!empty($order)){
             foreach(TransferStatus::values() as $value => $name){
+                Log::debug($request->Status);
                 if (strtoupper($request->Status) == $name){
                     $Status = $name;
                 }
             }
-            if (empty($Status)){
-                TransferHistory::created([
+            if(!empty($Status)){
+                TransferHistory::create([
                     'order_id' => $order->id,
                     'status' => $Status,
                     'warehouse' => $request->Warehouse,

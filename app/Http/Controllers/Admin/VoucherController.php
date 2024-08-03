@@ -42,8 +42,8 @@ class VoucherController extends Controller
      */
     public function store(VoucherRequest $request)
     {
-      $this->voucherRepository->create($request->validated());
-      return redirect()->back()->withErrors(['success'=>'create new vouchers success']);
+       $this->voucherRepository->create($request->validated());
+       return redirect()->back()->withErrors(['success'=>'create new vouchers success']);
     }
 
     /**

@@ -1,4 +1,43 @@
+
 $(document).ready(function() {
+
+    $(".voucher_apply").on('click',function (){
+
+        var total_cart = $("#total_cart").data('total');
+
+        var url = $(this).data('url');
+
+        var voucher_id = $(this).val();
+
+       if(voucher_id){
+            $.ajax({
+                url: url,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: JSON.stringify({
+                    voucher_id: voucher_id,
+                    total_cart: total_cart,
+                }),
+                success: function (response) {
+                    console.log(response);
+                    hideVoucher();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert('Có lỗi xảy ra khi lấy dữ liệu quận huyện!');
+                }
+            });
+
+       }
+    });
+
+    function hideVoucher(){
+        $("#page-header-voucher-dropdown").click();
+    }
+
+
     $("#province").on("change",function (){
         var url = $(this).data('url');
         var province = $(this).val();
@@ -23,8 +62,7 @@ $(document).ready(function() {
                 }
             });
         }else{
-            resetWard();
-            $('#district').html(' <option value="0">Chọn Quận/Huyện</option>');
+            reset($(this));
         }
 
     })
@@ -58,71 +96,92 @@ $(document).ready(function() {
                 }
             });
         }else {
-            resetWard();
+            reset($(this));
         }
     })
+
+    var total_after = $("#total_cart").data('total');
+    var total_befor = 0;
+    var price_shipping = $("#service_fee");
 
     $("#ward").on("change",function (){
         let url = $(this).data('url')
         let Ward = $(this).val();
         var parts = Ward.split(' - ');
         var WardCode = parts[0].trim();
-        $.ajax({
-            url: url,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data:JSON.stringify({
-                ward_code: WardCode,
-                district_id: to_district_id,
-            }),
-            success: function (response) {
-                var total_after = $("#total_cart").data('total');
-                var total_befor = 0;
-                console.log(total_after + response.total)
-                if(response.message === 'Success'){
-                     total_befor = total_after + response.data.total;
-                     $("#service_fee").html(number_format(response.data.total));
-                }else{
-                     total_befor = total_after + response.total;
-                     $("#service_fee").html(number_format(response.total));
-                };
-                $("#total_cart").html(number_format(total_befor, 2, '.', ','));
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-                alert('Có lỗi xảy ra khi lấy dữ liệu phí dịch vụ !');
-            }
-        });
+        if (WardCode){
+            $.ajax({
+                url: url,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data:JSON.stringify({
+                    ward_code: WardCode,
+                    district_id: to_district_id,
+                }),
+                success: function (response) {
+                    switch (response.message){
+                        case 'Success':
+                            // Trường hợp message là 'Success'
+                            total_befor = total_after + response.data.total;
+                            price_shipping.html(number_format(response.data.total));
+                            break;
+                        case 'missing':
+                            total_befor = total_after + 0;
+                            price_shipping.html(number_format(0));
+                            break;
+                        default:
+                            total_befor = total_after + response.total;
+                            price_shipping.html(number_format(response.total));
+                    }
 
+                    $("#total_cart").html(number_format(total_befor, 2, '.', ','));
+                },
+                error: function (xhr, status, error) {
+
+                }
+            });
+        }
     })
 
     function renderDistrictOptions(data) {
-        let optionsHtml = '';
-        if (data != null) {
+            let optionsHtml = '';
+            optionsHtml = '<option value="0">Chọn Quận/Huyện</option>';
             data.forEach(function (item) {
                 optionsHtml += `<option value="${item.DistrictID} - ${item.DistrictName}">${item.DistrictName}</option>`;
             });
+            resetWard();
             $('#district').html(optionsHtml);
-        }else{
-            $('#district').html(' <option value="0">Chọn Quận/Huyện</option>');
-        }
+
     }
 
     function renderWardOptions(data) {
         let optionsHtml = '';
+        optionsHtml = '<option value="0">Chọn Phường/Xã</option>';
         data.forEach(function (item) {
-            optionsHtml += `<option value="${item.WardCode} - ${item.WardName}">${item.WardName}</option>`;
+        optionsHtml += `<option value="${item.WardCode} - ${item.WardName}">${item.WardName}</option>`;
         });
         $('#ward').html(optionsHtml);
     }
 
-    function resetWard() {
+    function resetProvince() {
+        $('#district').html('<option value="0">Chọn Quận/Huyện</option>');
         $('#ward').html('<option value="0">Chọn Phường/Xã</option>');
     }
 
+    function resetWard(){
+        $('#ward').html('<option value="0">Chọn Phường/Xã</option>');
+    }
+
+    function reset(element){
+       if (element.attr('id') === 'province'){
+           resetProvince();
+       }else{
+           resetWard();
+       }
+    }
 
     function number_format(number, decimals, dec_point, thousands_sep) {
         // Kiểm tra và gán giá trị mặc định cho các tham số nếu chưa được cung cấp

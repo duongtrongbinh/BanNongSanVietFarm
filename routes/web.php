@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\NotificationSystem;
+use App\Events\SystemNotificationEvent;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -37,6 +39,10 @@ use \App\Http\Controllers\Admin\PermissionController;
 use \App\Http\Controllers\Admin\RoleController;
 use \App\Enums\Roles;
 
+use \App\Http\Controllers\Admin\SystemNotificationController;
+
+use App\Notifications\SystemNotification;
+use \Illuminate\Support\Facades\Notification;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,12 +55,13 @@ use \App\Enums\Roles;
 */
 
 /* Route Admin */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['admin.auth'])->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         /* Route Dashboard */
         Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::post('notifications',[SystemNotificationController::class,'destroy'])->name('notifications.destroy');
         // quản hệ thống
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
             /* Route User */
@@ -126,11 +133,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('groups/{id}', [GroupController::class, 'delete'])
                 ->name('groups.delete');
 
-            /* Route Product Related */
-            Route::resource('products/{$product}/related', RelatedController::class);
-            Route::get('/get-product', [RelatedController::class, 'getProduct'])->name('getProduct');
-            Route::delete('groups/{id}', [RelatedController::class, 'delete'])
-                ->name('groups.delete');
 
             /* Route Tag */
             Route::resource('tags', TagController::class);
@@ -143,6 +145,7 @@ Route::middleware(['auth'])->group(function () {
 
             /* Route Voucher */
             Route::resource('vouchers', VoucherController::class);
+
             Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
                 ->name('vouchers.deleted');
             Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
@@ -334,4 +337,16 @@ Route::group(['prefix' => ''], function () {
 /* Route 404 */
 Route::get('404', function () {
     return view('client.layouts.404');
+})->name('404');
+
+Route::get('/notify', function () {
+
+    $order = \App\Models\Order::query()->first();
+
+    Notification::send(Roles::admins(),new SystemNotification($order));
+
+    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
+
+    dd('done');
+
 })->name('404');

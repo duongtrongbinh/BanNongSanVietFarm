@@ -8,18 +8,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class OrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $data;
-    /**
-     * Create a new message instance.
-     */
-    public function __construct($data)
+    public $order;
+
+    public $products;
+    public $price_ship;
+
+    public function __construct($order,$products,$price_ship)
     {
-        $this->data = $data;
+        $this->order = $order;
+        $this->products = $products;
+        $this->price_ship = $price_ship;
     }
 
     /**
@@ -28,7 +32,7 @@ class OrderConfirmation extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Order Confirmation Email',
+            subject: 'Thông báo mua hàng thành công',
         );
     }
 
@@ -40,8 +44,34 @@ class OrderConfirmation extends Mailable
         return new Content(
             view: 'admin.mails.send_order_mail',
             with: [
-                'data' => $this->data,
+                'data' => $this->order,
+                'products' => $this->products,
+                'service_fee' => $this->price_ship,
                 ],
         );
+    }
+
+    public function build()
+    {
+        $email = $this->view('admin.mails.send_order_mail')
+            ->subject('Thông báo mua hàng thành công')
+            ->with([
+                'data' => $this->order,
+                'products' => $this->products,
+                'service_fee' => $this->price_ship,
+            ]);
+
+        foreach ($this->products as $product) {
+            $pathToImage = public_path('path/to/your/images/' . $product->image); // Assuming you have an 'image' attribute for each product
+
+            if (file_exists($pathToImage)) {
+                $email->attach($pathToImage, [
+                    'as' => $product->name . '.jpg',
+                    'mime' => 'image/jpeg',
+                ]);
+            }
+        }
+
+        return $email;
     }
 }

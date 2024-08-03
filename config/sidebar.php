@@ -157,15 +157,15 @@ return [
         ],
     ],
     [
-        'title' => 'Flash Sale',
+        'title' => 'Phiếu giảm giá',
         'icon' => 'ri-flashlight-line',
         'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::MARKETING->name],
         'subtitle' => [
             [
-                'title' => 'Danh sách Flash Sale',
+                'title' => 'Danh sách phiếu giảm giá',
                 'icon' => 'bi bi-activity',
-                'route' => 'flash-sales.index',
-                'name' => 'flash-sales',
+                'route' => 'vouchers.index',
+                'name' => 'vouchers',
                 'roles' => [Roles::SYSTEM_ADMINISTRATOR->name, Roles::MARKETING->name]
             ],
         ],

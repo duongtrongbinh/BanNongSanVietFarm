@@ -34,6 +34,9 @@ class OrderController extends Controller
    }
    public function orderCheckOut()
    {
+       if(!session('cart')){
+           return redirect()->route('home');
+       }
        $provinces = Provinces::query()->get();
        $vouchers = $this->voucherRepository->getVoucherActive();
        $total = 0;

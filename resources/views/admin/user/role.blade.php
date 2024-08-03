@@ -16,7 +16,14 @@
                                 <div class="card-header align-items-center d-flex">
                                     <h4 class="card-title mb-0 flex-grow-1">Tài Khoản: {{ $user->email }}</h4>
                                     <div class="flex-shrink-0">
-
+                                        @foreach($roles as $key => $item)
+                                            @if($item->id == 1)
+                                                <div class="form-check mb-3">
+                                                    <input class="form-check-input permission-checkbox" type="checkbox" id="gridCheck1" name="roles[]" value="{{ $item->id }}" {{ $item->checked ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="gridCheck1">{{ \App\Enums\Roles::from($item->id)->label() }}</label>
+                                                </div>
+                                            @endif
+                                        @endforeach
                                     </div>
                                 </div><!-- end card header -->
                                 <div class="card-body">
@@ -29,12 +36,14 @@
                                     <div class="live-preview">
                                         <div class="row">
                                             @foreach($roles as $key => $item)
+                                                @if($item->id != 1)
                                                 <div class="col-md-4">
                                                     <div class="form-check mb-3">
                                                         <input class="form-check-input permission-checkbox" type="checkbox" id="gridCheck1" name="roles[]" value="{{ $item->id }}" {{ $item->checked ? 'checked' : '' }}>
                                                         <label class="form-check-label" for="gridCheck1">{{ \App\Enums\Roles::from($item->id)->label() }}</label>
                                                     </div>
                                                 </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                         <!--end row-->
@@ -55,14 +64,4 @@
         </form>
     </div>
 @endsection
-@section('js')
-    <script>
-        document.getElementById('checked-all').addEventListener('click', function() {
-            const isChecked = this.checked;
-            const checkboxes = document.querySelectorAll('.permission-checkbox');
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = isChecked;
-            });
-        });
-    </script>
-@endsection
+
