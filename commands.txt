@@ -8,4 +8,4 @@ B2 : Chạy lần lượt từ provinces -> districts -> ward với
 
 -> Lưu ý: phần name và id đã được thay đổi giống với giữ liệu ben thứ 3 xem lại code.
 
--> php artisan import:import:system-roles
+-> php artisan import:system-roles

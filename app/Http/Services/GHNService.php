@@ -357,7 +357,7 @@ class GHNService
                     $Status = $key;
                 }
             }
-            if ($Status){
+            if ($Status != ''){
                 TransferHistory::create([
                     'order_id' => $order->id,
                     'status' => $Status,

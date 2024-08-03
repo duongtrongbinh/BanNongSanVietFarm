@@ -3,9 +3,11 @@
 namespace App\Listeners;
 
 use App\Enums\OrderStatus;
+use App\Models\OrderHistory;
 use App\Notifications\OrderFailedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class NotifyUserOfFailedJob
 {
@@ -23,8 +25,18 @@ class NotifyUserOfFailedJob
             $order = unserialize($event->job->payload()['data']['command'])->getOrder();
             $user = $order->user;
 
-            $order->status = OrderStatus::PENDING;
+            $order_history = OrderHistory::where('order_id', $order->id)->orderBy('created_at', 'desc')->first();
+
+            if ($order_history) {
+                $order_history->delete();
+            }
+
+            Log::info($order_history);
+
+            $order->status = OrderStatus::PENDING->value;
             $order->save();
+
+            Log::info($order);
 
             $user->notify(new OrderFailedNotification($order));
         }

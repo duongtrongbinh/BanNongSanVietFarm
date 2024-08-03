@@ -14,6 +14,26 @@
         .accordion-button.no-arrow:not(.collapsed)::after {
             display: none;
         }
+
+        .accordion-item {
+            position: relative;
+        }
+
+        .accordion-item:first-child::before {
+            top: 20px;
+        }
+
+        .accordion-item::before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            left: 23px;
+            border-left: 2px dashed #626264;
+        }
+
+        .accordion-item:last-child::before {
+            display: none;
+        }
     </style>
 @endsection
 @php
@@ -168,7 +188,7 @@
                                     Đơn hàng đã bị hủy
                                 </div>
                             @else
-                                @if ($order->status == OrderStatus::PENDING->value || $order->status == OrderStatus::DELIVERED->value)
+                                @if ($order->status == OrderStatus::PENDING->value || $order->status == OrderStatus::DELIVERED->value || $show)
                                     <form action="{{ route('orders.update', $order->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
@@ -191,12 +211,12 @@
                 </div>
                 <div class="card-body">
                     <div class="profile-timeline">
-                        @foreach ($orderHistoriesWithTransfers as $key => $historyWithTransfers)
-                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                            @foreach ($orderHistoriesWithTransfers as $key => $historyWithTransfers)
                                 <div class="accordion-item border-0">
                                     <div class="accordion-header" id="heading{{ $key + 1 }}">
                                         <a class="accordion-button p-2 shadow-none {{ !$historyWithTransfers['showTransferHistory'] ? 'no-arrow' : '' }}" data-bs-toggle="collapse" href="#collapse{{ $key + 1 }}" aria-expanded="{{ $historyWithTransfers['showTransferHistory'] ? 'true' : 'false' }}" aria-controls="collapse{{ $key + 1 }}">
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center position-relative">
                                                 <div class="flex-shrink-0 avatar-xs">
                                                     @foreach (OrderStatus::cases() as $statusOrder)
                                                         @if($historyWithTransfers['orderHistory']->status == $statusOrder->value)
@@ -233,8 +253,8 @@
                                         </div>
                                     @endif
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                         <!--end accordion-->
                     </div>
                 </div>
@@ -265,8 +285,8 @@
                                 </div>
                             </div>
                         </li>
-                        <li><i class="ri-mail-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->email }}</li>
-                        <li><i class="ri-phone-line me-2 align-middle text-muted fs-16"></i>{{  $order->user->phone }}</li>
+                        <li><i class="ri-mail-line me-2 align-middle text-muted fs-16"></i>{{  $order->email }}</li>
+                        <li><i class="ri-phone-line me-2 align-middle text-muted fs-16"></i>{{  $order->phone }}</li>
                         <li><i class="ri-map-pin-line align-middle me-2 text-muted fs-16"></i>{{ $order->address }}</li>
                     </ul>
                 </div>

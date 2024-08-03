@@ -1,9 +1,11 @@
 @extends('client.layouts.master')
 @section('title', 'Check Out')
 @section('css')
-  sup {
-     color: red;
-    }
+  <style>
+        .sup {
+        color: red;
+        }
+  </style>
 @endsection
 @section('content')
     <!-- Single Page Header start -->

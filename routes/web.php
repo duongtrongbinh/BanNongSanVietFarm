@@ -47,180 +47,178 @@ use \App\Enums\Roles;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+/* Route Login Admin */
+Route::group(['prefix' => 'admin'], function () {
+    Route::get('login', [AuthController::class, 'index'])->name('admin.login.form');
+    Route::post('login', [AuthController::class, 'store'])->name('admin.login');
+});
 
 /* Route Admin */
-Route::middleware(['auth'])->group(function () {
-    Route::group(['prefix' => 'admin'], function () {
-        /* Route Dashboard */
-        Route::get('dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard');
+Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
+    /* Route Dashboard */
+    Route::get('dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-        // Quản hệ thống
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
-            /* Route User */
-            Route::get('/users', [UserController::class, 'index'])->name('user.index');
-            Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
-            Route::post('/users', [UserController::class, 'store'])->name('user.store');
-            Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
-            Route::put('/users/{id}', [UserController::class, 'update'])->name('user.update');
-            Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-        });
-
-        /* Route Login Admin */
-        Route::middleware('guest')->group(function () {
-            Route::get('login', [AuthController::class, 'index'])->name('admin.login.form');
-            Route::post('login', [AuthController::class, 'store'])->name('admin.login');
-        });
-        /* Route Logout */
-        Route::middleware('auth')->group(function () {
-            Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
-        });
-
-        /* Profile */
-        Route::put('/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
-        Route::get('/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
-        Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
-        Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
-
-        // Quản lý sản phâm
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::PRODUCT_MANAGE->name]], function () {
-            /* Route Brand */
-            Route::resource('brands', BrandController::class);
-            Route::delete('brands/{id}', [BrandController::class, 'delete'])
-                ->name('brands.delete');
-
-            /* Route Category */
-            Route::resource('categories', CategoryController::class);
-
-            /* Route Product */
-            Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
-            Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
-            Route::resource('products', ProductController::class);
-            Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
-            Route::post('export', [ProductController::class, 'export'])
-                ->name('products.export');
-            Route::post('import', [ProductController::class, 'import'])
-                ->name('products.import');
-
-            /* Route Product Group */
-            Route::resource('groups', GroupController::class);
-            Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
-            Route::delete('groups/{id}', [GroupController::class, 'delete'])
-                ->name('groups.delete');
-
-            /* Route Tag */
-            Route::resource('tags', TagController::class);
-
-            /* Route Voucher */
-            Route::resource('vouchers', VoucherController::class);
-            Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
-                ->name('vouchers.deleted');
-            Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
-                ->name('restore.vouchers');
-                
-            /* Route Flash Sale */
-            Route::resource('flash-sales', FlashSaleController::class);
-
-        });
-
-        // Quản lý kho
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::WAREHOUSE_STAFF->name]], function () {
-            /* Route Supplier */
-            Route::resource('supplier', SupplierController::class);
-
-            /* Route Purchase Receipt */
-            Route::resource('purchase_receipt', PurchaseReceiptController::class);
-            Route::post('purchases/import', [PurchaseReceiptController::class, 'import'])
-                ->name('purchases.import');
-        });
-
-        // Quản lý marketing
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::MARKETING->name]], function () {
-            /* Route Banner */
-            Route::resource('banners', BannerController::class);
-            /* Route Post */
-            Route::resource('post', PostController::class);
-            Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
-                ->name('post.comment.markAsSpam');
-            Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
-                ->name('post.comment.unmarkAsSpam');
-            /* Route Comment */
-            Route::resource('comment', CommentController::class);
-            Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
-                ->name('product.comment.destroy');
-
-            /* Route Rate */
-            Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
-
-        });
-
-
-        // quản lý đơn hàng
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::ORDER_MANAGE->name]], function () {
-            /* Route Order */
-            Route::get('orders/all', [OrderController::class, 'getAll'])
-                ->name('orders.all');
-            Route::get('orders/pending', [OrderController::class, 'getPending'])
-                ->name('orders.pending');
-            Route::get('orders/processing', [OrderController::class, 'getProcessing'])
-                ->name('orders.processing');
-            Route::get('orders/shipping', [OrderController::class, 'getShipping'])
-                ->name('orders.shipping');
-            Route::get('orders/shipped', [OrderController::class, 'getShipped'])
-                ->name('orders.shipped');
-            Route::get('orders/delivered', [OrderController::class, 'getDelivered'])
-                ->name('orders.delivered');
-            Route::get('orders/completed', [OrderController::class, 'getCompleted'])
-                ->name('orders.completed');
-            Route::get('orders/cancelled', [OrderController::class, 'getCancelled'])
-                ->name('orders.cancelled');
-            Route::get('orders/returned', [OrderController::class, 'getReturned'])
-                ->name('orders.returned');
-            Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
-                ->name('orders.updateStatus');
-            Route::resource('orders', OrderController::class);
-            Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
-                ->name('orders.cancel');
-            Route::get('/bill/return', [GHNService::class, 'pay_return'])
-                ->name('bill.return');
-        });
-
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::ORDER_MANAGE->name]], function () {
-
-            /* Route Post */
-            Route::resource('post', PostController::class);
-            Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
-                ->name('post.comment.markAsSpam');
-            Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
-                ->name('post.comment.unmarkAsSpam');
-
-            /* Route Comment */
-            Route::resource('comment', CommentController::class);
-            Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
-                ->name('product.comment.destroy');
-
-            /* Route Rate */
-            Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
-        });
-
-
-        //  Route::post('/orders/{order}/retry', 'OrderController@retryOrder')->name('orders.retry');
-
-        /* Route nhân viên */
-        Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
-
-            Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
-
-            Route::get('permission/create/{role}', [PermissionController::class, 'create'])->name('permission.create');
-
-            Route::post('permission/store/{role}', [PermissionController::class, 'store'])->name('permission.store');
-
-            Route::post('roles/store/{user}', [RoleController::class, 'store'])->name('roles.store');
-
-            Route::get('roles/create/{user}', [RoleController::class, 'create'])->name('roles.create');
-        });
-
+    // Quản hệ thống
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
+        /* Route User */
+        Route::get('/users', [UserController::class, 'index'])->name('user.index');
+        Route::get('/users/create', [UserController::class, 'create'])->name('user.create');
+        Route::post('/users', [UserController::class, 'store'])->name('user.store');
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+        Route::put('/users/{id}', [UserController::class, 'update'])->name('user.update');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     });
+
+    /* Route Logout */
+    Route::post('logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+    /* Profile */
+    Route::put('/profile/update', [ProfileUserController::class, 'update'])->name('admin.profile.update');
+    Route::get('/profile', [ProfileUserController::class, 'profile'])->name('admin.profile');
+    Route::get('/showChangePasswordForm', [ProfileUserController::class, 'showChangePasswordForm'])->name('admin.showChangePasswordForm');
+    Route::post('/admin/change-password', [ProfileUserController::class, 'changePassword'])->name('admin.profile.change_password');
+
+    // Quản lý sản phâm
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::PRODUCT_MANAGE->name]], function () {
+        /* Route Brand */
+        Route::resource('brands', BrandController::class);
+        Route::delete('brands/{id}', [BrandController::class, 'delete'])
+            ->name('brands.delete');
+
+        /* Route Category */
+        Route::resource('categories', CategoryController::class);
+
+        /* Route Product */
+        Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
+        Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
+        Route::resource('products', ProductController::class);
+        Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
+        Route::post('export', [ProductController::class, 'export'])
+            ->name('products.export');
+        Route::post('import', [ProductController::class, 'import'])
+            ->name('products.import');
+
+        /* Route Product Group */
+        Route::resource('groups', GroupController::class);
+        Route::get('/get-product-group', [GroupController::class, 'getProduct'])->name('getProductGroup');
+        Route::delete('groups/{id}', [GroupController::class, 'delete'])
+            ->name('groups.delete');
+
+        /* Route Tag */
+        Route::resource('tags', TagController::class);
+
+        /* Route Voucher */
+        Route::resource('vouchers', VoucherController::class);
+        Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
+            ->name('vouchers.deleted');
+        Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
+            ->name('restore.vouchers');
+            
+        /* Route Flash Sale */
+        Route::resource('flash-sales', FlashSaleController::class);
+    });
+
+    // Quản lý kho
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::WAREHOUSE_STAFF->name]], function () {
+        /* Route Supplier */
+        Route::resource('supplier', SupplierController::class);
+
+        /* Route Purchase Receipt */
+        Route::resource('purchase_receipt', PurchaseReceiptController::class);
+        Route::post('purchases/import', [PurchaseReceiptController::class, 'import'])
+            ->name('purchases.import');
+    });
+
+    // Quản lý marketing
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::MARKETING->name]], function () {
+        /* Route Banner */
+        Route::resource('banners', BannerController::class);
+
+        /* Route Post */
+        Route::resource('post', PostController::class);
+        Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
+            ->name('post.comment.markAsSpam');
+        Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
+            ->name('post.comment.unmarkAsSpam');
+
+        /* Route Comment */
+        Route::resource('comment', CommentController::class);
+        Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
+            ->name('product.comment.destroy');
+
+        /* Route Rate */
+        Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
+    });
+
+
+    // quản lý đơn hàng
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::ORDER_MANAGE->name]], function () {
+        /* Route Order */
+        Route::get('orders/all', [OrderController::class, 'getAll'])
+            ->name('orders.all');
+        Route::get('orders/pending', [OrderController::class, 'getPending'])
+            ->name('orders.pending');
+        Route::get('orders/processing', [OrderController::class, 'getProcessing'])
+            ->name('orders.processing');
+        Route::get('orders/shipping', [OrderController::class, 'getShipping'])
+            ->name('orders.shipping');
+        Route::get('orders/shipped', [OrderController::class, 'getShipped'])
+            ->name('orders.shipped');
+        Route::get('orders/delivered', [OrderController::class, 'getDelivered'])
+            ->name('orders.delivered');
+        Route::get('orders/completed', [OrderController::class, 'getCompleted'])
+            ->name('orders.completed');
+        Route::get('orders/cancelled', [OrderController::class, 'getCancelled'])
+            ->name('orders.cancelled');
+        Route::get('orders/returned', [OrderController::class, 'getReturned'])
+            ->name('orders.returned');
+        Route::post('/orders/update-status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+        Route::get('orders/{order}/edit/{return?}', [OrderController::class, 'edit'])
+            ->name('orders.edit');
+        Route::resource('orders', OrderController::class)->except('edit');
+        Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
+            ->name('orders.cancel');
+        Route::get('/bill/return', [GHNService::class, 'pay_return'])
+            ->name('bill.return');
+    });
+
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::ORDER_MANAGE->name]], function () {
+
+        /* Route Post */
+        Route::resource('post', PostController::class);
+        Route::put('post/{postId}/comment/{commentId}/mark-as-spam', [PostController::class, 'markCommentAsSpam'])
+            ->name('post.comment.markAsSpam');
+        Route::put('post/{postId}/comment/{commentId}/unmark-as-spam', [PostController::class, 'unmarkCommentAsSpam'])
+            ->name('post.comment.unmarkAsSpam');
+
+        /* Route Comment */
+        Route::resource('comment', CommentController::class);
+        Route::delete('products/{productId}/comments/{commentId}', [CommentController::class, 'destroy'])
+            ->name('product.comment.destroy');
+
+        /* Route Rate */
+        Route::resource('rate', CommentController::class); // Demo - Nguyễn Tiến Hiếu
+    });
+
+
+    //  Route::post('/orders/{order}/retry', 'OrderController@retryOrder')->name('orders.retry');
+
+    /* Route nhân viên */
+    Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
+
+        Route::get('permission', [PermissionController::class, 'index'])->name('permission.index');
+
+        Route::get('permission/create/{role}', [PermissionController::class, 'create'])->name('permission.create');
+
+        Route::post('permission/store/{role}', [PermissionController::class, 'store'])->name('permission.store');
+
+        Route::post('roles/store/{user}', [RoleController::class, 'store'])->name('roles.store');
+
+        Route::get('roles/create/{user}', [RoleController::class, 'create'])->name('roles.create');
+    });
+
 });
 
 /* Route Client */
@@ -231,13 +229,16 @@ Route::group(['prefix' => ''], function () {
         Route::get('/san-pham/{slug}', 'product')->name('product');
         Route::get('/danh-muc/{slug}', 'category')->name('category');
     });
+
     /* Route Rating */
     Route::post('/rating', [CommentClientController::class, 'rating'])->name('rating');
+
     /* Route Shop */
     Route::controller(ShopController::class)->group(function () {
         Route::get('/cua-hang', 'shop')->name('shop');
         Route::get('/thuong-hieu/{slug}', 'brand')->name('brand');
     });
+
     /* Route Post */
     Route::resource('bai-viet', PostClientController::class)->names('postclient');
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
@@ -258,13 +259,17 @@ Route::group(['prefix' => ''], function () {
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
-    Route::get('/order',[OrderClientController::class, 'index'])->name('order.index');
+    Route::get('/don-hang', [OrderClientController::class, 'index'])->name('order.index');
     Route::get('/fetch-orders', [OrderClientController::class, 'fetchOrders'])->name('fetch.orders');
-    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+    Route::get('/chi-tiet-don-hang/{order}',[OrderClientController::class,'detail'])->name('order.detail');
     Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
-
+    Route::post('orders/{order}/cancel', [OrderClientController::class, 'cancel'])
+        ->name('orders.cancel');
+    Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])
+        ->name('orders.checking');
+        
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
