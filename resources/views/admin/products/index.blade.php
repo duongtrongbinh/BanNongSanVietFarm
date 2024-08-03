@@ -51,16 +51,16 @@
                                         <button type="submit" class="btn btn-primary">Nhập</button>
                                       </div>
                                     </form>
+                                    @if ($errors->any())
+                                      <div class="overflow-auto border-top" style="max-height: 500px;">
+                                          <ul>
+                                              @foreach ($errors->all() as $error)
+                                                <li class="text-danger">{{ $error }}</li>
+                                              @endforeach
+                                          </ul>
+                                      </div>
+                                    @endif
                                   </div>
-                                  @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                              <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                  @endif
                                 </div>
                               </div>
                               <!-- End Basic Modal-->
@@ -147,6 +147,10 @@
             type: 'GET',
           },
           autoWidth: false,
+          "language": {
+              "emptyTable": "Không có dữ liệu trong bảng",
+              "sProcessing": "Đang xử lý...",
+          },
           columns: [
             { data: 'stt', name: 'stt' },
             { data: 'image', name: 'image', orderable: false, searchable: false},
@@ -196,6 +200,9 @@
           text: "Kiểm tra lại dữ liệu trong file!",
           icon: "error"
         });
+
+        var modal = new bootstrap.Modal(document.getElementById('basicModal'));
+        modal.show();
       </script>
     @endif
 @endsection

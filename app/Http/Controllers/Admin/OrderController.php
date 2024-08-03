@@ -40,7 +40,7 @@ class OrderController extends Controller
 
         return DataTables::of($orders)
         ->addColumn('checked', function ($order) {
-            return '<input type="checkbox" class="selectCheckbox" value="'.$order->id.'">';
+            return '<input type="checkbox" class="selectCheckbox" value="'.$order->id.'" name="checkbox">';
         })
         ->addColumn('stt', function ($order) use (&$stt) {
             return $stt++;
@@ -61,7 +61,7 @@ class OrderController extends Controller
             return number_format($order->after_total_amount) . ' VNĐ';
         })
         ->addColumn('payment', function ($order) {
-            return $order->payment_method == 0 ? 'VNPAY' : 'COD';
+            return $order->payment_status == 0 ? 'VNPAY' : 'COD';
         })
         ->addColumn('status', function ($order) {
             $statusData = [

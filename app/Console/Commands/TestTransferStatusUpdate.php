@@ -28,9 +28,6 @@ class TestTransferStatusUpdate extends Command
             'status' => $status,
         ]);
 
-         // Dispatch job
-        UpdateOrderStatusJob::dispatch($transferHistory);
-
         $this->info('Transfer status updated and event triggered.');
     }
 }

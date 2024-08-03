@@ -19,6 +19,7 @@ use App\Models\ProductImage;
 use App\Models\ProductRelated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -256,7 +257,7 @@ class ProductController extends Controller
         $import = new ProductsImport($file);
 
         Excel::import($import, $file);
-            
+
         return redirect()->back()->with('created', 'Thêm mới sản phẩm thành công!');
     }
 }

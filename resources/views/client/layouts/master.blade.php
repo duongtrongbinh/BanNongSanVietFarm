@@ -136,7 +136,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div data-simplebar style="max-height: 100%;" class="div-cart">
+                                    <div style="height: 330px;" class="div-cart overflow-auto">
                                         <div class="p-2 cart-items">
 
                                         </div>
@@ -165,7 +165,7 @@
                                 cartArray.forEach(function(product) {
                                     total = (product.price * product.quantity);
                                     const cartList = document.createElement('div');
-                                    cartList.classList.add('d-block', 'dropdown-item', 'dropdown-item-cart', 'text-wrap', 'px-3', 'py-2');
+                                    cartList.classList.add('d-block', 'dropdown-item', 'dropdown-item-cart', 'px-3', 'py-2');
                                     cartList.innerHTML = `
                                         <div class="d-block text-wrap px-3 py-2">
                                             <div class="d-flex align-items-center">

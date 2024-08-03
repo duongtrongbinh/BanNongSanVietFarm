@@ -24,8 +24,8 @@ class TagSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Rau má',
-                'slug' => 'rau-ma',
+                'name' => 'Tươi ngon',
+                'slug' => 'tuoi-ngon',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

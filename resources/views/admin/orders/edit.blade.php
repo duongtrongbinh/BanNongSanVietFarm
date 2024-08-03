@@ -36,7 +36,7 @@
       </nav>
     </div>
     <!-- End Page Title -->
-    <section class="section">
+    <section class="section dashboard">
       <div class="row">
         <div class="col-9">
             <div class="card">

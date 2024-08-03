@@ -44,7 +44,7 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Thương hiệu</h4>
-                                            <ul class="list-unstyled fruite-categorie">
+                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="height: 200px;">
                                                 @foreach ($brands as $brand)
                                                     @if ($brand->products->isNotEmpty())
                                                         <li>
@@ -65,7 +65,7 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Danh mục</h4>
-                                            <ul class="list-unstyled fruite-categorie">
+                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="height: 200px;">
                                                 @foreach ($categories as $category)
                                                     @if ($category->products->isNotEmpty())
                                                         <li>

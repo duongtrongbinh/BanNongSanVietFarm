@@ -1,5 +1,14 @@
 @extends('client.layouts.master')
 @section('title', 'Cửa hàng')
+@section('css')
+    <style>
+        .pagination {
+            margin-top: 20px;
+            white-space: nowrap;
+            justify-content: center;
+        }
+    </style>
+@endsection
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
@@ -44,7 +53,7 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Thương hiệu</h4>
-                                            <ul class="list-unstyled fruite-categorie">
+                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="height: 200px">
                                                 @foreach ($brands as $brand)
                                                     @if ($brand->products->isNotEmpty())
                                                         <li>
@@ -66,7 +75,7 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Danh mục</h4>
-                                            <ul class="list-unstyled fruite-categorie">
+                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="height: 200px">
                                                 @foreach ($categories as $category)
                                                     @if ($category->products->isNotEmpty())
                                                         <li>
