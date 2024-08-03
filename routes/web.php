@@ -52,9 +52,7 @@ use \App\Enums\Roles;
 Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         /* Route Dashboard */
-        Route::get('dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard');
-
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         // quản hệ thống
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
             /* Route User */
@@ -99,17 +97,6 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('categories', CategoryController::class);
             Route::delete('categories/{id}', [CategoryController::class, 'delete'])
                 ->name('categories.delete');
-
-            /* Route Product */
-            Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
-            Route::resource('products', ProductController::class);
-            Route::get('/get-product', [ProductController::class, 'getProduct'])->name('getProduct');
-            Route::delete('products/{id}', [ProductController::class, 'delete'])
-                ->name('products.delete');
-            Route::get('export', [ProductController::class, 'export'])
-                ->name('products.export');
-            Route::post('import', [ProductController::class, 'import'])
-                ->name('products.import');
             /* Route Product */
             Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
             Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
@@ -126,10 +113,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('groups/{id}', [GroupController::class, 'delete'])
                 ->name('groups.delete');
 
-            /* Route Tag */
-            Route::resource('tags', TagController::class);
-            Route::delete('tags/{id}', [TagController::class, 'delete'])
-                ->name('tags.delete');
             /* Route Tag */
             Route::resource('tags', TagController::class);
             Route::delete('tags/{id}', [TagController::class, 'delete'])

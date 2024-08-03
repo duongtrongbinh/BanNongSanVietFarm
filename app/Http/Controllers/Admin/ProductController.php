@@ -114,7 +114,7 @@ class ProductController extends Controller
     public function getProductsByCategory(Request $request)
     {
         $categoryId = $request->input('category_id');
-        
+
         // Lấy sản phẩm theo category_id
         $products = Product::where('category_id', $categoryId)->get(['id', 'name', 'image', 'price_sale']);
 
@@ -148,7 +148,7 @@ class ProductController extends Controller
                 $this->productRelatedRepository->createWithRelations($request->all(), ['product']);
             }
         }
-        
+
         return redirect()
             ->route('products.index')
             ->with('created', 'Thêm mới sản phẩm thành công!');
@@ -237,12 +237,12 @@ class ProductController extends Controller
         }
         DB::table('product_tags')->where('product_id', $product->id)->delete();
         $this->productRepository->destroy($product->id);
-        
+
         return response()->json(true);
     }
 
-    public function export(Request $request) 
-    {   
+    public function export(Request $request)
+    {
         $paginate = $request->input('paginate', 10);
 
         $export = new ProductsExport($paginate);
@@ -250,13 +250,13 @@ class ProductController extends Controller
         return Excel::download($export, 'products.xlsx');
     }
 
-    public function import(ProductsImportRequest $request) 
+    public function import(ProductsImportRequest $request)
     {
         $file = $request->file('product_file');
         $import = new ProductsImport($file);
 
         Excel::import($import, $file);
-            
+
         return redirect()->back()->with('created', 'Thêm mới sản phẩm thành công!');
     }
 }

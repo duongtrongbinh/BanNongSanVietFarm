@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AddressController;
+use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,8 @@ Route::post('nongsanvietfam/delivery-status', [App\Http\Services\GHNService::cla
 Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('provinces.address');
 Route::get('/districts/{provinceId}', [AddressController::class, 'getDistricts'])->name('districts.address');
 Route::get('/wards/{districtId}', [AddressController::class, 'getWards'])->name('wards.address');
+
+// dashboard
+Route::get('orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
+Route::get('/orders/total', [DashboardController::class, 'ordersTotal'])->name('dashboard.orders.total');
+Route::get('users', [DashboardController::class, 'users'])->name('dashboard.users');
