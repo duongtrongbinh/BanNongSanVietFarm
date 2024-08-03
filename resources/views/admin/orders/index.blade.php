@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
     <style>
+        .nav-tabs .nav-item {
+            flex: 1 1 auto;
+        }
+
+        .nav-tabs .nav-link {
+            width: 100%;
+        }
+
         .update-status-div {
             display: none; /* Ẩn phần tử ban đầu */
             position: fixed;
@@ -38,16 +46,16 @@
       <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header border-0">
+                {{-- <div class="card-header border-0">
                     <div class="row align-items-center gy-3">
                         <div class="col-sm-auto">
                             <div class="d-flex gap-1 flex-wrap">
-                                {{-- <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a> --}}
-                                {{-- <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a> --}}
+                                <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a>
+                                <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <div class="card-body pt-3">
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
@@ -110,13 +118,13 @@
                     @csrf
                         <div class="tab-content pt-2">
                             <!-- All Orders -->
-                            <div class="tab-pane fade show active all-orders" id="all-orders">
+                            <div class="tab-pane fade pt-3 show active all-orders" id="all-orders">
                                 <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                         data-url="{{ route('orders.all') }}">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -132,13 +140,13 @@
                                 </table>
                             </div>
                             <!-- Pending -->
-                            <div class="tab-pane fade pending pt-3" id="pending">
+                            <div class="tab-pane fade pending pt-3 " id="pending">
                                 <table id="table1" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                     data-url="{{ route('orders.pending') }}">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -154,13 +162,13 @@
                                 </table>
                             </div>
                             <!-- Processing -->
-                            <div class="tab-pane fade prepare pt-3" id="processing">
+                            <div class="tab-pane fade processing pt-3" id="processing">
                                 <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                     data-url="{{ route('orders.processing') }}">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -182,7 +190,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -204,7 +212,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -226,7 +234,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -248,7 +256,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -270,7 +278,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -292,7 +300,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -360,6 +368,10 @@
                     serverSide: true,
                     ajax: $('#' + tableId).data('url'),
                     autoWidth: false,
+                    "language": {
+                        "emptyTable": "Không có dữ liệu trong bảng",
+                        "sProcessing": "Đang xử lý...",
+                    },
                     columns: [
                         { data: 'checked', name: 'checked', orderable: false, searchable: false },
                         { data: 'stt', name: 'stt' },
@@ -551,12 +563,6 @@
             initializeDataTable('table6');
             initializeDataTable('table7');
             initializeDataTable('table8');
-
-            $('#export').click(function() {
-                var table = document.getElementById("table0");
-                var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
-                XLSX.writeFile(wb, "orders.xlsx");
-            });
         });
     </script>
 @endsection

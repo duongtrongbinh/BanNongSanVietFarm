@@ -223,9 +223,9 @@
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-between mt-3">
-                                            <h6 class="mb-0 me-4">Mã giảm giá :</h6>
+                                            <h6 class="mb-0 me-4">Áp dụng khuyến mãi :</h6>
                                             <div class="">
-                                                <p class="mb-0" id="service_fee">0.00</p>
+                                                <p class="mb-0" id="voucher_fee">0.00</p>
                                             </div>
                                         </div>
                                     </div>

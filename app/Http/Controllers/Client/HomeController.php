@@ -43,6 +43,11 @@ class HomeController extends Controller
 
     public function home()
     {
+        $banners = Banner::where('is_home', 1)
+        ->where('is_active', 1)
+        ->orderByDesc('id')
+        ->get(['image']);
+
         $products = $this->productRepository->getHomeLatestAllWithRelationsPaginate(8, ['category']);
 
         $categories = Category::with(['products' => function ($query) {
@@ -51,14 +56,11 @@ class HomeController extends Controller
                 ->orderBy('id', 'desc');
         }])->get();
 
+        $seenProductIds = collect();
+
         $categories->each(function ($category) {
             $category->products = $category->products->take(8);
         });
-
-        $banners = Banner::where('is_home', 1)
-            ->where('is_active', 1)
-            ->orderByDesc('id')
-            ->get(['image']);
 
         $top10Products = Product::with(['comments', 'orderDetails'])
         ->withCount([
@@ -77,7 +79,7 @@ class HomeController extends Controller
         $top6Products = $top10Products->take(6);
         $next4Products = $top10Products->skip(6)->take(4);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('products', 'categories','banners', 'top6Products', 'next4Products'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('banners', 'products', 'categories', 'top6Products', 'next4Products'));
     }
 
     public function product($slug)

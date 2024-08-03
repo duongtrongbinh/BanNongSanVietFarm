@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Tag;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -104,7 +105,6 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
                 $brandName = trim($row['ten_thuong_hieu']);
                 $tags = array_map('trim', explode(',', trim($row['ten_nhan'])));
                 $content = trim($row['noi_dung']); 
-
                 // Chuyển đổi các dòng xuống dòng thành thẻ HTML <br>
                 $content = nl2br($content); // hoặc tùy chọn khác nếu cần
 
@@ -141,7 +141,7 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
                     $product->tags()->attach($this->syncTags($tags));
                 }
             }
-    
+            
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -158,7 +158,7 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
     public function rules(): array
     {
         return [
-            'ten_san_pham' => 'required',
+            'ten_san_pham' => 'required|max:255',
             'ten_danh_muc' => 'required|exists:categories,name',
             'ten_thuong_hieu' => 'required|exists:brands,name',
             'gia_goc_vnd' => 'required|numeric',
@@ -168,37 +168,37 @@ class ProductsImport extends DefaultValueBinder implements ToCollection, WithHea
             'chieu_rong_cm' => 'integer|required|max:200',
             'chieu_cao_cm' => 'integer|required|max:200',
             'trong_luong_gam' => 'integer|required|max:1600000',
-            'ten_nhan' => 'exists:tags,name',
+            'ten_nhan.*' => 'exists:tags,name',
         ];
     }
 
     public function customValidationMessages()
     {
         return [
-            'ten_san_pham.required' => 'Tên sản phẩm là bắt buộc.',
-            'ten_san_pham.max' => 'Tên sản phẩm không được vượt quá :max ký tự.',
-            'ten_danh_muc.required' => 'Danh mục là bắt buộc.',
+            'ten_san_pham.required' => 'Tên sản phẩm không được để trống.',
+            'ten_san_pham.max' => 'Tên sản phẩm không được vượt quá 255 ký tự.',
+            'ten_danh_muc.required' => 'Danh mục không được để trống.',
             'ten_danh_muc.exists' => 'Danh mục không tồn tại.',
-            'ten_thuong_hieu.required' => 'Thương hiệu là bắt buộc.',
+            'ten_thuong_hieu.required' => 'Thương hiệu không được để trống.',
             'ten_thuong_hieu.exists' => 'Thương hiệu không tồn tại.',
-            'gia_goc_vnd.required' => 'Giá gốc là bắt buộc.',
+            'gia_goc_vnd.required' => 'Giá gốc không được để trống.',
             'gia_goc_vnd.numeric' => 'Giá gốc là số.',
-            'gia_giam_vnd.required' => 'Giá giảm là bắt buộc.',
+            'gia_giam_vnd.required' => 'Giá giảm không được để trống.',
             'gia_giam.numeric' => 'Giá giảm là số.',
-            'so_luong.required' => 'Số lượng là bắt buộc.',
+            'so_luong.required' => 'Số lượng không được để trống.',
             'chieu_dai_cm.integer' => 'Chiều dài phải là số nguyên.',
-            'chieu_dai_cm.required' => 'Chiều dài là bắt buộc.',
-            'chieu_dai_cm.max' => 'Chiều dài không được vượt quá :max.',
+            'chieu_dai_cm.required' => 'Chiều dài không được để trống.',
+            'chieu_dai_cm.max' => 'Chiều dài không được vượt quá 200 cm.',
             'chieu_rong_cm.integer' => 'Chiều rộng phải là số nguyên.',
-            'chieu_rong_cm.required' => 'Chiều rộng là bắt buộc.',
-            'chieu_rong_cm.max' => 'Chiều rộng không được vượt quá :max.',
+            'chieu_rong_cm.required' => 'Chiều rộng không được để trống.',
+            'chieu_rong_cm.max' => 'Chiều rộng không được vượt quá 200 cm.',
             'chieu_cao_cm.integer' => 'Chiều cao phải là số nguyên.',
-            'chieu_cao_cm.required' => 'Chiều cao là bắt buộc.',
-            'chieu_cao_cm.max' => 'Chiều cao không được vượt quá :max.',
+            'chieu_cao_cm.required' => 'Chiều cao không được để trống.',
+            'chieu_cao_cm.max' => 'Chiều cao không được vượt quá 200 cm.',
             'trong_luong_gam.integer' => 'Trọng lượng phải là số nguyên.',
-            'trong_luong_gam.required' => 'Trọng lượng là bắt buộc.',
-            'trong_luong_gam.max' => 'Trọng lượng không được vượt quá :max.',
-            'ten_nhan.exists' => 'Nhãn không tồn tại.',
+            'trong_luong_gam.required' => 'Trọng lượng không được để trống.',
+            'trong_luong_gam.max' => 'Trọng lượng không được vượt quá 1600000 gam.',
+            'ten_nhan.*.exists' => 'Nhãn không tồn tại.',
         ];
     }
 

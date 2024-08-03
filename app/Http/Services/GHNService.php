@@ -7,6 +7,7 @@ use App\Enums\TypeUnitEnum;
 use App\Http\Requests\OrderRequest;
 use App\Jobs\SendOrderConfirmation;
 use App\Jobs\SendOrderToGHN;
+use App\Jobs\UpdateOrderStatusJob;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
@@ -231,7 +232,7 @@ class GHNService
 
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
-            $data['payment_method'] = ($data['payment_method'] == 'VNPAYQR') ? 1 : 0;
+            $data['payment_method'] = $data['payment_method'] ? 1 : 2;
             if(Auth::user()->id){
                 $data['user_id'] = Auth::user()->id;
             }else{
@@ -311,7 +312,6 @@ class GHNService
     {
         $value = $this->fillterDataShipping($request->all());
         $product = $this->formatDataGHN(session('cart'));
-
         $jsonData = [
             "service_type_id" => $value["service_type_id"],
             "to_district_id" => (int)$value["to_district_id"],
@@ -330,6 +330,7 @@ class GHNService
         ];
 
         if ($value['to_ward_code']){
+
             $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
             if ($response->successful()) {
                 $responseData = $response->json();
@@ -370,28 +371,26 @@ class GHNService
  public function delivery(Request $request)
     {
         $Status = '';
-
         $order = Order::query()->where('order_code',$request->OrderCode)->first();
-
-        if(!empty($order)){
-            foreach(TransferStatus::values() as $value => $name){
-                Log::debug($request->Status);
-                if (strtoupper($request->Status) == $name){
-                    $Status = $name;
+        if($order){
+            foreach(TransferStatus::values() as $key => $value){
+                if (strtoupper($request->Status) == $value){
+                    $Status = $key;
                 }
             }
-            if(!empty($Status)){
+            if ($Status != ''){
                 TransferHistory::create([
                     'order_id' => $order->id,
                     'status' => $Status,
                     'warehouse' => $request->Warehouse,
                 ]);
+                 UpdateOrderStatusJob::dispatch($order->order_id, $order->status);
                 return response()->json('success',200);
             }else{
-                return response()->json(['error', 'Không tìm thấy trạng thái đơn hàng.'],400);
+                return response()->json([$Status, 'Không tìm thấy trạng thái đơn hàng.'],400);
             }
         }else{
-                return response()->json(['error', 'Không tìm thấy đơn hàng.'],400);
+                return response()->json([$order, 'Không tìm thấy đơn hàng.'],400);
         }
     }
 

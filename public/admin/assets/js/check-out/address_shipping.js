@@ -21,7 +21,12 @@ $(document).ready(function() {
                     total_cart: total_cart,
                 }),
                 success: function (response) {
-                    console.log(response);
+                    if(response.message){
+
+                      $("#voucher_fee").html(number_format(response.amount));
+
+                      $("#total_cart").html(number_format(response.total_apply_voucher));
+                    }
                     hideVoucher();
                 },
                 error: function (xhr, status, error) {

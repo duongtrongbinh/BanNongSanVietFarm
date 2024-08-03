@@ -1,24 +1,21 @@
 @extends('client.layouts.master')
 @section('title', 'Thông tin tài khoản')
+@section('styles')
+    <style>
+        .form-group.mb-3 .row {
+            align-items: center;
+        }
 
-<style>
-    .form-group.mb-3 .row {
-        align-items: center;
-    }
+        .form-group.mb-3 .col-md-6 {
+            display: flex;
+            align-items: center;
+        }
 
-    .form-group.mb-3 .col-md-6 {
-        display: flex;
-        align-items: center;
-    }
-
-    .form-group.mb-3 .col-md-6 > label {
-        margin-right: 10px;
-    }
-
-    #lfm {
-        display: none;
-    }
-</style>
+        .form-group.mb-3 .col-md-6 > label {
+            margin-right: 10px;
+        }
+    </style>
+@endsection
 @section('content')
     @php
         $update= session('update');

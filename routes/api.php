@@ -31,5 +31,3 @@ Route::post('voucher/apply', [App\Http\Controllers\Api\VoucherController::class,
 Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('provinces.address');
 Route::get('/districts/{provinceId}', [AddressController::class, 'getDistricts'])->name('districts.address');
 Route::get('/wards/{districtId}', [AddressController::class, 'getWards'])->name('wards.address');
-
-

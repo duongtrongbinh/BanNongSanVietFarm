@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class OrderConfirmation extends Mailable
 {
@@ -51,27 +52,4 @@ class OrderConfirmation extends Mailable
         );
     }
 
-    public function build()
-    {
-        $email = $this->view('admin.mails.send_order_mail')
-            ->subject('Thông báo mua hàng thành công')
-            ->with([
-                'data' => $this->order,
-                'products' => $this->products,
-                'service_fee' => $this->price_ship,
-            ]);
-
-        foreach ($this->products as $product) {
-            $pathToImage = public_path('path/to/your/images/' . $product->image); // Assuming you have an 'image' attribute for each product
-
-            if (file_exists($pathToImage)) {
-                $email->attach($pathToImage, [
-                    'as' => $product->name . '.jpg',
-                    'mime' => 'image/jpeg',
-                ]);
-            }
-        }
-
-        return $email;
-    }
 }

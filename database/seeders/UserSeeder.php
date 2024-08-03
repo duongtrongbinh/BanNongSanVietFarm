@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
                 'avatar' => $faker->optional()->imageUrl(200, 200, 'people'),
                 'email' => $faker->unique()->safeEmail,
                 'phone' => $faker->optional()->phoneNumber,
-                'password' => Hash::make('password'), // Mật khẩu giả định
+                'password' => Hash::make('password'), 
                 'remember_token' => Str::random(10),
                 'user_code' => Str::uuid(),
                 'type_social' => $faker->numberBetween(0, 1),

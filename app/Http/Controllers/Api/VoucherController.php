@@ -24,12 +24,22 @@ class VoucherController extends Controller
         $voucher = Voucher::query()->find($request->voucher_id);
         $voucherApply = 0;
         if($voucher->type_unit == 0){
-            $voucherApply =  ( 100 - number_format($voucher->amount));
-        }else{
             $voucherApply = $request->total_cart - $voucher->amount;
+        }else{
+            $voucherApply = $request->total_cart * (100 - $voucher->amount) / 100;
         }
 
-        return response()->json([$voucherApply],200);
+        $price =  $request->total_cart - $voucherApply;
+
+        session(['voucher_amount' => $voucher->amount]);
+
+        $data = [
+            'message' => true,
+            'total_apply_voucher' => $voucherApply,
+            'amount' => $price
+        ];
+
+        return response()->json($data,200);
     }
 
     /**
