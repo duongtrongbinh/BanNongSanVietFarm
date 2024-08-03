@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\NotificationSystem;
+use App\Events\SystemNotificationEvent;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
 use App\Http\Services\GHNService;
+use App\Jobs\SendOrderConfirmation;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\client\FaceBookLoginController;
@@ -37,6 +40,10 @@ use \App\Http\Controllers\Admin\PermissionController;
 use \App\Http\Controllers\Admin\RoleController;
 use \App\Enums\Roles;
 
+use \App\Http\Controllers\Admin\SystemNotificationController;
+
+use App\Notifications\SystemNotification;
+use \Illuminate\Support\Facades\Notification;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,10 +56,13 @@ use \App\Enums\Roles;
 */
 
 /* Route Admin */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['admin.auth'])->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         /* Route Dashboard */
-        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::post('notifications',[SystemNotificationController::class,'destroy'])->name('notifications.destroy');
         // quản hệ thống
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
             /* Route User */
@@ -91,13 +101,6 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('categories', CategoryController::class);
 
             /* Route Product */
-            Route::delete('categories/{id}', [CategoryController::class, 'delete'])
-                ->name('categories.delete');
-            /* Route Category */
-            Route::resource('categories', CategoryController::class);
-            Route::delete('categories/{id}', [CategoryController::class, 'delete'])
-                ->name('categories.delete');
-            /* Route Product */
             Route::get('products/data', [ProductController::class, 'getData'])->name('products.data');
             Route::get('/get-products-by-category', [ProductController::class, 'getProductsByCategory'])->name('products.category');
             Route::resource('products', ProductController::class);
@@ -115,21 +118,21 @@ Route::middleware(['auth'])->group(function () {
 
             /* Route Tag */
             Route::resource('tags', TagController::class);
-            Route::delete('tags/{id}', [TagController::class, 'delete'])
-                ->name('tags.delete');
 
             /* Route Voucher */
             Route::resource('vouchers', VoucherController::class);
+
             Route::get('adeleted/vouchers', [VoucherController::class, 'deleted'])
                 ->name('vouchers.deleted');
             Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
                 ->name('restore.vouchers');
+
             /* Route Flash Sale */
             Route::resource('flash-sales', FlashSaleController::class);
 
         });
 
-        // quản lý kho
+        // Quản lý kho
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::WAREHOUSE_STAFF->name]], function () {
             /* Route Supplier */
             Route::resource('supplier', SupplierController::class);
@@ -140,7 +143,7 @@ Route::middleware(['auth'])->group(function () {
                 ->name('purchases.import');
         });
 
-        // quản lý marketing
+        // Quản lý marketing
         Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name], ['role:' . Roles::MARKETING->name]], function () {
             /* Route Banner */
             Route::resource('banners', BannerController::class);
@@ -231,9 +234,8 @@ Route::middleware(['auth'])->group(function () {
 
 
 /* Route Client */
-
-/* Route Home */
 Route::group(['prefix' => ''], function () {
+    /* Route Home */
     Route::controller(HomeController::class)->group(function () {
         Route::get('/', 'home')->name('home');
         Route::get('/san-pham/{slug}', 'product')->name('product');
@@ -249,6 +251,7 @@ Route::group(['prefix' => ''], function () {
     /* Route Post */
     Route::resource('bai-viet', PostClientController::class)->names('postclient');
     Route::post('/ratingpost', [PostClientController::class, 'ratingpost'])->name('ratingpost');
+
     /* Route Cart */
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'index')->name('cart.index');
@@ -257,6 +260,7 @@ Route::group(['prefix' => ''], function () {
         Route::delete('/remove', 'removeCart')->name('cart.remove');
         Route::post('/update', 'updateCart')->name('cart.update');
     });
+
     /* Profile */
     Route::put('/profile/update', [ProfileUserClientController::class, 'update'])->name('user.profile.update');
     Route::get('/profile', [ProfileUserClientController::class, 'profile'])->name('user.profile');
@@ -264,21 +268,19 @@ Route::group(['prefix' => ''], function () {
     Route::post('/user/change-password', [ProfileUserClientController::class, 'changePassword'])->name('user.profile.change_password');
 
     /* Route Order */
-    Route::get('/order', [OrderClientController::class, 'index'])->name('order.index');
-    Route::get('/order-detail/{order}', [OrderClientController::class, 'detail'])->name('order.detail');
-    Route::get('/check-out', [OrderClientController::class, 'orderCheckOut'])->name('checkout');
-    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
-
-    Route::get('/check-out/success/{order}', [OrderClientController::class, 'success'])->name('checkout.success');
+    Route::get('/order',[OrderClientController::class, 'index'])->name('order.index');
+    Route::get('/fetch-orders', [OrderClientController::class, 'fetchOrders'])->name('fetch.orders');
+    Route::get('/order-detail/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
 
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
-
         Route::get('login', 'showLoginForm')->name('login');
         Route::post('register', 'register');
         Route::post('login', 'login')->name('clientlogin');
-
         Route::post('logout', 'logout')->name('logout');
         Route::get('actived/{user}/{token}', 'activated')->name('user.activated');
     });
@@ -290,6 +292,7 @@ Route::group(['prefix' => ''], function () {
         Route::get('reset-password/{user}/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
         Route::post('reset-password/{user}/{token}', [ForgotPasswordController::class, 'reset']);
     });
+
     /* Route Auth Google */
     Route::controller(GoogleLoginController::class)->group(function () {
         Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
@@ -307,8 +310,24 @@ Route::group(['prefix' => ''], function () {
     });
 });
 
+    /* Route 404 */
+    Route::get('404', function () {
+        return view('client.layouts.404');
+    })->name('404');
 
-/* Route 404 */
-Route::get('404', function () {
-    return view('client.layouts.404');
+Route::get('/notify', function () {
+
+    $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
+
+    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+
+//
+
+//
+//    Notification::send(Roles::admins(),new SystemNotification($order));
+//
+//    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
+//
+//    dd('done');
+
 })->name('404');

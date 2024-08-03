@@ -34,7 +34,7 @@ class OrderController extends Controller
    }
    public function orderCheckOut()
    {
-    if(!session('cart')){
+       if(!session('cart')){
            return redirect()->route('home');
        }
        $provinces = Provinces::query()->get();

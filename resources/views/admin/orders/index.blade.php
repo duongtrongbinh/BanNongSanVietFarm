@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
     <style>
+        .nav-tabs .nav-item {
+            flex: 1 1 auto;
+        }
+
+        .nav-tabs .nav-link {
+            width: 100%;
+        }
+
         .update-status-div {
             display: none; /* Ẩn phần tử ban đầu */
             position: fixed;
@@ -38,16 +46,16 @@
       <div class="row">
         <div class="col">
             <div class="card">
-                <div class="card-header border-0">
+                {{-- <div class="card-header border-0">
                     <div class="row align-items-center gy-3">
                         <div class="col-sm-auto">
                             <div class="d-flex gap-1 flex-wrap">
-                                {{-- <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a> --}}
-                                {{-- <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a> --}}
+                                <a type="button" class="btn btn-success add-btn"><i class="ri-add-line align-bottom me-1"></i> Tạo mới</a>
+                                <a id="export" class="btn btn-secondary"><i class="bi bi-file-earmark-arrow-up me-1"></i> Xuất</a>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <div class="card-body pt-3">
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
@@ -59,49 +67,49 @@
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">
-                                <i class="ri-more-fill me-1 align-bottom"></i> 
+                                <i class="ri-more-fill me-1 align-bottom"></i>
                                 Đang chờ xử lý
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#processing">
-                                <i class="ri-loader-2-fill me-1 align-bottom"></i> 
+                                <i class="ri-loader-2-fill me-1 align-bottom"></i>
                                 Đang xử lý
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping">
-                                <i class="ri-truck-fill me-1 align-bottom"></i> 
+                                <i class="ri-truck-fill me-1 align-bottom"></i>
                                 Vận chuyển
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipped">
-                                <i class="ri-takeaway-fill me-1 align-bottom"></i> 
+                                <i class="ri-takeaway-fill me-1 align-bottom"></i>
                                 Giao hàng
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#delivered">
-                                <i class="ri-user-received-fill me-1 align-bottom"></i> 
+                                <i class="ri-user-received-fill me-1 align-bottom"></i>
                                 Đã nhận hàng
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed">
-                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i> 
+                                <i class="ri-checkbox-circle-fill me-1 align-bottom"></i>
                                 Hoàn thành
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#cancelled">
-                                <i class="ri-close-circle-fill me-1 align-bottom"></i> 
+                                <i class="ri-close-circle-fill me-1 align-bottom"></i>
                                 Đã hủy
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#returned">
-                                <i class="ri-reply-fill me-1 align-bottom"></i> 
+                                <i class="ri-reply-fill me-1 align-bottom"></i>
                                 Trả hàng/Hoàn tiền
                             </button>
                         </li>
@@ -110,13 +118,13 @@
                     @csrf
                         <div class="tab-content pt-2">
                             <!-- All Orders -->
-                            <div class="tab-pane fade show active all-orders" id="all-orders">
-                                <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%" 
+                            <div class="tab-pane fade pt-3 show active all-orders" id="all-orders">
+                                <table id="table0" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                         data-url="{{ route('orders.all') }}">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -132,13 +140,13 @@
                                 </table>
                             </div>
                             <!-- Pending -->
-                            <div class="tab-pane fade pending pt-3" id="pending">
+                            <div class="tab-pane fade pending pt-3 " id="pending">
                                 <table id="table1" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                     data-url="{{ route('orders.pending') }}">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -154,13 +162,13 @@
                                 </table>
                             </div>
                             <!-- Processing -->
-                            <div class="tab-pane fade prepare pt-3" id="processing">
+                            <div class="tab-pane fade processing pt-3" id="processing">
                                 <table id="table2" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%"
                                     data-url="{{ route('orders.processing') }}">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -182,7 +190,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -204,7 +212,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -226,7 +234,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -248,7 +256,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -270,7 +278,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -292,7 +300,7 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input class="form-check-input selectAll" type="checkbox">
+                                                <input class="form-check-input selectAll" type="checkbox" name="selectAll">
                                             </th>
                                             <th>#</th>
                                             <th>Mã hóa đơn</th>
@@ -352,7 +360,7 @@
         $(document).ready(function() {
             var order_ids = [];
             var selectedIds = {};
-            
+
             function initializeDataTable(tableId) {
                 var table = $('#' + tableId).DataTable({
                     responsive: true,
@@ -360,6 +368,10 @@
                     serverSide: true,
                     ajax: $('#' + tableId).data('url'),
                     autoWidth: false,
+                    "language": {
+                        "emptyTable": "Không có dữ liệu trong bảng",
+                        "sProcessing": "Đang xử lý...",
+                    },
                     columns: [
                         { data: 'checked', name: 'checked', orderable: false, searchable: false },
                         { data: 'stt', name: 'stt' },
@@ -385,15 +397,15 @@
                         $('#' + tableId + ' th:eq(0)').removeClass('sorting_asc');
                     },
                     columnDefs: [
-                        { responsivePriority: 1, targets: 0 }, 
-                        { responsivePriority: 2, targets: 1 },  
-                        { responsivePriority: 3, targets: 2 },  
-                        { responsivePriority: 100, targets: 3 }, 
-                        { responsivePriority: 100, targets: 4 }, 
-                        { responsivePriority: 7, targets: 5 },  
-                        { responsivePriority: 6, targets: 6 }, 
-                        { responsivePriority: 100, targets: 7 }, 
-                        { responsivePriority: 5, targets: 8 }, 
+                        { responsivePriority: 1, targets: 0 },
+                        { responsivePriority: 2, targets: 1 },
+                        { responsivePriority: 3, targets: 2 },
+                        { responsivePriority: 100, targets: 3 },
+                        { responsivePriority: 100, targets: 4 },
+                        { responsivePriority: 7, targets: 5 },
+                        { responsivePriority: 6, targets: 6 },
+                        { responsivePriority: 100, targets: 7 },
+                        { responsivePriority: 5, targets: 8 },
                         { responsivePriority: 4, targets: 9 },
                     ]
                 });
@@ -440,8 +452,8 @@
                     }
 
                     if (isChecked && selectedIds[tableId].indexOf(id) === -1) {
-                        selectedIds[tableId].push(id); 
-                        order_ids.push(id); 
+                        selectedIds[tableId].push(id);
+                        order_ids.push(id);
                     } else if (!isChecked && selectedIds[tableId].indexOf(id) !== -1) {
                         // selectedIds[tableId].splice(selectedIds[tableId].indexOf(id), 1);
                         // order_ids.splice(order_ids.indexOf(id), 1);
@@ -551,12 +563,6 @@
             initializeDataTable('table6');
             initializeDataTable('table7');
             initializeDataTable('table8');
-
-            $('#export').click(function() {
-                var table = document.getElementById("table0");
-                var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
-                XLSX.writeFile(wb, "orders.xlsx");
-            });
         });
     </script>
 @endsection

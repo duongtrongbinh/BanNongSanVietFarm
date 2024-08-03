@@ -12,8 +12,7 @@ class VoucherRepository extends Repository implements RepositoryInterface
 
     public function getVoucherActive()
     {
-        return Voucher::select('title','id')->where('is_active','=',1)
-            ->get();
+        return Voucher::where('is_active','=',1)->get();
     }
 
     public function listDeletedSoft()
