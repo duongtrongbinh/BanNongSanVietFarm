@@ -50,7 +50,9 @@
         <h1 class="text-center text-white display-6">Chi tiết đơn hàng</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('order.index') }} "> Đơn hàng </a></li>
+            @if (Auth::check())
+                <li class="breadcrumb-item"><a href="{{ route('order.index') }} "> Đơn hàng </a></li>
+            @endif
             <li class="breadcrumb-item active text-white">Chi tiết đơn hàng</li>
         </ol>
     </div>
@@ -144,7 +146,7 @@
                                 <div class="col-5">
                                     <div class="d-flex justify-content-between">
                                         <p>Phương thức thanh toán:</p>
-                                        <p><b>{{ $order->payment_method == 0 ? 'VNPAY' : 'COD' }}</b></p>
+                                        <p><b>{{ $order->payment_method == 1 ? 'VNPAY' : 'COD' }}</b></p>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <p>Trạng thái thanh toán:</p>
@@ -189,7 +191,7 @@
                                             Đơn hàng đã bị hủy
                                         </div>
                                     @else
-                                        @if ($order->status < OrderStatus::PROCESSING->value)
+                                        @if ($order->status < OrderStatus::PROCESSING->value && Auth::check())
                                             <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">

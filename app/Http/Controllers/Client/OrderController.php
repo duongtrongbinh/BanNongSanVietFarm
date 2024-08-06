@@ -28,6 +28,10 @@ class OrderController extends Controller
         $this->voucherRepository = $voucherRepository;
     }
 
+    public function index()
+    {
+        return view('client.order');
+    }
 
     public function fetchOrders(Request $request)
     {

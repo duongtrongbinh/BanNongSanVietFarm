@@ -369,6 +369,8 @@
     <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
     <script>
         $(document).ready(function(){
+            let error = @json($error);
+            
             if (error) {
             let title = 'Lỗi';
             let message = error;

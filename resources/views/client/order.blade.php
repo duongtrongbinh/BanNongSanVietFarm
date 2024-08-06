@@ -260,7 +260,7 @@
                                 <div class="d-flex border-bottom py-3">
                                     <img src="${detail.image}" class="product-image me-3">
                                     <div>
-                                        <a href="${detail.product.url}" class="mb-1">${detail.name}</a>
+                                        <a href="/san-pham/${detail.product.slug}" class="mb-1">${detail.name}</a>
                                         <p class="text-muted mb-0">Danh mục: ${detail.product.category.name}</p>
                                         <p class="mb-0">x${detail.quantity}</p>
                                     </div>

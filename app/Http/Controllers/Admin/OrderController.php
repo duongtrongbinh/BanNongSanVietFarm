@@ -63,7 +63,7 @@ class OrderController extends Controller
             return number_format($order->after_total_amount) . ' VNĐ';
         })
         ->addColumn('payment', function ($order) {
-            return $order->payment_method == 0 ? 'VNPAY' : 'COD';
+            return $order->payment_method == 1 ? 'VNPAY' : 'COD';
         })
         ->addColumn('status', function ($order) {
             $statusData = [
