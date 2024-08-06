@@ -143,7 +143,7 @@
                         <div class="col-5">
                             <div class="d-flex justify-content-between">
                                 <p>Phương thức thanh toán:</p>
-                                <p><b>{{ $order->payment_method == 0 ? 'VNPAY' : 'COD' }}</b></p>
+                                <p><b>{{ $order->payment_method == 1 ? 'VNPAY' : 'COD' }}</b></p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Trạng thái thanh toán:</p>
