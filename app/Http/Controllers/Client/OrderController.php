@@ -8,11 +8,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Repositories\OrderHistoryRepository;
 use App\Http\Repositories\OrderRepository;
 use App\Http\Repositories\VoucherRepository;
+use App\Models\District;
 use App\Models\Order;
 use App\Models\Provinces;
+use App\Models\Voucher;
+use App\Models\Ward;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 
 class OrderController extends Controller
@@ -37,35 +43,35 @@ class OrderController extends Controller
 
         $statusData = [
             OrderStatus::PENDING->value => [
-                'label' => 'Đang chờ xử lý', 
+                'label' => 'Đang chờ xử lý',
                 'badgeClass' => 'badge bg-warning text-white text-uppercase'
             ],
             OrderStatus::PROCESSING->value => [
-                'label' => 'Đang xử lý', 
+                'label' => 'Đang xử lý',
                 'badgeClass' => 'badge bg-secondary text-white text-uppercase'
             ],
             OrderStatus::SHIPPING->value => [
-                'label' => 'Vận chuyển', 
+                'label' => 'Vận chuyển',
                 'badgeClass' => 'badge bg-info text-white text-uppercase'
             ],
             OrderStatus::SHIPPED->value => [
-                'label' => 'Giao hàng', 
+                'label' => 'Giao hàng',
                 'badgeClass' => 'badge bg-success text-white text-uppercase'
             ],
             OrderStatus::DELIVERED->value => [
-                'label' => 'Đã nhận hàng', 
+                'label' => 'Đã nhận hàng',
                 'badgeClass' => 'badge bg-primary text-white text-uppercase'
             ],
             OrderStatus::COMPLETED->value => [
-                'label' => 'Hoàn thành', 
+                'label' => 'Hoàn thành',
                 'badgeClass' => 'badge bg-primary text-white text-uppercase'
             ],
             OrderStatus::CANCELLED->value => [
-                'label' => 'Đã hủy', 
+                'label' => 'Đã hủy',
                 'badgeClass' => 'badge bg-danger text-white text-uppercase'
             ],
             OrderStatus::RETURNED->value => [
-                'label' => 'Trả hàng/Hoàn tiền', 
+                'label' => 'Trả hàng/Hoàn tiền',
                 'badgeClass' => 'badge bg-danger text-white text-uppercase'
             ],
         ];
@@ -97,13 +103,25 @@ class OrderController extends Controller
             return redirect()->route('home');
         }
         $provinces = Provinces::query()->get();
-        $vouchers = $this->voucherRepository->getVoucherActive();
+
         $total = 0;
         foreach(session()->get('cart') as $items){
             $total += $items['price'] * $items['quantity'];
         }
+        session(['total' => $total]);
 
-        return view('client.check-out',compact(['vouchers','provinces','total']));
+        $vouchers =$this->voucherRepository->applicableLimitVoucher($total);
+
+        $districts = null;
+        $wards = null;
+        $user = Auth::user() ? Auth::user()->with(['provinces','districts','wards','wards.district'])->first() : null;
+        if ($user){
+            $districts = District::query()->where('ProvinceID',$user->provinces->ProvinceID)->get();
+            $wards = Ward::query()->where('DistrictID',$user->wards->district->DistrictID)->get();
+        }
+
+
+        return view('client.check-out',compact(['vouchers','provinces','total','user','districts','wards']));
     }
 
     public function detail(Order $order)
@@ -138,20 +156,20 @@ class OrderController extends Controller
                     break;
                 case OrderStatus::SHIPPED->value:
                     $transferStatusRange = [
-                        TransferStatus::MONEY_COLLECT_DELIVERING->value, 
-                        TransferStatus::DELIVERED->value, 
+                        TransferStatus::MONEY_COLLECT_DELIVERING->value,
+                        TransferStatus::DELIVERED->value,
                         TransferStatus::DELIVERY_FAIL->value
                     ];
                     $showTransferHistory = true;
                     break;
                 case OrderStatus::RETURNED->value:
                     $transferStatusRange = [
-                        TransferStatus::WAITING_TO_RETURN->value, 
-                        TransferStatus::RETURN->value, 
-                        TransferStatus::RETURN_TRANSPORTING->value, 
-                        TransferStatus::RETURN_SORTING->value, 
-                        TransferStatus::RETURNING->value, 
-                        TransferStatus::RETURN_FAIL->value, 
+                        TransferStatus::WAITING_TO_RETURN->value,
+                        TransferStatus::RETURN->value,
+                        TransferStatus::RETURN_TRANSPORTING->value,
+                        TransferStatus::RETURN_SORTING->value,
+                        TransferStatus::RETURNING->value,
+                        TransferStatus::RETURN_FAIL->value,
                         TransferStatus::RETURNED->value
                     ];
                     $showTransferHistory = true;
@@ -160,13 +178,13 @@ class OrderController extends Controller
                     $transferStatusRange = [];
                     $showTransferHistory = false;
             }
-    
+
             $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
                 return in_array($transferHistory->status, $transferStatusRange);
             })->sortByDesc('created_at');
 
             $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
-            
+
             return [
                 'orderHistory' => $orderHistory,
                 'transferHistories' => $transferHistories,
@@ -183,7 +201,7 @@ class OrderController extends Controller
     public function success(string $code)
     {
         $order = Order::with(['order_details.product.category', 'order_details.product.brand'])->where('order_code', $code)->first();
-        
+
         return view('thankyou', compact('order'));
     }
 
@@ -195,7 +213,7 @@ class OrderController extends Controller
 
             // Thêm bản ghi vào order_histories
             $data = [
-                'order_id' => $order->id, 
+                'order_id' => $order->id,
                 'status' => OrderStatus::CANCELLED->value,
             ];
             $this->orderHistoryRepository->create($data);
@@ -211,7 +229,7 @@ class OrderController extends Controller
         }
     }
 
-    public function checking(Request $request) 
+    public function checking(Request $request)
     {
         $order_code = $request->query('order_code');
         $order = Order::with(['order_details.product.category', 'order_details.product.brand'])->where('order_code', $order_code)->first();
@@ -245,20 +263,20 @@ class OrderController extends Controller
                         break;
                     case OrderStatus::SHIPPED->value:
                         $transferStatusRange = [
-                            TransferStatus::MONEY_COLLECT_DELIVERING->value, 
-                            TransferStatus::DELIVERED->value, 
+                            TransferStatus::MONEY_COLLECT_DELIVERING->value,
+                            TransferStatus::DELIVERED->value,
                             TransferStatus::DELIVERY_FAIL->value
                         ];
                         $showTransferHistory = true;
                         break;
                     case OrderStatus::RETURNED->value:
                         $transferStatusRange = [
-                            TransferStatus::WAITING_TO_RETURN->value, 
-                            TransferStatus::RETURN->value, 
-                            TransferStatus::RETURN_TRANSPORTING->value, 
-                            TransferStatus::RETURN_SORTING->value, 
-                            TransferStatus::RETURNING->value, 
-                            TransferStatus::RETURN_FAIL->value, 
+                            TransferStatus::WAITING_TO_RETURN->value,
+                            TransferStatus::RETURN->value,
+                            TransferStatus::RETURN_TRANSPORTING->value,
+                            TransferStatus::RETURN_SORTING->value,
+                            TransferStatus::RETURNING->value,
+                            TransferStatus::RETURN_FAIL->value,
                             TransferStatus::RETURNED->value
                         ];
                         $showTransferHistory = true;
@@ -267,13 +285,13 @@ class OrderController extends Controller
                         $transferStatusRange = [];
                         $showTransferHistory = false;
                 }
-        
+
                 $transferHistories = $order->transfer_histories->filter(function($transferHistory) use ($transferStatusRange) {
                     return in_array($transferHistory->status, $transferStatusRange);
                 })->sortByDesc('created_at');
 
                 $formattedOrderHistory = mb_convert_case(Carbon::parse($orderHistory->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8");
-                
+
                 return [
                     'orderHistory' => $orderHistory,
                     'transferHistories' => $transferHistories,
@@ -291,6 +309,6 @@ class OrderController extends Controller
                 ->with('error', 'Không tìm thấy đơn hàng!');
         }
 
-        
     }
+
 }

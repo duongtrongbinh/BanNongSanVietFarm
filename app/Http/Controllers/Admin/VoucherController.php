@@ -25,7 +25,9 @@ class VoucherController extends Controller
     public function index()
     {
         $params = [];
+
         $vouchers = $this->voucherRepository->getPaginate($params);
+
         return view(self::PATH.'index',compact('vouchers'));
     }
 
@@ -43,7 +45,8 @@ class VoucherController extends Controller
     public function store(VoucherRequest $request)
     {
        $this->voucherRepository->create($request->validated());
-       return redirect()->back()->withErrors(['success'=>'create new vouchers success']);
+
+       return redirect()->route('vouchers.index')->with('created', 'Thêm mới mã giảm giá thành công!');
     }
 
     /**
@@ -70,7 +73,7 @@ class VoucherController extends Controller
     public function update(VoucherRequest $request, string $id)
     {
         $this->voucherRepository->update($id,$request->validated());
-        return redirect()->back()->withErrors(['success'=>'update new vouchers success']);
+        return redirect()->route('vouchers.index')->with('updated','Sửa mã giảm giá thành công!');
     }
 
     /**
@@ -103,4 +106,6 @@ class VoucherController extends Controller
             return response()->json(false, 500);
         }
     }
+
+
 }

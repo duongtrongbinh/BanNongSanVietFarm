@@ -3,6 +3,7 @@
 namespace App\Models;
 use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,6 +51,22 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function provinces() :BelongsTo
+    {
+       return $this->belongsTo(Provinces::class,'province_id');
+    }
+
+    public function districts() :BelongsTo
+    {
+        return $this->belongsTo(District::class,'district_id');
+    }
+
+    public function wards() :BelongsTo
+    {
+        return $this->belongsTo(Ward::class,'ward_id');
+    }
+
 
     public function orders()
     {

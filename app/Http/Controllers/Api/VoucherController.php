@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class VoucherController extends Controller
 {
@@ -16,27 +17,30 @@ class VoucherController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function apply(Request $request)
     {
         $voucher = Voucher::query()->find($request->voucher_id);
-        $voucherApply = 0;
+
+        $total_after_apply = 0;
+
+        $total = json_decode(Storage::get('checkout/serviceFee.json'), true);;
+
+
         if($voucher->type_unit == 0){
-            $voucherApply = $request->total_cart - $voucher->amount;
+
+            $total_after_apply = $total['serviceFee'] - $voucher->amount;
+
         }else{
-            $voucherApply = $request->total_cart * (100 - $voucher->amount) / 100;
+            $total_after_apply = $total['serviceFee'] * (100 - $voucher->amount) / 100;
         }
 
-        $price =  $request->total_cart - $voucherApply;
-
-        session(['voucher_amount' => $voucher->amount]);
+        $price_after_apply = $total['serviceFee'] - $total_after_apply;
 
         $data = [
             'message' => true,
-            'total_apply_voucher' => $voucherApply,
-            'amount' => $price
+            'price_after_apply' => $price_after_apply,
+            'total_after_apply' => $total_after_apply,
+            'session' => $total_after_apply
         ];
 
         return response()->json($data,200);

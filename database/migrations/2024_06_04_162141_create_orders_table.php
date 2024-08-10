@@ -24,6 +24,7 @@ return new class extends Migration
             $table->tinyInteger('payment_status')->default(0);
             $table->decimal('before_total_amount', 19, 4)->nullable();
             $table->decimal('shipping', 19, 4)->nullable();
+            $table->decimal('voucher_apply', 19, 4)->nullable();
             $table->decimal('after_total_amount', 19, 4)->nullable();
             $table->string('note', 255)->nullable();
             $table->tinyInteger('status')->default(0);

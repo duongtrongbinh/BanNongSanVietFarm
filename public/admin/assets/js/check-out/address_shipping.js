@@ -1,13 +1,50 @@
 
 $(document).ready(function() {
 
+    var total =  $("#total_cart");
+
+   if (serviceFeeDefault){
+       let wardElement = $("#ward");
+       let url = wardElement.data('url')
+       let Ward = wardElement.val();
+       let parts = Ward.split(' - ');
+       let WardCode = parts[0].trim();
+       let DistrictID = parts[1].trim();
+       if (WardCode){
+           serviceFee(url,WardCode,DistrictID);
+       }
+   }
+
+    function serviceFee(URL,WardCode,DistrictID){
+        $.ajax({
+            url: URL,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data:JSON.stringify({
+                ward_code: WardCode,
+                district_id: DistrictID,
+            }),
+            success: function (response) {
+                $("#service_fee").html(number_format(response.transport_fee, 0, '.', ','))
+                total.html(number_format(response.total, 0, '.', ','));
+                displayVoucher(true);
+            },
+            error: function (xhr, status, error) {
+                alert('Có lỗi xảy ra khi lấy dữ liệu từ bên vận chuyển !');
+            }
+        });
+    }
+
     $(".voucher_apply").on('click',function (){
 
-        var total_cart = $("#total_cart").data('total');
+        let url = $(this).data('url');
 
-        var url = $(this).data('url');
+        let voucher_id = $(this).val();
 
-        var voucher_id = $(this).val();
+        let total_cart = total.data('total');
 
        if(voucher_id){
             $.ajax({
@@ -15,23 +52,23 @@ $(document).ready(function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: JSON.stringify({
                     voucher_id: voucher_id,
-                    total_cart: total_cart,
+                    total : total_cart,
                 }),
                 success: function (response) {
                     if(response.message){
-
-                      $("#voucher_fee").html(number_format(response.amount));
-
-                      $("#total_cart").html(number_format(response.total_apply_voucher));
+                      $("#voucher_fee").html('- '+number_format(response.price_after_apply));
+                      total.html(number_format(response.total_after_apply));
+                      total.data('total',+response.total_after_apply);
                     }
                     hideVoucher();
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
-                    alert('Có lỗi xảy ra khi lấy dữ liệu quận huyện!');
+                    alert('Có lỗi xảy ra khi lấy mã giảm giá !');
                 }
             });
 
@@ -42,24 +79,23 @@ $(document).ready(function() {
         $("#page-header-voucher-dropdown").click();
     }
 
-
     $("#province").on("change",function (){
-        var url = $(this).data('url');
-        var province = $(this).val();
-        var parts = province.split(' - ');
-        var id = +parts[0].trim();
-        if (id != 0){
+        let url = $(this).data('url');
+        let province_id = $(this).val();
+        if (province_id != 0){
             $.ajax({
                 url: url,
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
+
                 },
                 data:JSON.stringify({
-                    province_id: id
+                    province_id: province_id
                 }),
                 success: function (response) {
                     renderDistrictOptions(response.data);
+                    displayVoucher(false);
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
@@ -68,17 +104,15 @@ $(document).ready(function() {
             });
         }else{
             reset($(this));
+            displayVoucher(false);
         }
 
     })
 
     $("#district").on("change",function (){
-        var url = $(this).data('url');
-        var district = $(this).val();
-        var parts = district.split(' - ');
-        var id = +parts[0].trim();
-        to_district_id = id;
-        if (id != 0) {
+        let url = $(this).data('url');
+        let district_id = $(this).val();
+        if (district_id != 0) {
             $.ajax({
                 url: url,
                 method: 'POST',
@@ -86,7 +120,7 @@ $(document).ready(function() {
                     'Content-Type': 'application/json',
                 },
                 data: JSON.stringify({
-                    district_id: id
+                    district_id: district_id
                 }),
                 success: function (response) {
                     if(response.data != null){
@@ -105,49 +139,14 @@ $(document).ready(function() {
         }
     })
 
-    var total_after = $("#total_cart").data('total');
-    var total_befor = 0;
-    var price_shipping = $("#service_fee");
-
     $("#ward").on("change",function (){
         let url = $(this).data('url')
         let Ward = $(this).val();
-        var parts = Ward.split(' - ');
-        var WardCode = parts[0].trim();
+        let parts = Ward.split(' - ');
+        let WardCode = parts[0].trim();
+        let DistrictID = parts[1].trim();
         if (WardCode){
-            $.ajax({
-                url: url,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data:JSON.stringify({
-                    ward_code: WardCode,
-                    district_id: to_district_id,
-                }),
-                success: function (response) {
-                    switch (response.message){
-                        case 'Success':
-                            // Trường hợp message là 'Success'
-                            total_befor = total_after + response.data.total;
-                            price_shipping.html(number_format(response.data.total));
-                            break;
-                        case 'missing':
-                            total_befor = total_after + 0;
-                            price_shipping.html(number_format(0));
-                            break;
-                        default:
-                            total_befor = total_after + response.total;
-                            price_shipping.html(number_format(response.total));
-                    }
-
-                    $("#total_cart").html(number_format(total_befor, 2, '.', ','));
-                },
-                error: function (xhr, status, error) {
-
-                }
-            });
+            serviceFee(url,WardCode,DistrictID);
         }
     })
 
@@ -155,7 +154,7 @@ $(document).ready(function() {
             let optionsHtml = '';
             optionsHtml = '<option value="0">Chọn Quận/Huyện</option>';
             data.forEach(function (item) {
-                optionsHtml += `<option value="${item.DistrictID} - ${item.DistrictName}">${item.DistrictName}</option>`;
+                optionsHtml += `<option value="${item.DistrictID}">${item.DistrictName}</option>`;
             });
             resetWard();
             $('#district').html(optionsHtml);
@@ -166,7 +165,7 @@ $(document).ready(function() {
         let optionsHtml = '';
         optionsHtml = '<option value="0">Chọn Phường/Xã</option>';
         data.forEach(function (item) {
-        optionsHtml += `<option value="${item.WardCode} - ${item.WardName}">${item.WardName}</option>`;
+        optionsHtml += `<option value="${item.WardCode} - ${item.DistrictID}">${item.WardName}</option>`;
         });
         $('#ward').html(optionsHtml);
     }
@@ -210,6 +209,30 @@ $(document).ready(function() {
 
         // Định dạng cuối cùng
         return (number < 0 ? '-' : '') + int_part + dec_part;
+    }
+
+
+    function displayVoucher(display = false){
+       let voucher_table = $("#voucher_table");
+       let voucher_alert = voucher_table.find("#voucher-alert");
+       let voucher_public = voucher_table.find("#voucher-public");
+        if (display){
+            voucher_public.css('display', '');
+            voucher_alert.css('display', 'none');
+        }else {
+            voucher_public.css('display', 'none');
+            resetVoucherSelection();
+            voucher_alert.css('display', '');
+        }
+    }
+
+    function resetVoucherSelection() {
+
+        $("#service_fee").html('0.00');
+
+        $("#voucher_fee").html('0.00');
+
+        $(".voucher_apply").prop('checked', false);
     }
 
 })

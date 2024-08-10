@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
 use App\Models\TransferHistory;
+use App\Models\Voucher;
 use Barryvdh\Debugbar\Twig\Extension\Debug;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -25,6 +26,7 @@ use App\Enums\Roles;
 use App\Notifications\SystemNotification;
 use \Illuminate\Support\Facades\Notification;
 use \App\Events\SystemNotificationEvent;
+use Illuminate\Support\Facades\Storage;
 
 class GHNService
 {
@@ -32,7 +34,7 @@ class GHNService
     protected $shopId;
 
     protected $token;
-    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee/2232';
+    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
     protected $ghnTranform;
 
     public function __construct(GHNTranform $ghnTranform)
@@ -60,15 +62,14 @@ class GHNService
             } else {
                 $routeUrl = redirect()->route('checkout.success',$order->order_code);
             }
-            dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+            dispatch(new SendOrderConfirmation($order,session('cart')));
 
             Notification::send(Roles::admins(),new SystemNotification($order));
 
             broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
 
             DB::commit();
-            session()->forget('cart');
-            session()->forget('service_fee');
+            $this->refreshValueCheckout();
             return $routeUrl;
         } catch (\Exception $e) {
             Log::debug($e);
@@ -79,9 +80,11 @@ class GHNService
 
 
     private function fillterData(array $data){
-        $totalAmount = 0;
+
+        $totalProducts = 0;
 
         $provinceParts = explode(' - ', $data['province']);
+
         $provinceName = isset($provinceParts[1]) ? $provinceParts[1] : '';
 
         $districtParts = explode(' - ', $data['district']);
@@ -99,15 +102,45 @@ class GHNService
         $data['province'] = $provinceParts[0];
         $data['district'] = $districtParts[0];
         $data['ward'] = $wardParts[0];
+
+        // products
         foreach (array_values(session('cart')) as $product) {
-            $totalAmount += $product['quantity'] * intval($product['price_sale']);
+            $totalProducts += $product['quantity'] * intval($product['price_sale']);
         }
-        $data['shipping'] = session('service_fee') ? session('service_fee') : 0;
-        $data['before_total_amount'] = $totalAmount;
-        $data['after_total_amount'] = $totalAmount + $data['shipping'];
+
+        $data['shipping'] = session('serviceFee');
+
+        $data['before_total_amount'] = $totalProducts;
+
+        $data['after_total_amount'] = $totalProducts + $data['shipping'];
+
+        if(isset($data['voucher_id'])){
+
+            $voucher_apply = $this->voucher_apply($data['voucher_id'],$data['after_total_amount']);
+
+            $data['voucher_apply'] = $voucher_apply;
+
+            $data['after_total_amount'] = $totalProducts + $data['shipping'] - $data['voucher_apply'];
+        }
+
         $data['address_detail'] = $data['specific_address'] . ', ' . $data['ward_name'] . ', ' . $data['district_name'] . ', ' .  $data['province_name'] . ", Vietnam";
+
         return $data;
     }
+
+    public function refreshValueCheckout()
+    {
+        session()->forget('cart');
+
+        session()->forget('total');
+
+        session()->forget('serviceFee');
+
+        Storage::put('checkout/serviceFee.json',json_encode(['serviceFee'=>0]));
+    }
+
+
+
     public function createOrderGHN($data, $items, $ordercode)
     {
         $product = $this->formatDataGHN($items);
@@ -238,7 +271,9 @@ class GHNService
             }else{
                 $data['user_id'] = 1;
             }
+
             $data['address'] = $data['address_detail'];
+
             $order = Order::create($data);
             $products = [];
             foreach ($dataProducts as $id => $item) {
@@ -329,28 +364,45 @@ class GHNService
             'token'=> $this->token,
         ];
 
-        if ($value['to_ward_code']){
 
+        if ($value['to_ward_code']){
+            $total = session('total');
+            $total_after = 0;
+            $transport_fee = 0;
             $response = Http::withHeaders($headers)->post($this->urlShipping, $jsonData);
+            $array = [];
             if ($response->successful()) {
+
                 $responseData = $response->json();
-                $total = $responseData['data']['total'];
-                session(['service_fee' => $total]);
-                return response()->json($responseData,200) ;
+
+                $transport_fee = $responseData['data']['total'];
+
+                $total_after = $transport_fee + $total;
+
+                $array = [
+                    'message' => 'ghn_service',
+                    'transport_fee' => $transport_fee,
+                    'total' => $total_after
+                ];
+
             }
             if ($response->failed()){
-                session(['service_fee' => TypeUnitEnum::SHIPPING_DEFAULT->value]);
+
+                $transport_fee = intval(TypeUnitEnum::SHIPPING_DEFAULT->value);
+
+                $total_after = $transport_fee + $total;
+
                 $array = [
-                    'message' => 'shipping_default',
-                    'total' => intval(TypeUnitEnum::SHIPPING_DEFAULT->value)
+                    'message' => 'ghn_service',
+                    'transport_fee' => $transport_fee,
+                    'total' => $total_after
                 ];
-                return response()->json($array,200) ;
             }
-        }else{
-            $array = [
-                'message' => 'missing',
-            ];
-            session(['service_fee' => 0]);
+
+            session(['serviceFee' => $transport_fee]);
+
+            Storage::put('checkout/serviceFee.json',json_encode(['serviceFee'=>$total_after]));
+
             return response()->json($array,200) ;
         }
     }
@@ -368,7 +420,7 @@ class GHNService
         return $data;
     }
 
- public function delivery(Request $request)
+    public function delivery(Request $request)
     {
         $Status = '';
         $order = Order::query()->where('order_code',$request->OrderCode)->first();
@@ -392,6 +444,32 @@ class GHNService
         }else{
                 return response()->json([$order, 'Không tìm thấy đơn hàng.'],400);
         }
+    }
+
+    public function voucher_apply($voucher_id,$total)
+    {
+        $voucher = Voucher::query()->find($voucher_id);
+
+        if($voucher->type_unit == 0){
+            $total_after_apply = $total - $voucher->amount;
+
+        }else{
+            $total_after_apply = $total * (100 - $voucher->amount) / 100;
+        }
+
+        $voucher->update([
+                'quantity' => $voucher->quantity - 1,
+        ]);
+
+        if ($voucher->quantity == 0){
+            $voucher->update([
+                'is_active' => 0,
+            ]);
+        }
+
+        $price_after_apply = $total - $total_after_apply;
+
+        return $price_after_apply;
     }
 
 }

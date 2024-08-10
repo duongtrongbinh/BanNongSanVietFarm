@@ -10,9 +10,11 @@ class VoucherRepository extends Repository implements RepositoryInterface
         return Voucher::class;
     }
 
-    public function getVoucherActive()
+    public function applicableLimitVoucher($total)
     {
-        return Voucher::where('is_active','=',1)->get();
+        return Voucher::query()->where('is_active','=',1)
+            ->where('applicable_limit', '<=', $total)
+            ->get();
     }
 
     public function listDeletedSoft()

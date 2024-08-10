@@ -136,13 +136,4 @@
         </ul>
     </nav><!-- End Icons Navigation -->
 </header><!-- End Header -->
-<script>
-        document.getElementById('checked-all').addEventListener('click', function() {
-            const isChecked = this.checked;
-            const checkboxes = document.querySelectorAll('.permission-checkbox');
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = isChecked;
-            });
-        });
-</script>
 
