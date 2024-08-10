@@ -18,13 +18,12 @@ class OrderConfirmation extends Mailable
     public $order;
 
     public $products;
-    public $price_ship;
 
-    public function __construct($order,$products,$price_ship)
+    public function __construct($order,$products)
     {
         $this->order = $order;
         $this->products = $products;
-        $this->price_ship = $price_ship;
+
     }
 
     /**
@@ -47,7 +46,6 @@ class OrderConfirmation extends Mailable
             with: [
                 'data' => $this->order,
                 'products' => $this->products,
-                'service_fee' => $this->price_ship,
                 ],
         );
     }

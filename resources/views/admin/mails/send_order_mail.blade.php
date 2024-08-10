@@ -43,7 +43,6 @@
                                     <span>{{ $data['payment_method'] == 0 ? 'Thanh toán khi nhận hàng' : 'Thanh toán bằng ngân hàng' }}</span>
                                 </th>
                             </tr>
-
                             </tbody>
                         </table>
                     </td>
@@ -73,16 +72,33 @@
                             @endforeach
                             <tr>
                                 <td colspan="2" style="padding: 8px; font-size: 13px; text-align: end;border-top: 1px solid #e9ebec;">
+                                    Giá tiền:
+                                </td>
+                                <th style="padding: 8px; font-size: 13px;border-top: 1px solid #e9ebec;">
+                                    {{ number_format($data['before_total_amount']) }}.VNĐ
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: 8px; font-size: 13px; text-align: end;border-top: 1px solid #e9ebec;">
                                     Phí vận chuyển:
                                 </td>
                                 <th style="padding: 8px; font-size: 13px;border-top: 1px solid #e9ebec;">
-                                    {{ number_format($service_fee) }}.VNĐ
+                                    {{ number_format($data['shipping']) }}.VNĐ
                                 </th>
                             </tr>
 
                             <tr>
                                 <td colspan="2" style="padding: 8px; font-size: 13px; text-align: end;border-top: 1px solid #e9ebec;">
-                                    Giá trị đơn hàng:
+                                    Áp dụng phiếu giảm giá:
+                                </td>
+                                <th style="padding: 8px; font-size: 13px;border-top: 1px solid #e9ebec;">
+                                    {{ $data['voucher_apply'] ? '-'.number_format($data['voucher_apply']) : 0.00 }}.VNĐ
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" style="padding: 8px; font-size: 13px; text-align: end;border-top: 1px solid #e9ebec;">
+                                    Tổng tiền:
                                 </td>
                                 <th style="padding: 8px; font-size: 13px;border-top: 1px solid #e9ebec;">
                                     {{ number_format($data['after_total_amount']) }}.VNĐ

@@ -5,11 +5,6 @@
             <h5 class="card-title">Tạo mã giảm giá</h5>
             <div class="d-flex justify-content-end mt-2 mb-2">
             </div>
-            @error('success')
-            <div class="alert alert-success" role="alert">
-                {{ $message }}
-            </div>
-            @enderror
             <form action="{{ route('vouchers.store') }}" method="post" id="form">
                 @csrf
                 @method('POST')
@@ -65,10 +60,10 @@
                 <div class="row mt-3">
                     <div class="col-xl-4">
                         <div class="form-group">
-                            <label for="start_date" class="mb-2">Code khuyến mại</label>
-                            <input type="text" class="form-control" name="code">
-                            @error('start_date')
-                            <small id="start_date" class="form-text text-danger">{{ $message }}</small>
+                            <label for="start_date" class="mb-2">Hạn mức áp dụng / giá trị đơn hàng</label>
+                            <input type="number" class="form-control" name="applicable_limit" value="0">
+                            @error('applicable_limit')
+                            <small id="applicable_limit" class="form-text text-danger">{{ $message }}</small>
                             @enderror
                         </div>
                     </div>
@@ -101,6 +96,18 @@
                     </div>
                 </div>
 
+                <div class="row mt-3">
+                    <div class="col-xl-4">
+                        <div class="form-group">
+                            <label for="start_date" class="mb-2">Code khuyến mại</label>
+                            <input type="text" class="form-control" name="code">
+                            @error('start_date')
+                            <small id="start_date" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <div  class="row mt-5">
                     <div class="form-group">
                         <label for="description" class="mb-2">Mô tả</label>
@@ -124,7 +131,7 @@
 
                 <div class="form-group mt-5">
                     <div class="form-check">
-                        <button type="submit" class="btn btn-success">Sửa</button>
+                        <button type="submit" class="btn btn-success">Gửi</button>
                         <a href="{{ route('vouchers.index') }}"><button type="button" class="btn btn-warning"> Trở lại</button></a>
                     </div>
                 </div>

@@ -116,7 +116,7 @@
                                                 @for ($i = 1; $i <= $fullStars; $i++)
                                                     <i class="ri-star-fill" data-ratting="{{ $i }}"></i>
                                                 @endfor
-            
+
                                                 @if ($halfStar > 0)
                                                     <i class="ri-star-half-fill" data-ratting="{{ $i }}"></i>
                                                     @php $i++; @endphp
@@ -146,6 +146,12 @@
                                 <p><b>{{ $order->payment_method == 1 ? 'VNPAY' : 'COD' }}</b></p>
                             </div>
                             <div class="d-flex justify-content-between">
+                                <p>Phiếu giảm giá :</p>
+                                <p class="badge text-black text-uppercase">
+                                    {{ $order->voucher ? $order->voucher->title : 'Không áp dụng' }}
+                                </p>
+                            </div>
+                            <div class="d-flex justify-content-between">
                                 <p>Trạng thái thanh toán:</p>
                                 <p class="{{ $statusData['badgeClass'] }}">
                                     {{ $statusData['label'] }}
@@ -158,8 +164,8 @@
                                 <p>{{ number_format($order->before_total_amount) }} VNĐ</p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p>Giảm giá <span class="text-muted">()</span> :</p>
-                                <p></p>
+                                <p>Áp dụng phiếu giảm giá<span class="text-muted"></span> :</p>
+                                <p>{{$order->voucher_apply ? '-'.number_format($order->voucher_apply) : 0.00 }} VNĐ</p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p>Phí vận chuyển:</p>

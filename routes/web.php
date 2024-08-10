@@ -61,7 +61,7 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 /* Route Admin */
-Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'admin.auth', 'prefix' => 'admin'], function () {
     /* Route Dashboard */
     Route::get('dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
@@ -121,7 +121,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
             ->name('vouchers.deleted');
         Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
             ->name('restore.vouchers');
-            
+
         /* Route Flash Sale */
         Route::resource('flash-sales', FlashSaleController::class);
     });
@@ -277,7 +277,7 @@ Route::group(['prefix' => ''], function () {
         ->name('orders.cancel');
     Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])
         ->name('orders.checking');
-        
+
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
@@ -322,15 +322,10 @@ Route::get('/notify', function () {
 
     $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
 
-    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+    Notification::send(Roles::admins(),new SystemNotification($order));
 
-//
+    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
 
-//
-//    Notification::send(Roles::admins(),new SystemNotification($order));
-//
-//    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
-//
-//    dd('done');
+    dd('done');
 
 })->name('404');

@@ -4,8 +4,12 @@
     <script src="{{ asset('admin/assets/js/deleteAll/deleteSoft.js') }}"></script>
 @endsection
 @section('content')
+    @php
+        $created = session('created');
+        $update = session('updated');
+    @endphp:;:;;;;;;;;;;www
     <div class="pagetitle">
-        <h1>Dashboard</h1>
+        <h1>Trang chủ </h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard')}}">Trang chủ</a></li>
@@ -13,7 +17,6 @@
             </ol>
         </nav>
     </div>
-
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
@@ -40,6 +43,7 @@
                                 <th scope="col">Tiêu đề</th>
                                 <th scope="col">Số lượng </th>
                                 <th scope="col">Giá trị</th>
+                                <th scope="col">Hạn mức áp dụng </th>
                                 <th scope="col">Ngày bắt đầu </th>
                                 <th scope="col">Ngày kết thúc </th>
                                 <th scope="col">Đang hoạt động</th>
@@ -50,7 +54,7 @@
                             @if(isset($vouchers))
                                 @foreach($vouchers as $items)
                                     <tr>
-                                        <th>{{ $items->title }}</th>
+                                        <td><div class="text-truncate" style="max-width: 50vh;">{{ $items->title }}</div></td>
                                         <td>{{ $items->quantity }}</td>
                                         <td>@if($items->type_unit == 0)
                                              {{ number_format($items->amount, 0, ',', '.') }} đ
@@ -58,6 +62,7 @@
                                              {{ rtrim(rtrim($items->amount, '0'), '.') }} %
                                         @endif
                                         </td>
+                                        <td> {{ number_format($items->applicable_limit, 0, ',', '.') }} đ</td>
                                         <th>{{ $items->start_date }}</th>
                                         <td>{{ $items->end_date }}</td>
                                         <td>@if($items->is_active == 1)
@@ -117,6 +122,25 @@
 
     <!--Delete js-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="{{asset('admin/assets/js/deleteAll/delete.js')}}"></script>
+
     <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+
+            let createdStatus = @json($created);
+            let updatedStatus = @json($update);
+            let status = createdStatus || updatedStatus;
+            let title = createdStatus ? 'Thêm mới' : 'Cập nhật';
+            let message = status;
+            let icon = 'success';
+
+            if (status) {
+                showMessage(title, message, icon);
+            }
+        });
+    </script>
 @endsection
