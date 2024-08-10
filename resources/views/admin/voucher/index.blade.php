@@ -7,7 +7,7 @@
     @php
         $created = session('created');
         $update = session('updated');
-    @endphp
+    @endphp:;:;;;;;;;;;;www
     <div class="pagetitle">
         <h1>Trang chủ </h1>
         <nav>
