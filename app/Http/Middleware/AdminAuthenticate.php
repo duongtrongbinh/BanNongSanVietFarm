@@ -14,10 +14,12 @@ class AdminAuthenticate
         if (Auth::check() && Auth::user()->hasAnyRole(Roles::allRoles())) {
             return $next($request);
         }
-        if (route('admin.login.form') == $previousUrl){
+        if (route('home') == $previousUrl){
+            return redirect()->route('404.client');
 
-            return redirect()->route('admin.login.form')->with(['error_role' => 'Bạn chưa được cấp quyền truy cập trang này !']);
         }
-        abort(404);
+        else{
+              return redirect()->route('404.admin');
+        }
     }
 }
