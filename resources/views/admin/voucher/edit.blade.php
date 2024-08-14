@@ -5,11 +5,16 @@
             <h5 class="card-title">Sửa mã giảm giá</h5>
             <div class="d-flex justify-content-end mt-2 mb-2">
             </div>
-            @error('success')
-            <div class="alert alert-success" role="alert">
-                {{ $message }}
-            </div>
-            @enderror
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form action="{{ route('vouchers.update', $voucher->id) }}" method="post" id="form">
                 <input type="hidden" name="id" value="{{ $voucher->id}}">
                 @csrf
@@ -63,7 +68,16 @@
                     </div>
                 </div>
                 <div class="row mt-5">
-                    <div class="col-xl-6">
+                    <div class="col-xl-4">
+                        <div class="form-group">
+                            <label for="start_date" class="mb-2">Hạn mức áp dụng / giá trị đơn hàng</label>
+                            <input type="number" class="form-control" name="applicable_limit" value="{{ rtrim(rtrim($voucher->applicable_limit,'0'),'.') }}">
+                            @error('applicable_limit')
+                            <small id="applicable_limit" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-xl-4">
                         <div class="form-group">
                             <label for="start_date">Ngày bắt đầu</label>
                             <input type="datetime-local" class="form-control" id="start_date" name="start_date" aria-describedby="start_date" value="{{ $voucher->start_date }}">
@@ -81,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-6">
+                    <div class="col-xl-4">
                         <div class="form-group">
                             <label for="end_date">Ngày kết thúc</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date" aria-describedby="end_date"  value="{{ $voucher->end_date }}">

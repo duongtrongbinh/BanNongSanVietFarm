@@ -28,8 +28,7 @@ Route::post('wards', [App\Http\Controllers\Api\ShippingAddressController::class,
 Route::post('nongsanvietfam/delivery-status', [App\Http\Services\GHNService::class, 'delivery'])->name('delivery.order');
 
 
-Route::post('voucher/apply', [App\Http\Controllers\Api\VoucherController::class, 'apply'])->name('voucher.apply');
-
+Route::middleware(['web'])->post('voucher/apply', [App\Http\Controllers\Api\VoucherController::class, 'apply'])->name('voucher.apply');
 
 // AddressController
 Route::get('/provinces', [AddressController::class, 'getProvinces'])->name('provinces.address');

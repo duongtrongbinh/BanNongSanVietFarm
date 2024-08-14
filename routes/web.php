@@ -45,7 +45,6 @@ use \App\Http\Controllers\Admin\SystemNotificationController;
 
 use App\Notifications\SystemNotification;
 use \Illuminate\Support\Facades\Notification;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -270,10 +269,10 @@ Route::group(['prefix' => ''], function () {
     /* Route Order */
     Route::get('/don-hang', [OrderClientController::class, 'index'])->name('order.index');
     Route::get('/fetch-orders', [OrderClientController::class, 'fetchOrders'])->name('fetch.orders');
-    Route::get('/chi-tiet-don-hang/{order}', [OrderClientController::class, 'detail'])->name('order.detail');
-    Route::get('/check-out', [OrderClientController::class, 'orderCheckOut'])->name('checkout');
-    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
-    Route::get('/check-out/success/{order}', [OrderClientController::class, 'success'])->name('checkout.success');
+    Route::get('/chi-tiet-don-hang/{order}',[OrderClientController::class,'detail'])->name('order.detail');
+    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
+    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
+    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
     Route::post('orders/{order}/cancel', [OrderClientController::class, 'cancel'])
         ->name('orders.cancel');
     Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])
@@ -314,16 +313,16 @@ Route::group(['prefix' => ''], function () {
     });
 });
 
-/* Route 404 */
-Route::get('404', function () {
-    return view('client.layouts.404');
-})->name('404');
+    /* Route 404 */
+    Route::get('404', function () {
+        return view('client.layouts.404');
+    })->name('404');
 
 Route::get('/notify', function () {
 
-    $order = \App\Models\Order::where('email', 'phudhph30417@fpt.edu.vn')->first();
+    $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
 
-    dispatch(new SendOrderConfirmation($order, session('cart'), session('service_fee')));
+    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
 
 //
 

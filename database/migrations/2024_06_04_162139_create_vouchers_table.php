@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('type_unit')->default(0)->comment('0: Total Bill, 1: Percent');
             $table->integer('quantity');
             $table->decimal('amount', 19, 4);
+            $table->decimal('applicable_limit',19, 4);
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->timestamps();

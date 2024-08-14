@@ -68,23 +68,23 @@ class OrderController extends Controller
         ->addColumn('status', function ($order) {
             $statusData = [
                 OrderStatus::PENDING->value => [
-                    'label' => 'Đang chờ xử lý', 
+                    'label' => 'Đang chờ xử lý',
                     'badgeClass' => 'badge bg-warning text-white text-uppercase'
                 ],
                 OrderStatus::PROCESSING->value => [
-                    'label' => 'Đang xử lý', 
+                    'label' => 'Đang xử lý',
                     'badgeClass' => 'badge bg-secondary text-white text-uppercase'
                 ],
                 OrderStatus::SHIPPING->value => [
-                    'label' => 'Vận chuyển', 
+                    'label' => 'Vận chuyển',
                     'badgeClass' => 'badge bg-info text-white text-uppercase'
                 ],
                 OrderStatus::SHIPPED->value => [
-                    'label' => 'Giao hàng', 
+                    'label' => 'Giao hàng',
                     'badgeClass' => 'badge bg-success text-white text-uppercase'
                 ],
                 OrderStatus::DELIVERED->value => [
-                    'label' => 'Đã nhận hàng', 
+                    'label' => 'Đã nhận hàng',
                     'badgeClass' => 'badge bg-primary text-white text-uppercase'
                 ],
                 OrderStatus::COMPLETED->value => [
@@ -92,7 +92,7 @@ class OrderController extends Controller
                     'badgeClass' => 'badge bg-primary text-white text-uppercase'
                 ],
                 OrderStatus::CANCELLED->value => [
-                    'label' => 'Đã hủy', 
+                    'label' => 'Đã hủy',
                     'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
                 OrderStatus::RETURNED->value => [
@@ -100,9 +100,9 @@ class OrderController extends Controller
                     'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
             ];
-            
+
             $status = $statusData[$order->status] ?? ['label' => 'Không xác định', 'badgeClass' => 'badge bg-danger text-white text-uppercase'];
-    
+
             return '<span class="'.$status['badgeClass'].'">'.$status['label'].'</span>';
         })
         ->addColumn('action', function($order) {
@@ -259,7 +259,19 @@ class OrderController extends Controller
     }
 
     public function edit(Order $order, Request $request)
-    {   $return = $request->route('return');
+    {
+        if ($request->query('query')){
+
+            $notificationId = $request->query('query');
+
+            $notification = auth()->user()->notifications()->find($notificationId);
+
+            if ($notification) {
+                $notification->markAsRead();
+            }
+        }
+
+        $return = $request->route('return');
         $show = false;
 
         if ($return) {
@@ -296,20 +308,20 @@ class OrderController extends Controller
                     break;
                 case OrderStatus::SHIPPED->value:
                     $transferStatusRange = [
-                        TransferStatus::MONEY_COLLECT_DELIVERING->value, 
-                        TransferStatus::DELIVERED->value, 
+                        TransferStatus::MONEY_COLLECT_DELIVERING->value,
+                        TransferStatus::DELIVERED->value,
                         TransferStatus::DELIVERY_FAIL->value
                     ];
                     $showTransferHistory = true;
                     break;
                 case OrderStatus::RETURNED->value:
                     $transferStatusRange = [
-                        TransferStatus::WAITING_TO_RETURN->value, 
-                        TransferStatus::RETURN->value, 
-                        TransferStatus::RETURN_TRANSPORTING->value, 
-                        TransferStatus::RETURN_SORTING->value, 
-                        TransferStatus::RETURNING->value, 
-                        TransferStatus::RETURN_FAIL->value, 
+                        TransferStatus::WAITING_TO_RETURN->value,
+                        TransferStatus::RETURN->value,
+                        TransferStatus::RETURN_TRANSPORTING->value,
+                        TransferStatus::RETURN_SORTING->value,
+                        TransferStatus::RETURNING->value,
+                        TransferStatus::RETURN_FAIL->value,
                         TransferStatus::RETURNED->value
                     ];
                     $showTransferHistory = true;
@@ -334,7 +346,7 @@ class OrderController extends Controller
         })->sortByDesc(function($history) {
             return $history['orderHistory']->created_at;
         });
-         
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers', 'show'));
     }
 

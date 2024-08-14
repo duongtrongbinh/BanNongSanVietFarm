@@ -1278,3 +1278,9 @@ h6 {
     object-fit: cover;
     border-radius: 50%;
 }
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

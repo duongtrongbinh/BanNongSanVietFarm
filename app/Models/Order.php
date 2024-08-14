@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Models;
 
 use App\Enums\OrderStatus;
@@ -9,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Html\Editor\Fields\BelongsTo;
 
 class Order extends Model
 {
@@ -26,14 +25,17 @@ class Order extends Model
         'address',
         'payment_method',
         'payment_status',
+        'payment_status',
         'before_total_amount',
         'shipping',
+        'voucher_apply',
         'after_total_amount',
         'note',
         'status',
         'order_code',
         'expires_at',
     ];
+
 
     protected $casts = [
         'expires_at' => 'datetime',
@@ -70,6 +72,7 @@ class Order extends Model
             $order->order_code = 'PH' . fake()->imei;
         });
 
+
         static::updating(function ($order) {
             if ($order->status == OrderStatus::PROCESSING->value) {
                 dispatch(new SendOrderToGHN($order));
@@ -86,6 +89,7 @@ class Order extends Model
     {
         return $this->hasMany(TransferHistory::class, 'order_id', 'id');
     }
+
 
     public static function getStatusMap()
     {

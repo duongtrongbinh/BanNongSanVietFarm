@@ -57,7 +57,7 @@
                                                 @php
                                                     $totalRatting = 0;
                                                     $totalCount = count($order_detail->product->comments);
-    
+
                                                     foreach ($order_detail->product->comments as $comment) {
                                                         $totalRatting += $comment->ratting;
                                                     }
@@ -72,7 +72,7 @@
                                                     @for ($i = 1; $i <= $fullStars; $i++)
                                                         <i class="ri-star-fill" data-ratting="{{ $i }}"></i>
                                                     @endfor
-                
+
                                                     @if ($halfStar > 0)
                                                         <i class="ri-star-half-fill" data-ratting="{{ $i }}"></i>
                                                         @php $i++; @endphp
@@ -109,11 +109,17 @@
                                             </p>
                                          @endif
                                     </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Phiếu giảm giá :</p>
+                                            <p class="badge bg-warning-subtle text-success text-uppercase">
+                                                {{ $order->voucher ? $order->voucher->title : 'Không áp dụng' }}
+                                            </p>
+                                    </div>
                                     <div class="d-flex " style="gap: 10px">
                                             <p>Địa chỉ:</p>
                                             <p>{{ $order->address}}</p>
                                     </div>
-    
+
                                 </div>
                                 <div class="col-5">
                                     <div class="d-flex justify-content-between">
@@ -123,6 +129,10 @@
                                     <div class="d-flex justify-content-between">
                                         <p>Phí vận chuyển <span class="text-muted"></span> :</p>
                                         <p>{{ number_format($order->shipping) }} VNĐ</p>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Áp dụng phiếu giảm giá<span class="text-muted"></span> :</p>
+                                        <p>{{$order->voucher_apply ? '-'.number_format($order->voucher_apply) : 0.00 }} VNĐ</p>
                                     </div>
                                     <div class="border-top border-top-dashed d-flex justify-content-between">
                                         <p><b>Tổng tiền:</b></p>
