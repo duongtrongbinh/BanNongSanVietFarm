@@ -314,9 +314,15 @@ Route::group(['prefix' => ''], function () {
 });
 
     /* Route 404 */
-    Route::get('404', function () {
+    Route::get('404NotFound', function () {
         return view('client.layouts.404');
-    })->name('404');
+    })->name('404.client');
+
+    /* Route 404 admin */
+    Route::get('admin/404NotFound', function () {
+    return view('admin.404');
+    })->name('404.admin');
+
 
 Route::get('/notify', function () {
 
@@ -333,4 +339,4 @@ Route::get('/notify', function () {
 //
 //    dd('done');
 
-})->name('404');
+});

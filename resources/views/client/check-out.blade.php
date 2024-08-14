@@ -90,7 +90,7 @@
                                  <select class="form-control" id="province" name="province" style="background-color: aliceblue" data-url="{{ route('districts.address.client') }}">
                                       <option value="0" selected>Chọn tỉnh/Thành phố</option>
                                      @foreach($provinces as $items)
-                                             <option value="{{ $items->ProvinceID }}"@if(isset($user->provinces->ProvinceID) && $user->provinces->ProvinceID == $items->ProvinceID) selected @endif >{{ $items->ProvinceName }}</option>
+                                             <option value="{{ $items->ProvinceID }} - {{$items->ProvinceName}}"@if(isset($user->provinces->ProvinceID) && $user->provinces->ProvinceID == $items->ProvinceID) selected @endif >{{ $items->ProvinceName }}</option>
                                      @endforeach
                                  </select>
                                   @error('province')
@@ -105,7 +105,7 @@
                                         <option value="0" selected>Chọn Quận/Huyện</option>
                                         @if($districts)
                                             @foreach($districts as $items)
-                                                <option value="{{ $items->DistrictID }}" {{ $user->districts->DistrictID == $items->DistrictID ? 'selected' : ''}}>{{ $items->DistrictName }}</option>
+                                                <option value="{{ $items->DistrictID }} - {{ $items->DistrictName }}" {{ $user->districts->DistrictID == $items->DistrictID ? 'selected' : ''}}>{{ $items->DistrictName }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -121,7 +121,7 @@
                                         <option value="0" selected>Chọn Phường/Xã</option>
                                         @if($wards)
                                             @foreach($wards as $items)
-                                                <option value="{{$items->WardCode}} - {{$items->DistrictID}}" {{ $user->wards->id== $items->id ? 'selected' : ''}}>{{ $items->WardName }}</option>
+                                                <option value="{{$items->WardCode}} - {{ $items->WardName }}" {{ $user->wards->id== $items->id ? 'selected' : ''}} data-id="{{$items->DistrictID}}">{{ $items->WardName }}</option>
                                             @endforeach
                                         @endif
                                     </select>
@@ -259,7 +259,7 @@
                         <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
                             <div class="col-12">
                                 <div class="form-check text-start my-3">
-                                    <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="payment_method" value="2" {{ !isset(Auth::user()->id) ? 'checked' : '' }} >
+                                    <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="payment_method" value="1" {{ !isset(Auth::user()->id) ? 'checked' : '' }} >
                                     <label class="form-check-label" for="Delivery-1">Thanh toán khi nhận hàng</label>
                                 </div>
                             </div>

@@ -9,7 +9,10 @@ $(document).ready(function() {
        let Ward = wardElement.val();
        let parts = Ward.split(' - ');
        let WardCode = parts[0].trim();
-       let DistrictID = parts[1].trim();
+
+       let DistrictID = wardElement.find('option:selected').data('id');
+
+       console.log(DistrictID);
        if (WardCode){
            serviceFee(url,WardCode,DistrictID);
        }
@@ -81,7 +84,10 @@ $(document).ready(function() {
 
     $("#province").on("change",function (){
         let url = $(this).data('url');
-        let province_id = $(this).val();
+        let province = $(this).val();
+        let parts = province.split(' - ');
+        let province_id = parts[0].trim();
+
         if (province_id != 0){
             $.ajax({
                 url: url,
@@ -111,7 +117,10 @@ $(document).ready(function() {
 
     $("#district").on("change",function (){
         let url = $(this).data('url');
-        let district_id = $(this).val();
+        let district = $(this).val();
+        let parts = district.split(' - ');
+        let district_id = parts[0].trim();
+
         if (district_id != 0) {
             $.ajax({
                 url: url,
@@ -144,7 +153,10 @@ $(document).ready(function() {
         let Ward = $(this).val();
         let parts = Ward.split(' - ');
         let WardCode = parts[0].trim();
-        let DistrictID = parts[1].trim();
+
+        let DistrictID = $(this).find('option:selected').data('id');
+
+        console.log(DistrictID);
         if (WardCode){
             serviceFee(url,WardCode,DistrictID);
         }
@@ -154,7 +166,7 @@ $(document).ready(function() {
             let optionsHtml = '';
             optionsHtml = '<option value="0">Chọn Quận/Huyện</option>';
             data.forEach(function (item) {
-                optionsHtml += `<option value="${item.DistrictID}">${item.DistrictName}</option>`;
+                optionsHtml += `<option value="${item.DistrictID} - ${item.DistrictName}">${item.DistrictName}</option>`;
             });
             resetWard();
             $('#district').html(optionsHtml);
@@ -165,7 +177,7 @@ $(document).ready(function() {
         let optionsHtml = '';
         optionsHtml = '<option value="0">Chọn Phường/Xã</option>';
         data.forEach(function (item) {
-        optionsHtml += `<option value="${item.WardCode} - ${item.DistrictID}">${item.WardName}</option>`;
+        optionsHtml += `<option value="${item.WardCode} - ${item.WardName}" data-id="${item.DistrictID}">${item.WardName}</option>`;
         });
         $('#ward').html(optionsHtml);
     }

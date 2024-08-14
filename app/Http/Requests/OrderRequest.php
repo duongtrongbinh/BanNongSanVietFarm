@@ -29,7 +29,7 @@ class OrderRequest extends FormRequest
             'district' => 'required|not_in:0',
             'ward' => 'required|not_in:0',
             'note' => 'nullable|string|max:1000',
-            'payment_method'=> 'required|in:2,VNPAYQR',
+            'payment_method'=> 'required|in:1,VNPAYQR',
             'specific_address' => 'required|min:3',
             'voucher_id' => 'exists:vouchers,id',
         ];
