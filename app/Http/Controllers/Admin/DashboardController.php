@@ -9,45 +9,16 @@ use App\Models\User;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\OrderDetail;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Xác thực đầu vào của request
-        $request->validate([
-            'filter_by' => 'in:day,month,year',
-            'start_date' => 'date|nullable',
-            'end_date' => 'date|nullable',
-        ]);
-
-        $filterBy = $request->input('filter_by', 'year');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-
-        $query = Product::withCount('comments as comment_count')
-            ->withAvg('comments as average_rating', 'ratting')
-            ->having('comment_count', '>=', 5)
-            ->having('average_rating', '>=', 4);
-
-        if ($filterBy === 'day' && $startDate && $endDate) {
-            $query->whereBetween('created_at', [$startDate, $endDate]);
-        } elseif ($filterBy === 'month' && $startDate && $endDate) {
-            $query->whereYear('created_at', date('Y'))
-                ->whereMonth('created_at', '>=', $startDate)
-                ->whereMonth('created_at', '<=', $endDate);
-        } elseif ($filterBy === 'year' && $startDate && $endDate) {
-            $query->whereYear('created_at', '>=', $startDate)
-                ->whereYear('created_at', '<=', $endDate);
-        }
-
-        $top10Products = $query->orderBy('comment_count', 'desc')
-            ->orderBy('average_rating', 'desc')
-            ->take(10)
-            ->get(['name', 'id', 'comment_count', 'average_rating']);
-
-        return view('admin.dashboard', compact('top10Products', 'filterBy'));
+        $topProducts = OrderDetail::getTopSellingProducts(5);
+        return view('admin.dashboard.dashboard',compact('topProducts'));
     }
+
     private function calculatePercentageChange($previous, $current)
     {
         if ($previous == 0) {
@@ -56,56 +27,31 @@ class DashboardController extends Controller
 
         return (($current - $previous) / $previous) * 100;
     }
+
     public function orders(Request $request)
     {
         $filter = $request->query('filter', 'day');
-        $status = $request->query('status');
-
-        $query = Order::query();
-
-        if ($status !== null) {
-            $query->where('status', $status);
-        }
-
-        $totalOrders = $query->count();
-
-        // Sử dụng Carbon để tính toán ngày tháng năm
+        $totalOrders = Order::count();
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
         $thisMonth = Carbon::now()->month;
         $lastMonth = Carbon::now()->subMonth()->month;
         $thisYear = Carbon::now()->year;
         $lastYear = Carbon::now()->subYear()->year;
-
-        // Tính toán số lượng đơn hàng và tỷ lệ thay đổi
-        $ordersToday = $query->clone()->whereDate('created_at', $today)->count();
-        $ordersYesterday = $query->clone()->whereDate('created_at', $yesterday)->count();
+        $ordersToday = Order::whereDate('created_at', $today)->count();
+        $ordersYesterday = Order::whereDate('created_at', $yesterday)->count();
         $percentageChangeToday = $this->calculatePercentageChange($ordersYesterday, $ordersToday);
-
-        $ordersThisMonth = $query->clone()->whereMonth('created_at', $thisMonth)
+        $ordersThisMonth = Order::whereMonth('created_at', $thisMonth)
             ->whereYear('created_at', $thisYear)
             ->count();
-        $ordersLastMonth = $query->clone()->whereMonth('created_at', $lastMonth)
+        $ordersLastMonth = Order::whereMonth('created_at', $lastMonth)
             ->whereYear('created_at', $thisYear)
             ->count();
         $percentageChangeMonth = $this->calculatePercentageChange($ordersLastMonth, $ordersThisMonth);
 
-        $ordersThisYear = $query->clone()->whereYear('created_at', $thisYear)->count();
-        $ordersLastYear = $query->clone()->whereYear('created_at', $lastYear)->count();
+        $ordersThisYear = Order::whereYear('created_at', $thisYear)->count();
+        $ordersLastYear = Order::whereYear('created_at', $lastYear)->count();
         $percentageChangeLastYear = $this->calculatePercentageChange($ordersLastYear, $ordersThisYear);
-
-        // Thống kê theo trạng thái
-        $statusCounts = $query->clone()->select('status', DB::raw('COUNT(*) as count'))
-            ->groupBy('status')
-            ->pluck('count', 'status');
-
-        $statusStatistics = [];
-        foreach (Order::getStatusMap() as $statusKey => $statusValue) {
-            $statusStatistics[] = [
-                'status' => $statusKey,
-                'count' => $statusCounts->get($statusKey, 0)
-            ];
-        }
 
         return response()->json([
             'orders_today' => $ordersToday,
@@ -114,9 +60,9 @@ class DashboardController extends Controller
             'percentage_change_month' => $percentageChangeMonth,
             'orders_this_year' => $ordersThisYear,
             'percentage_change_last_year' => $percentageChangeLastYear,
-            'status_statistics' => $statusStatistics
         ]);
     }
+
     public function users(Request $request)
     {
         $today = Carbon::today();
@@ -165,6 +111,7 @@ class DashboardController extends Controller
             'percentage_change_last_year' => $percentageChangeLastYear,
         ]);
     }
+
     public function ordersTotal(Request $request)
     {
         $today = Carbon::now();

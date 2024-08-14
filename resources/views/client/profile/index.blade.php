@@ -14,6 +14,9 @@
         .form-group.mb-3 .col-md-6 > label {
             margin-right: 10px;
         }
+        #lfm{
+            display: none;
+        }
     </style>
 @endsection
 @section('content')
@@ -228,6 +231,18 @@
             });
 
             $('#lfm').filemanager('image');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#lfm').filemanager('image');
+            $('#avatar-img').on('click', function () {
+                $('#lfm').trigger('click');
+            });
+            window.setFileField = function (fileUrl) {
+                $('#thumbnail').val(fileUrl);
+                $('#avatar-img').attr('src', fileUrl);
+            };
         });
     </script>
 @endsection

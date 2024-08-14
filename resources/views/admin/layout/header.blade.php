@@ -65,27 +65,27 @@
                     </li>
                     @endforeach
                     </div>
-                    @foreach (Auth::user()->readNotifications as $notification)
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <a href="{{ route('orders.edit',$notification->data['order_id'])}}?query={{ $notification->id }}">
-                            <li class="notification-item text-dark">
-                                <i class="bi bi-bag-check-fill text-success"></i>
-                                <div>
-                                    <h4>{{ $notification->data['type'] }}</h4>
-                                    <span>{{ $notification->data['message'] }}
-                                             <span>{{ $notification->data['customer'] }}</span>
-                                     </span>
-                                        <p class="mt-2">#{{ $notification->data['order_code'] }}</p>
-                                    <p>{{ mb_convert_case($notification->created_at->diffForHumans(), MB_CASE_TITLE, "UTF-8") }}</p>
-                                </div>
-                            </li>
-                        </a>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                    @endforeach
+{{--                    @foreach (Auth::user()->readNotifications as $notification)--}}
+{{--                        <li>--}}
+{{--                            <hr class="dropdown-divider">--}}
+{{--                        </li>--}}
+{{--                        <a href="{{ route('orders.edit',$notification->data['order_id'])}}?query={{ $notification->id }}">--}}
+{{--                            <li class="notification-item text-dark">--}}
+{{--                                <i class="bi bi-bag-check-fill text-success"></i>--}}
+{{--                                <div>--}}
+{{--                                    <h4>{{ $notification->data['type'] }}</h4>--}}
+{{--                                    <span>{{ $notification->data['message'] }}--}}
+{{--                                             <span>{{ $notification->data['customer'] }}</span>--}}
+{{--                                     </span>--}}
+{{--                                        <p class="mt-2">#{{ $notification->data['order_code'] }}</p>--}}
+{{--                                    <p>{{ mb_convert_case($notification->created_at->diffForHumans(), MB_CASE_TITLE, "UTF-8") }}</p>--}}
+{{--                                </div>--}}
+{{--                            </li>--}}
+{{--                        </a>--}}
+{{--                        <li>--}}
+{{--                            <hr class="dropdown-divider">--}}
+{{--                        </li>--}}
+{{--                    @endforeach--}}
 
                 </ul><!-- End Notification Dropdown Items --><!-- End Notification Dropdown Items -->
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DashboardOrderController;
 use App\Http\Controllers\Client\AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
@@ -61,11 +62,10 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 /* Route Admin */
-Route::group(['middleware' => 'admin.auth', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
     /* Route Dashboard */
-    Route::get('dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/orders', [DashboardOrderController::class, 'orders'])->name('dashboardorder.orders');
     // Quản hệ thống
     Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
         /* Route User */
@@ -328,10 +328,15 @@ Route::get('/notify', function () {
 
     $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
 
-    Notification::send(Roles::admins(),new SystemNotification($order));
+    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
 
-    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
+//
 
-    dd('done');
+//
+//    Notification::send(Roles::admins(),new SystemNotification($order));
+//
+//    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
+//
+//    dd('done');
 
 });
