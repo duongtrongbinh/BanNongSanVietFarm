@@ -265,7 +265,7 @@ class GHNService
 
     public function saveData($data, $dataProducts){
         return DB::transaction(function () use ($data, $dataProducts) {
-            $data['payment_method'] = $data['payment_method'] ? 1 : 2;
+            $data['payment_method'] = $data['payment_method'] == 'VNPAYQR' ? 1 : 0;
             if(Auth::user()->id){
                 $data['user_id'] = Auth::user()->id;
             }else{

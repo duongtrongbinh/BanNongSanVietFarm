@@ -95,7 +95,7 @@
                                 <div class="col-6">
                                     <div class="d-flex justify-content-between">
                                         <p>Phương thức thanh toán:</p>
-                                        <p><b>{{ $order->payment_method == 0 ? "VNPAY" : "COD" }}</b></p>
+                                        <p><b>{{ $order->payment_method == 1 ? "Thanh toán VNPAY" : "Thanh toán khi nhận hàng" }}</b></p>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <p>Trạng thái thanh toán:</p>
@@ -109,9 +109,9 @@
                                             </p>
                                          @endif
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <p>Phiếu giảm giá :</p>
-                                            <p class="badge bg-warning-subtle text-success text-uppercase">
+                                    <div class="row">
+                                        <p class="col-xl-2">Giảm giá :</p>
+                                            <p class="col-xl-9 badge bg-warning-subtle text-success text-uppercase text-wrap">
                                                 {{ $order->voucher ? $order->voucher->title : 'Không áp dụng' }}
                                             </p>
                                     </div>

@@ -40,7 +40,7 @@
 
                                 <th style="padding: 5px;">
                                     <p style="color: #878a99; font-size: 13px; margin-bottom: 2px; font-weight: 400;">Phương thức thanh toán:</p>
-                                    <span>{{ $data['payment_method'] == 0 ? 'Thanh toán khi nhận hàng' : 'Thanh toán bằng ngân hàng' }}</span>
+                                    <span>{{ $data['payment_method'] == 1 ? "Thanh toán VNPAY" : "Thanh toán khi nhận hàng" }}</span>
                                 </th>
                             </tr>
                             </tbody>
