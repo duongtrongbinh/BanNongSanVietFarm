@@ -1,9 +1,6 @@
 $(document).ready(function () {
-    function fetchOrderData(filter = 'day', status = null) {
+    function fetchOrderData(filter = 'day') {
         const requestData = { filter: filter };
-        if (status !== null) {
-            requestData.status = status;
-        }
 
         $.ajax({
             url: '/api/orders', // Đảm bảo URL chính xác
@@ -33,38 +30,13 @@ $(document).ready(function () {
                 $('#sales-order-increase').text(`${Math.abs(percentageChange).toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 1 })}%`).removeClass('text-success text-danger').addClass(changeClass);
                 $('#sales-order-increase').next('.text-muted').text(changeText);
 
-                // Cập nhật số lượng đơn hàng theo trạng thái
-                const statuses = ['pending', 'processing', 'shipping', 'delivered', 'received', 'completed', 'canceled'];
-                statuses.forEach((status, index) => {
-                    const statusData = response.status_statistics.find(s => s.status === index) || {};
-                    $(`#orders-status-${status}`).text((statusData.count || 0).toLocaleString('vi-VN'));
-                });
-
-                // Hiển thị thông tin trạng thái đơn hàng trong tiêu đề
-                if (status !== null) {
-                    let statusInfo = ` Trạng thái: ${getStatusText(status)}: ${ordersCurrent}`;
-                    $('.order-status-info').html(statusInfo);
-                } else {
-                    $('.order-status-info').html('');
-                }
+                // Loại bỏ xử lý trạng thái đơn hàng
+                $('.order-status-info').html('');
             },
             error: function (error) {
                 console.log('Order Error:', error);
             }
         });
-    }
-
-    function getStatusText(status) {
-        const statusMap = {
-            0: 'Đang chờ xử lý',
-            1: 'Đang xử lý',
-            2: 'Vận chuyển',
-            3: 'Giao hàng',
-            4: 'Đã nhận hàng',
-            5: 'Hoàn thành',
-            6: 'Đã hủy',
-        };
-        return statusMap[status];
     }
 
     // Load initial data with 'day' filter
@@ -76,13 +48,5 @@ $(document).ready(function () {
         const filter = $(this).data('filter');
         console.log('Selected filter:', filter);
         fetchOrderData(filter);
-    });
-
-    // Handle status selection
-    $('.sales-filter .dropdown-menu a[data-status]').on('click', function (e) {
-        e.preventDefault();
-        const status = $(this).data('status');
-        console.log('Selected status:', status);
-        fetchOrderData(null, status);
     });
 });

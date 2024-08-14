@@ -37,9 +37,7 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <div class="card-body text-center">
-                                <a id="lfm" data-input="thumbnail" data-preview="avatar-img" data-base64="inputBase64" class="btn btn-primary text-white">
-                                    <i class="fa fa-picture-o"></i> Hình ảnh
-                                </a>
+                             
                                 <input id="thumbnail" class="form-control" type="hidden" name="avatar" value="{{ old('avatar', auth()->user()->avatar) }}">
                                 <input type="hidden" id="inputBase64" name="base64">
                                 <img id="avatar-img"

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DashboardOrderController;
 use App\Http\Controllers\Client\AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
@@ -44,6 +45,7 @@ use \App\Http\Controllers\Admin\SystemNotificationController;
 
 use App\Notifications\SystemNotification;
 use \Illuminate\Support\Facades\Notification;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -63,9 +65,8 @@ Route::group(['prefix' => 'admin'], function () {
 /* Route Admin */
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
     /* Route Dashboard */
-    Route::get('dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/orders', [DashboardOrderController::class, 'orders'])->name('dashboardorder.orders');
     // Quản hệ thống
     Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
         /* Route User */
@@ -121,7 +122,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
             ->name('vouchers.deleted');
         Route::post('restore/vouchers/{id}', [VoucherController::class, 'restore'])
             ->name('restore.vouchers');
-            
+
         /* Route Flash Sale */
         Route::resource('flash-sales', FlashSaleController::class);
     });
@@ -269,15 +270,15 @@ Route::group(['prefix' => ''], function () {
     /* Route Order */
     Route::get('/don-hang', [OrderClientController::class, 'index'])->name('order.index');
     Route::get('/fetch-orders', [OrderClientController::class, 'fetchOrders'])->name('fetch.orders');
-    Route::get('/chi-tiet-don-hang/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
-    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
-    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
+    Route::get('/chi-tiet-don-hang/{order}', [OrderClientController::class, 'detail'])->name('order.detail');
+    Route::get('/check-out', [OrderClientController::class, 'orderCheckOut'])->name('checkout');
+    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
+    Route::get('/check-out/success/{order}', [OrderClientController::class, 'success'])->name('checkout.success');
     Route::post('orders/{order}/cancel', [OrderClientController::class, 'cancel'])
         ->name('orders.cancel');
     Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])
         ->name('orders.checking');
-        
+
     /* Route Auth */
     Route::controller(AuthClientController::class)->group(function () {
         Route::get('register', 'showRegistrationForm')->name('register');
@@ -313,16 +314,16 @@ Route::group(['prefix' => ''], function () {
     });
 });
 
-    /* Route 404 */
-    Route::get('404', function () {
-        return view('client.layouts.404');
-    })->name('404');
+/* Route 404 */
+Route::get('404', function () {
+    return view('client.layouts.404');
+})->name('404');
 
 Route::get('/notify', function () {
 
-    $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
+    $order = \App\Models\Order::where('email', 'phudhph30417@fpt.edu.vn')->first();
 
-    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+    dispatch(new SendOrderConfirmation($order, session('cart'), session('service_fee')));
 
 //
 

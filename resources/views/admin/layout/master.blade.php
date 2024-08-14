@@ -71,8 +71,8 @@
     <!-- Template Main JS File -->
     <script src="{{ asset('admin/assets/js/main.js') }}"></script>
 
-   @vite(['resources/js/app.js']);
-    @yield('js')
+{{--   @vite(['resources/js/app.js']);--}}
+{{--    @yield('js')--}}
   </body>
 
   </html>
