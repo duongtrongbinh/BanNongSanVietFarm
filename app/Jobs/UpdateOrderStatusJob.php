@@ -81,6 +81,12 @@ class UpdateOrderStatusJob implements ShouldQueue
                 $newStatus = OrderStatus::RETURNED->value;
             }
         }
+
+        if (in_array(TransferStatus::RETURNED->value, $transferStatuses)) {
+            foreach ($order->order_details as $orderDetail) {
+                $orderDetail->product->increment('quantity', $orderDetail->quantity);
+            }
+        }
         
         if ($newStatus && $newStatus !== $currentOrderStatus) {
             $order->status = $newStatus;

@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive table-card table-container" table-container>
+                    <div class="table-responsive table-card table-container">
                         <table class="table table-nowrap align-middle table-borderless mb-0 table-container">
                             <thead class="table-light text-muted">
                                 <tr>
@@ -89,7 +89,7 @@
                                                     <img src="{{ $order_detail->image }}" class="img-fluid d-block">
                                                 </div>
                                                 <div class="flex-grow-1 ms-3">
-                                                    <h5 class="fs-15"><a href="{{ route('product', $order_detail->product->id) }}" class="link-primary">{{ $order_detail->name }}</a></h5>
+                                                    <h5 class="fs-15"><a href="{{ route('product', $order_detail->product->slug) }}" class="link-primary">{{ $order_detail->name }}</a></h5>
                                                     <p class="text-muted mb-0">Thương hiệu: <span class="fw-medium">{{ $order_detail->product->brand->name }}</span></p>
                                                     <p class="text-muted mb-0">Loại: <span class="fw-medium">{{ $order_detail->product->category->name }}</span></p>
                                                 </div>

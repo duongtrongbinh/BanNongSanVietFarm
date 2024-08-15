@@ -25,10 +25,10 @@
                              class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
                         <h4>{{ auth()->user()->name }}</h4>
                         <p class="text-muted">{{ auth()->user()->email }}</p>
-                        <a href="{{ route('admin.profile') }}" class="btn btn-primary btn-sm mt-3 text-white">
+                        <a href="{{ route('user.profile') }}" class="btn btn-primary btn-sm mt-3 text-white">
                             <i class="bi bi-info-circle-fill me-2"></i>Thông tin chính
                         </a>
-                        <a href="{{ route('admin.showChangePasswordForm') }}"
+                        <a href="{{ route('user.showChangePasswordForm') }}"
                            class="btn btn-primary btn-sm mt-3 text-white">
                             <i class="bi bi-shield-lock-fill me-2"></i>Đổi mật khẩu
                         </a>
@@ -51,7 +51,7 @@
                                     {{ session('error') }}
                                 </div>
                             @endif
-                            <form action="{{ route('admin.profile.change_password') }}" method="POST">
+                            <form action="{{ route('user.profile.change_password') }}" method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
                                     <label for="current_password">Mật Khẩu Hiện Tại</label>

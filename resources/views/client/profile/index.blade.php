@@ -28,7 +28,7 @@
         </ol>
     </div>
     <div class="container mt-5">
-        <form action="{{ route('admin.profile.update', auth()->user()->id) }}" method="POST"
+        <form action="{{ route('user.profile.update', auth()->user()->id) }}" method="POST"
               enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -37,9 +37,7 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <div class="card-body text-center">
-                                <a id="lfm" data-input="thumbnail" data-preview="avatar-img" data-base64="inputBase64" class="btn btn-primary text-white">
-                                    <i class="fa fa-picture-o"></i> Hình ảnh
-                                </a>
+                                <a id="lfm" data-input="thumbnail" data-preview="avatar-img" data-base64="inputBase64" class="overflow-hidden"></a>
                                 <input id="thumbnail" class="form-control" type="hidden" name="avatar" value="{{ old('avatar', auth()->user()->avatar) }}">
                                 <input type="hidden" id="inputBase64" name="base64">
                                 <img id="avatar-img"
@@ -53,7 +51,7 @@
                             </div>
                             <h4>{{ auth()->user()->name }}</h4>
                             <p class="text-muted">{{ auth()->user()->email }}</p>
-                            <a href="{{route('admin.profile')}}" class="btn btn-primary btn-sm mt-3 text-white">
+                            <a href="{{route('user.profile')}}" class="btn btn-primary btn-sm mt-3 text-white">
                                 <i class="bi bi-info-circle-fill me-2"></i>Thông tin chính
                             </a>
                             <a href="{{route('user.showChangePasswordForm')}}"
