@@ -1,6 +1,5 @@
 @extends('client.layouts.master')
 @section('title', 'Thông tin tài khoản')
-
 @section('content')
     @php
         $updated = session('update');

@@ -146,7 +146,7 @@
                                 <p><b>{{ $order->payment_method == 1 ? 'VNPAY' : 'COD' }}</b></p>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <p>Phiếu giảm giá :</p>
+                                <p>Giảm giá:</p>
                                 <p class="badge text-black text-uppercase">
                                     {{ $order->voucher ? $order->voucher->title : 'Không áp dụng' }}
                                 </p>

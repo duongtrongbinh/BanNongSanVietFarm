@@ -130,7 +130,7 @@ class OrderController extends Controller
 
     public function detail(Order $order)
     {
-        $order = Order::with(['user', 'order_details.product.category', 'order_details.product.brand'])->find($order->id);
+        $order = Order::with(['user', 'order_details.product.category', 'order_details.product.brand','voucher'])->find($order->id);
 
         $statuses = $order->transfer_histories->pluck('status')->toArray();
 
