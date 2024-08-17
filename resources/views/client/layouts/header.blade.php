@@ -2,7 +2,7 @@
     .shadow {
         top: 0 !important;
     }
-    
+
     .search-input {
         width: 0;
         padding-right: 0;

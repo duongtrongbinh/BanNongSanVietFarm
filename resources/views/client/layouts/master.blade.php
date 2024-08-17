@@ -136,7 +136,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="height: 330px;" class="div-cart overflow-auto">
+                                    <div style="max-height: 330px;" class="div-cart overflow-auto">
                                         <div class="p-2 cart-items">
 
                                         </div>

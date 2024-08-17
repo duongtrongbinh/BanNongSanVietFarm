@@ -79,7 +79,7 @@
         .order-body {
             margin: 5px 0;
             padding: 0 15px;
-            height: 236px;
+            max-height: 236px;
         }
 
         .order-footer {
@@ -248,6 +248,7 @@
 
             // Hàm để render đơn hàng
             function renderOrders(orders, statusData, container, paginationContainer) {
+                window.scroll(0, 0);
                 let ordersHtml = '';
 
                 if (orders.length > 0) {
