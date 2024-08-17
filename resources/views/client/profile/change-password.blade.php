@@ -50,7 +50,7 @@
                                     {{ session('error') }}
                                 </div>
                             @endif
-                            <form action="{{ route('admin.profile.change_password') }}" method="POST">
+                            <form action="{{ route('user.profile.change_password') }}" method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
                                     <label for="current_password">Mật Khẩu Hiện Tại</label>

@@ -12,7 +12,6 @@
 <body>
 <div class="container" id="container">
     <!-- Sign In Container -->
-    clientlogin
     <div class="form-container sign-in-container">
         <form id="loginForm" action="{{ route('clientlogin') }}" method="post">
             @csrf

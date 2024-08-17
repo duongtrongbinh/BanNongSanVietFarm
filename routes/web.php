@@ -326,7 +326,7 @@ Route::group(['prefix' => ''], function () {
 
 Route::get('/notify', function () {
 
-    $order = \App\Models\Order::where('email','phudhph30417@fpt.edu.vn')->first();
+    $order = \App\Models\Order::where('email','vcduy.intern@gmail.com')->first();
 
     dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
 
