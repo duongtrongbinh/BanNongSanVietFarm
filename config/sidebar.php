@@ -4,7 +4,7 @@ use App\Enums\Roles;
 return [
     [
         'title' => 'Quản Báo Cáo',
-        'icon' => 'bi bi-image-fill',
+        'icon' => 'bi bi-file-text',
         'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name],
         'subtitle' => [
             [

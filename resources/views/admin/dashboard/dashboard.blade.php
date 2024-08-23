@@ -127,27 +127,26 @@
 
             </div>
             <div class="col-lg-4">
-
                 <div class="card">
                     <div class="card-body pb-0">
-                        <h5 class="card-title">Top sản phẩn bán chạy</h5>
+                        <h5 class="card-title">Top sản phẩm bán chạy</h5>
                         @foreach($topProducts as $product)
-                            <div class="news">
-                                <div class="post-item clearfix">
+                            <div class="news mb-3">
+                                <div class="post-item d-flex align-items-center">
                                     @if($product->product->image)
-                                        <img src="{{ asset($product->product->image) }}"  width="100">
+                                        <img src="{{ asset($product->product->image) }}" alt="{{ $product->product->name }}" class="img-fluid rounded me-3" style="width: 100px;">
                                     @else
-                                        <img src="{{  asset('client/assets/img/NoImage.png') }}" alt="No Image Available" width="100">
+                                        <img src="{{ asset('client/assets/img/NoImage.png') }}" alt="Không có hình ảnh" class="img-fluid rounded me-3" style="width: 100px;">
                                     @endif
-                                    {{ $product->product->name }}
-                                    <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
+                                    <div>
+                                        <h6 class="mb-1">{{ $product->product->name }}</h6>
+                                        <span class="text-muted">Sản phẩm này rất được yêu thích bởi khách hàng của chúng tôi...</span>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
-
                     </div>
                 </div><!-- End News & Updates -->
-
             </div><!-- End Right side columns -->
 
         </div>
