@@ -10,7 +10,6 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\DashboardOrderController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Client\AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
@@ -327,7 +326,7 @@ Route::get('404NotFound', function () {
 /* Route 404 admin */
 Route::get('admin/404NotFound', function () {
     return view('admin.404');
-})->name('404.admin');
+    })->name('404.admin');
 
 
 Route::get('/notify', function () {
