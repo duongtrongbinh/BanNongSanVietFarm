@@ -23,4 +23,9 @@ class PurchaseReceipt extends Model
         return $this->belongsToMany(Product::class, 'purchase_receipts', 'id', 'product_id')
                     ->withPivot('quantity', 'type_unit', 'order_code', 'cost', 'created_by', 'updated_by');
     }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
 }
