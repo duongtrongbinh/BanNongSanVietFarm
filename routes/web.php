@@ -17,6 +17,12 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
 use App\Http\Services\GHNService;
 use App\Jobs\SendOrderConfirmation;
+use App\Models\Provinces;
+use App\Models\Voucher;
+use App\Models\Ward;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\client\FaceBookLoginController;
@@ -62,7 +68,7 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 /* Route Admin */
-Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
+Route::group(['middleware' => 'admin.auth', 'prefix' => 'admin'], function () {
     /* Route Dashboard */
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('dashboard/orders', [DashboardOrderController::class, 'orders'])->name('dashboardorder.orders');
@@ -323,20 +329,40 @@ Route::group(['prefix' => ''], function () {
     return view('admin.404');
     })->name('404.admin');
 
+    /* Route 404 admin */
+    Route::get('admin/system-private', function () {
+      return view('admin.403');
+    })->name('403.admin');
 
-Route::get('/notify', function () {
 
-    $order = \App\Models\Order::where('email','vcduy.intern@gmail.com')->first();
+    Route::get('/test', function () {
 
-    dispatch(new SendOrderConfirmation($order,session('cart'),session('service_fee')));
+        $today = Carbon::today();
+        $yesterday = Carbon::yesterday();
+        $thisYear = Carbon::now()->year;
+        $lastYear = Carbon::now()->subYear()->year;
+        $thisMonth = Carbon::now()->month;
+        $lastMonth = Carbon::now()->subMonth()->month;
 
-//
+        $totalToday = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereDate('created_at',$thisYear)
+            ->count();
 
-//
-//    Notification::send(Roles::admins(),new SystemNotification($order));
-//
-//    broadcast(new SystemNotificationEvent(NotificationSystem::adminNotificationNew()));
-//
-//    dd('done');
 
-});
+        $totalThisMonth = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+
+        $totalThisYear = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+
+        dd($totalThisYear);
+    });

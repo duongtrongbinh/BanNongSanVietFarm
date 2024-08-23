@@ -119,7 +119,7 @@ class OrderController extends Controller
         $districts = null;
         $wards = null;
         $user = Auth::user() ? Auth::user()->with(['provinces','districts','wards','wards.district'])->first() : null;
-        if ($user){
+        if ($user && $user->provinces && $user->districts && $user->wards){
             $districts = District::query()->where('ProvinceID',$user->provinces->ProvinceID)->get();
             $wards = Ward::query()->where('DistrictID',$user->wards->district->DistrictID)->get();
         }

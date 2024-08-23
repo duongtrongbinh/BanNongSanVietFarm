@@ -20,12 +20,12 @@ class District extends Model
 
     public function province()
     {
-        return $this->belongsTo(Provinces::class, 'province_id');
+        return $this->belongsTo(Provinces::class, 'ProvinceID');
     }
 
     public function ward()
     {
-        return $this->hasMany(Ward::class, 'district_id');
+        return $this->hasMany(Ward::class, 'DistrictID');
     }
     public function users() :HasMany
     {

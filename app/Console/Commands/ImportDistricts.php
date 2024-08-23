@@ -28,44 +28,75 @@ class ImportDistricts extends Command
     /**
      * Execute the console command.
      */
+
     public function handle()
     {
         $headers = [
-                'Content-Type' => 'application/json',
-                'token' => env('GHN_API_TOKEN'),
-            ];
+            'Content-Type' => 'application/json',
+            'token' => env('GHN_API_TOKEN'),
+        ];
 
         $url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
         $provinces = Provinces::all();
-        foreach ($provinces as $item) {
-            $data = [
-                'province_id' => $item->ProvinceID
-            ];
+        $batchSize = 2000; // Kích thước lô (batch size) để chèn dữ liệu
+        $data = [];
 
-            $response = Http::withHeaders($headers)->get($url, $data);
+        // Sử dụng vòng lặp for thay vì foreach
+        for ($i = 0; $i < count($provinces); $i++) {
+            $item = $provinces[$i];
+
+            $response = Http::withHeaders($headers)->get($url, ['province_id' => $item->ProvinceID]);
 
             if ($response->successful()) {
                 $districts = $response->json()['data'];
-                if ($districts != null){
-                    foreach ($districts as $district) {
-                        District::updateOrCreate(
-                            ['DistrictID' => $district['DistrictID']],
-                            [
-                                'ProvinceID' => $district['ProvinceID'],
-                                'DistrictName' => $district['DistrictName']
-                            ]
-                        );
+                if ($districts !== null) {
+                    for ($j = 0; $j < count($districts); $j++) {
+                        $district = $districts[$j];
+
+                        // Kiểm tra và gán giá trị mặc định nếu cần
+                        $districtID = $district['DistrictID'] ?? null;
+                        $provinceID = $district['ProvinceID'] ?? null;
+                        $districtName = $district['DistrictName'] ?? 'Unknown';
+
+                        if ($districtID === null || $provinceID === null) {
+                            Log::warning("Missing data for district: " . json_encode($district));
+                            continue;
+                        }
+
+                        $data[] = [
+                            'DistrictID' => $districtID,
+                            'ProvinceID' => $provinceID,
+                            'DistrictName' => $districtName,
+                        ];
+
+                        // Chèn dữ liệu theo lô
+                        if (count($data) >= $batchSize) {
+                            $this->insertBatch($data);
+                            $data = []; // Xóa dữ liệu đã chèn
+                        }
                     }
-                    $this->info('Districts imported successfully.---->'. $item->ProvinceName.'<-----');
-                }else{
-                    // Miss api
-                    $this->info('Districts imported missing api .---->'. $item->ProvinceName.'<-----');
+
+                    // Chèn dữ liệu còn lại sau vòng lặp
+                    if (!empty($data)) {
+                        $this->insertBatch($data);
+                    }
+
+                    $this->info('Districts imported successfully for province: ' . $item->ProvinceName);
+                } else {
+                    $this->info('No districts data found for province: ' . $item->ProvinceName);
                 }
-            }else{
+            } else {
                 Log::debug($response);
-                $this->error('Failed to fetch districts.');
+                $this->error('Failed to fetch districts for province: ' . $item->ProvinceName);
             }
         }
+
         return 0;
+    }
+
+    private function insertBatch(array $data): void
+    {
+        District::upsert($data, ['DistrictID'], ['ProvinceID', 'DistrictName']);
+        $this->info("Inserted/Updated " . count($data) . " district records.");
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\User;
@@ -19,14 +20,6 @@ class DashboardController extends Controller
         return view('admin.dashboard.dashboard',compact('topProducts'));
     }
 
-    private function calculatePercentageChange($previous, $current)
-    {
-        if ($previous == 0) {
-            return $current > 0 ? 100 : 0;
-        }
-
-        return (($current - $previous) / $previous) * 100;
-    }
 
     public function orders(Request $request)
     {
@@ -76,6 +69,7 @@ class DashboardController extends Controller
 
         // Số lượng người dùng đăng ký trong ngày hôm nay và hôm qua
         $usersToday = User::whereDate('created_at', $today)->count();
+
         $usersYesterday = User::whereDate('created_at', $yesterday)->count();
 
         // Số lượng người dùng đăng ký trong năm nay và năm ngoái
@@ -169,4 +163,113 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function voucher()
+    {
+        $today = Carbon::today();
+        $yesterday = Carbon::yesterday();
+        $thisYear = Carbon::now()->year;
+        $lastYear = Carbon::now()->subYear()->year;
+        $thisMonth = Carbon::now()->month;
+        $lastMonth = Carbon::now()->subMonth()->month;
+
+        // Số lượng đơn hàng sử dụng voucher trong hôm nay và hôm qua
+        $voucherApplyOrderToday = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereDate('created_at', $today)
+            ->count();
+
+        $voucherApplyOrderYesterday = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereDate('created_at', $yesterday)
+            ->count();
+
+        // Số lượng đơn hàng sử dụng voucher trong tháng này và tháng trước
+        $voucherApplyOrderMonth = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereMonth('created_at', $thisMonth)
+            ->whereYear('created_at', $thisYear)
+            ->count();
+
+        $voucherApplyOrderLastMonth = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereMonth('created_at', $lastMonth)
+            ->whereYear('created_at', $lastYear)
+            ->count();
+
+        // Số lượng đơn hàng sử dụng voucher trong năm nay và năm ngoái
+        $voucherApplyOrderYear = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereYear('created_at', $thisYear)
+            ->count();
+
+        $voucherApplyOrderLastYear = \App\Models\Order::query()
+            ->with('voucher')
+            ->whereNotNull('voucher_id')
+            ->whereYear('created_at', $lastYear)
+            ->count();
+
+        // Tính toán tăng/giảm và tỷ lệ thay đổi
+        $increaseDecreaseYesterday = $voucherApplyOrderToday - $voucherApplyOrderYesterday;
+        $percentageChangeYesterday = $this->calculatePercentageChange($voucherApplyOrderYesterday, $voucherApplyOrderToday);
+
+        $increaseDecreaseLastMonth = $voucherApplyOrderMonth - $voucherApplyOrderLastMonth;
+        $percentageChangeLastMonth = $this->calculatePercentageChange($voucherApplyOrderLastMonth, $voucherApplyOrderMonth);
+
+        $increaseDecreaseLastYear = $voucherApplyOrderYear - $voucherApplyOrderLastYear;
+        $percentageChangeLastYear = $this->calculatePercentageChange($voucherApplyOrderLastYear, $voucherApplyOrderYear);
+
+        return response()->json([
+            'total_today' => $voucherApplyOrderToday,
+            'increase_decrease_yesterday' => $increaseDecreaseYesterday,
+            'percentage_change_yesterday' => $percentageChangeYesterday,
+            'total_this_month' => $voucherApplyOrderMonth,
+            'increase_decrease_last_month' => $increaseDecreaseLastMonth,
+            'percentage_change_last_month' => $percentageChangeLastMonth,
+            'total_this_year' => $voucherApplyOrderYear,
+            'increase_decrease_last_year' => $increaseDecreaseLastYear,
+            'percentage_change_last_year' => $percentageChangeLastYear,
+            'voucher_usage_by_month' => $this->charsVoucher() // Dữ liệu để đưa vào biểu đồ
+        ]);
+    }
+
+    public function charsVoucher()
+    {
+        $currentDate = Carbon::now();
+        $voucherUsage = [];
+
+        // Lặp qua 12 tháng trước đó (bao gồm tháng hiện tại)
+        for ($i = 0; $i < 12; $i++) {
+            $month = $currentDate->copy()->subMonths($i)->format('Y-m'); // Định dạng theo năm-tháng
+
+            // Đếm số lượng đơn hàng sử dụng voucher trong mỗi tháng
+            $voucherApplyOrder = \App\Models\Order::query()
+                ->with('voucher')
+                ->whereNotNull('voucher_id')
+                ->whereYear('created_at', $currentDate->copy()->subMonths($i)->year)
+                ->whereMonth('created_at', $currentDate->copy()->subMonths($i)->month)
+                ->count();
+
+            // Lưu kết quả vào mảng
+            $voucherUsage[$month] = $voucherApplyOrder;
+        }
+
+        // Đảo ngược mảng để hiển thị từ tháng cũ nhất đến mới nhất
+        $voucherUsage = array_reverse($voucherUsage);
+
+        return $voucherUsage;
+    }
+
+    private function calculatePercentageChange($previous, $current)
+    {
+        if ($previous == 0) {
+            return $current > 0 ? 100 : 0;
+        }
+
+        return (($current - $previous) / $previous) * 100;
+    }
 }

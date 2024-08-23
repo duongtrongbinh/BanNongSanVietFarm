@@ -49,3 +49,6 @@ Route::get('orders/completed', [DashboardOrderController::class, 'orders_complet
 Route::get('orders/cancellation', [DashboardOrderController::class, 'orders_cancellation'])->name('dashboard.orders.cancellation');
 Route::get('orders/Returns', [DashboardOrderController::class, 'orders_Returns'])->name('dashboard.orders.Returns');
 // dashboard user
+
+// dashboard voucher
+Route::get('vouchers', [DashboardController::class, 'voucher'])->name('dashboard.voucher');

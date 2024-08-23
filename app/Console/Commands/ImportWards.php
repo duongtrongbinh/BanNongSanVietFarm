@@ -30,45 +30,73 @@ class ImportWards extends Command
      */
     public function handle()
     {
-        $url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id';
+        $url = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
 
         $districts = District::all();
+        $batchSize = 2000; // Kích thước lô (batch size) để chèn dữ liệu
+        $data = [];
 
-        foreach ($districts as $item) {
+        $headers = [
+            'Content-Type' => 'application/json',
+            'token' => env('GHN_API_TOKEN'),
+        ];
 
-            $headers = [
-                'Content-Type' => 'application/json',
-                'token' => env('GHN_API_TOKEN'),
-            ];
+        for ($i = 0; $i < count($districts); $i++) {
+            $item = $districts[$i];
 
-            $data = [
-                'district_id' => $item->DistrictID
-            ];
-
-            $response = Http::withHeaders($headers)->post($url, $data);
+            $response = Http::withHeaders($headers)->post($url, ['district_id' => $item->DistrictID]);
 
             if ($response->successful()) {
                 $wards = $response->json()['data'];
-               if ($wards != null){
-                   foreach ($wards as $ward) {
-                       Ward::updateOrCreate(
-                           ['WardCode' => $ward['WardCode']],
-                           [
-                               'DistrictID' => $ward['DistrictID'],
-                               'WardName' => $ward['WardName']
-                           ]
-                       );
-                   }
-                   $this->info('Ward imported successfully.---->'. $item->DistrictName.'<-----');
-               }else {
-                   $this->info('Ward imported missing api.---->'. $item->DistrictName.'<-----');
-               }
+                if ($wards !== null) {
+                    for ($j = 0; $j < count($wards); $j++) {
+                        $ward = $wards[$j];
+                        // Kiểm tra và gán giá trị mặc định nếu cần
+                        $wardCode = $ward['WardCode'] ?? null;
+                        $districtID = $ward['DistrictID'] ?? null;
+                        $wardName = $ward['WardName'] ?? 'Unknown';
+
+                        if ($wardCode === null || $districtID === null) {
+                            Log::warning("Missing data for ward: " . json_encode($ward));
+                            continue;
+                        }
+
+                        $data[] = [
+                            'WardCode' => $wardCode,
+                            'DistrictID' => $districtID,
+                            'WardName' => $wardName,
+                        ];
+
+                        // Chèn dữ liệu theo lô
+                        if (count($data) >= $batchSize) {
+                            $this->insertBatch($data);
+                            $data = []; // Xóa dữ liệu đã chèn
+                        }
+                    }
+
+                    // Chèn dữ liệu còn lại sau vòng lặp
+                    if (!empty($data)) {
+                        $this->insertBatch($data);
+                    }
+
+                    $this->info('Wards imported successfully for district: ' . $item->DistrictName);
+                } else {
+                    $this->info('No wards data found for district: ' . $item->DistrictName);
+                }
             } else {
-                // In ra chi tiết response khi gặp lỗi
                 Log::debug($response);
-                $this->error('Failed to fetch Ward.');
+                $this->error('Failed to fetch wards for district: ' . $item->DistrictName);
             }
         }
+
         return 0;
     }
+
+    private function insertBatch(array $data): void
+    {
+        // Sử dụng upsert để chèn hoặc cập nhật dữ liệu
+        Ward::upsert($data, ['WardCode'], ['DistrictID', 'WardName']);
+        $this->info("Inserted/Updated " . count($data) . " ward records.");
+    }
+
 }

@@ -126,7 +126,7 @@
                                 </ul>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">Khuyến mãi <span id="promotion-filter-title">| Tháng này</span></h5>
+                                <h5 class="card-title">Khuyến mãi<span id="promotion-filter-title">| Hôm nay</span></h5>
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-gift"></i>
@@ -140,7 +140,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-12">
                     <div class="card">
@@ -162,9 +161,20 @@
                     </div>
                 </div>
 
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Khuyến mãi phát hành<span id="promotion-chars-filter-title"> | Biểu đồ</span></h5>
+                            <!-- Bar Chart -->
+                            <div id="barChart" style="min-height: 400px;" class="echart"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
             <div class="col-lg-4">
-
                 <div class="card">
                     <div class="card-body pb-0">
                         <h5 class="card-title">Top sản phẩn bán chạy</h5>
@@ -181,18 +191,17 @@
                                 </div>
                             </div>
                         @endforeach
-
                     </div>
-                </div><!-- End News & Updates -->
-
-            </div><!-- End Right side columns -->
+                </div>
+            </div>
 
         </div>
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('admin/assets/js/dashboard/order.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/dashboard/order/order.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dashboard/user/user.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dashboard/total.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dashboard/dashboard.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/dashboard/voucher/voucher.js') }}"></script>
 @endsection
