@@ -3,6 +3,41 @@ use App\Enums\Roles;
 
 return [
     [
+        'title' => 'Quản Báo Cáo',
+        'icon' => 'bi bi-image-fill',
+        'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name],
+        'subtitle' => [
+            [
+                'title' => 'Báo Cáo Đơn hàng',
+                'icon' => 'bi bi-bag',
+                'route' => 'report.orders',
+                'name' => 'report',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo Cáo Khách hàng',
+                'icon' => 'bi bi-person-dash-fill',
+                'route' => 'report.users',
+                'name' => 'report',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo Cáo Doanh thu',
+                'icon' => 'bi-currency-dollar',
+                'route' => 'report.revenue',
+                'name' => 'report',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo Cáo Kho Hàng',
+                'icon' => 'bi-box-seam',
+                'route' => 'report.purchase_receipt',
+                'name' => 'report',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+        ],
+    ],
+    [
         'title' => 'Quản lý banners',
         'icon' => 'bi bi-image-fill',
         'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name],

@@ -34,7 +34,7 @@ class Product extends Model
     {
         return $this->BelongsTo(Brand::class, 'brand_id')->withTrashed();
     }
-    
+
     public function category()
     {
         return $this->BelongsTo(Category::class, 'category_id')->withTrashed();
@@ -64,7 +64,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Comment::class, 'product_comments', 'product_id', 'comment_id');
     }
-    
+
     public function flashSaleProducts()
     {
         return $this->hasMany(FlashSaleProduct::class, 'product_id');
@@ -99,16 +99,17 @@ class Product extends Model
                     ->withTimestamps();
     }
 
+
     public static function boot()
     {
         parent::boot();
 
         static::creating(function ($product) {
-            $product->slug = str()->slug($product->name); 
+            $product->slug = str()->slug($product->name);
         });
 
         static::updating(function ($product) {
-            $product->slug = str()->slug($product->name); 
+            $product->slug = str()->slug($product->name);
         });
     }
 }
