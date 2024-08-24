@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DashboardOrderController;
-
+use App\Http\Controllers\Admin\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,16 +36,17 @@ Route::get('/districts/{provinceId}', [AddressController::class, 'getDistricts']
 Route::get('/wards/{districtId}', [AddressController::class, 'getWards'])->name('wards.address');
 
 // dashboard
-Route::get('orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
+Route::get('/orders', [DashboardController::class, 'orders'])->name('dashboard.orders');
 Route::get('/orders/total', [DashboardController::class, 'ordersTotal'])->name('dashboard.orders.total');
-Route::get('users', [DashboardController::class, 'users'])->name('dashboard.users');
-// dashboard order
-Route::get('orders/pending', [DashboardOrderController::class, 'orders_pending'])->name('dashboard.orders.pending');
-Route::get('orders/processing', [DashboardOrderController::class, 'orders_processing'])->name('dashboard.orders.processing');
-Route::get('orders/shipping', [DashboardOrderController::class, 'orders_shipping'])->name('dashboard.orders.shipping');
-Route::get('orders/delivery', [DashboardOrderController::class, 'orders_delivery'])->name('dashboard.orders.delivery');
-Route::get('orders/received', [DashboardOrderController::class, 'orders_received'])->name('dashboard.orders.received');
-Route::get('orders/completed', [DashboardOrderController::class, 'orders_completed'])->name('dashboard.orders.completed');
-Route::get('orders/cancellation', [DashboardOrderController::class, 'orders_cancellation'])->name('dashboard.orders.cancellation');
-Route::get('orders/Returns', [DashboardOrderController::class, 'orders_Returns'])->name('dashboard.orders.Returns');
-// dashboard user
+Route::get('/users', [DashboardController::class, 'users'])->name('dashboard.users');
+Route::get('/purchasereceipt', [DashboardController::class, 'purchase_receipt'])->name('dashboard.purchase_receipt');
+// dashboard Report
+Route::get('report/orders',[ReportController::class,'report_orders'])->name('report.orders');
+Route::get('report/users',[ReportController::class,'report_users'])->name('report.users');
+Route::get('report/revenue',[ReportController::class,'report_revenue'])->name('report.revenue');
+Route::get('report/purchase_receipt',[ReportController::class,'report_purchase_receipt'])->name('report.purchase_receipt');
+
+Route::get('report/vouchers',[ReportController::class,'report_vouchers'])->name('report.vouchers');
+
+// dashboard voucher
+Route::get('vouchers', [DashboardController::class, 'voucher'])->name('dashboard.voucher');

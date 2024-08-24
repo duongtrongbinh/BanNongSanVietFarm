@@ -11,6 +11,7 @@ use App\Jobs\UpdateOrderStatusJob;
 use App\Models\Order;
 use App\Models\OrderHistory;
 use App\Models\Product;
+use App\Models\service_fee;
 use App\Models\TransferHistory;
 use App\Models\Voucher;
 use Barryvdh\Debugbar\Twig\Extension\Debug;
@@ -34,7 +35,7 @@ class GHNService
     protected $shopId;
 
     protected $token;
-    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee';
+    protected $urlShipping = 'https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee/2332';
     protected $ghnTranform;
 
     public function __construct(GHNTranform $ghnTranform)
@@ -347,6 +348,7 @@ class GHNService
     {
         $value = $this->fillterDataShipping($request->all());
         $product = $this->formatDataGHN(session('cart'));
+
         $jsonData = [
             "service_type_id" => $value["service_type_id"],
             "to_district_id" => (int)$value["to_district_id"],
@@ -363,7 +365,6 @@ class GHNService
             'ShopId'=> $this->shopId,
             'token'=> $this->token,
         ];
-
 
         if ($value['to_ward_code']){
             $total = session('total');
@@ -388,23 +389,28 @@ class GHNService
             }
             if ($response->failed()){
 
-                $transport_fee = intval(TypeUnitEnum::SHIPPING_DEFAULT->value);
+                $service_fee = service_fee::select('service_fee')
+                    ->where('DistrictID', (int)$value["to_district_id"])
+                    ->first();
+
+                $transport_fee = $service_fee ? (int)$service_fee->service_fee : intval(TypeUnitEnum::SHIPPING_DEFAULT->value);
+
 
                 $total_after = $transport_fee + $total;
 
                 $array = [
-                    'message' => 'ghn_service',
+                    'message' => 'backup_service',
                     'transport_fee' => $transport_fee,
                     'total' => $total_after
                 ];
             }
-
             session(['serviceFee' => $transport_fee]);
 
             Storage::put('checkout/serviceFee.json',json_encode(['serviceFee'=>$total_after]));
 
             return response()->json($array,200) ;
         }
+
     }
 
     public function fillterDataShipping(array $data)

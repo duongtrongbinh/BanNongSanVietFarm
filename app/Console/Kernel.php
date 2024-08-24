@@ -13,6 +13,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:cancel-expired-orders')->daily();
+
+        // status voucher
+        $schedule->command('voucher:update-status')->everyMinute();
+
+        // delete notifications is read
+        $schedule->command('app:notification-destroy')->dailyAt('23:59');
     }
 
     /**

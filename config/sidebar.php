@@ -3,6 +3,43 @@ use App\Enums\Roles;
 
 return [
     [
+        'title' => 'Quản Báo Cáo',
+        'icon' => 'bi bi-file-text',
+        'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name],
+        'subtitles' => [
+            [
+                'title' => 'Báo Cáo Đơn hàng',
+                'icon' => 'bi bi-bag',
+                'route' => 'report.orders',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo Cáo Khách hàng',
+                'icon' => 'bi bi-person-dash-fill',
+                'route' => 'report.users',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo Cáo Doanh thu',
+                'icon' => 'bi-currency-dollar',
+                'route' => 'report.revenue',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo Cáo Kho Hàng',
+                'icon' => 'bi-box-seam',
+                'route' => 'report.purchase_receipt',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+            [
+                'title' => 'Báo cáo phiếu giảm giá',
+                'icon' => 'bi-box-seam',
+                'route' => 'report.vouchers',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
+        ],
+    ],
+    [
         'title' => 'Dashboard',
         'icon' => 'bi bi-grid',
         'roles' => [Roles::SYSTEM_ADMINISTRATOR->name],

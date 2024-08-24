@@ -29,8 +29,6 @@
 
   <!-- Template Main CSS File -->
   <link href="{{ asset('admin/assets/css/style.css') }}" rel="stylesheet">
-
-
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
@@ -55,7 +53,7 @@
 
     @include('admin.layout.footer')
 
-{{--    @vite(['resources/js/app.js']);--}}
+    @vite(['resources/js/app.js']);
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
