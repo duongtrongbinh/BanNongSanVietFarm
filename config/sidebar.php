@@ -31,6 +31,12 @@ return [
                 'route' => 'report.purchase_receipt',
                 'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
             ],
+            [
+                'title' => 'Báo cáo phiếu giảm giá',
+                'icon' => 'bi-box-seam',
+                'route' => 'report.vouchers',
+                'roles' => [Roles::SYSTEM_ADMINISTRATOR->name,Roles::MARKETING->name]
+            ],
         ],
     ],
     [

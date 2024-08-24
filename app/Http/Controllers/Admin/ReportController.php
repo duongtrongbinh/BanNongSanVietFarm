@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Order;
@@ -281,7 +282,72 @@ class ReportController extends Controller
         return view('admin.reports.purchase_receipt', compact('purchaseReceipts', 'monthlyData', 'year'));
     }
 
+    public function voucherIndex()
+    {
+        return view('admin.reports.voucher');
+    }
 
+    public function report_vouchers(Request $request)
+    {
+        // Lấy các mốc thời gian
+        $period = $request->query('period', 'today');
 
+        $start = now()->startOfDay();
+        $end = now();
+
+        switch ($period) {
+            case 'this_month':
+                $start = now()->startOfMonth();
+                break;
+            case 'this_year':
+                $start = now()->startOfYear();
+                break;
+        }
+
+        $previousStart = (clone $start)->subDay();
+        $previousEnd = (clone $end)->subDay();
+
+        $vouchersCurrentPeriod = $this->getVoucherData($start, $end);
+        $vouchersPreviousPeriod = $this->getVoucherData($previousStart, $previousEnd);
+
+        $reportData = [
+            $period => $this->calculatePercentageChange($vouchersCurrentPeriod, $vouchersPreviousPeriod)
+        ];
+
+        return response()->json($reportData);
+    }
+
+    private function getVoucherData($startDate, $endDate)
+    {
+        // Số lượng đơn hàng sử dụng voucher trong khoảng thời gian này
+        $voucherApplyOrders = DB::table('orders')
+            ->whereNotNull('voucher_id')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        // Số lượng voucher được phát hành trong khoảng thời gian này
+        $issuedVouchers = DB::table('vouchers')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        // Số lượng voucher đang hoạt động (is_active = 1)
+        $activeVouchers = DB::table('vouchers')
+            ->where('is_active', 1)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        // Số lượng voucher không hoạt động (is_active = 0)
+        $inactiveVouchers = DB::table('vouchers')
+            ->where('is_active', 0)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        return [
+            'Số lượng đơn hàng sử dụng voucher' => $voucherApplyOrders,
+            'Số lượng voucher đang phát hành' => $issuedVouchers,
+            'Số lượng voucher đang hoạt động' => $activeVouchers,
+            'Số lượng voucher không hoạt động' => $inactiveVouchers,
+        ];
+    }
 
 }

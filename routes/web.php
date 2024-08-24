@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
 use App\Http\Services\GHNService;
 use App\Jobs\SendOrderConfirmation;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\client\FaceBookLoginController;
@@ -71,6 +73,7 @@ Route::group(['middleware' => 'admin.auth', 'prefix' => 'admin'], function () {
     Route::get('report/users', [ReportController::class, 'users'])->name('report.users');
     Route::get('report/revenue', [ReportController::class, 'revenue'])->name('report.revenue');
     Route::get('report/purchase_receipt', [ReportController::class, 'purchase_receipt'])->name('report.purchase_receipt');
+    Route::get('report/vouchers', [ReportController::class, 'voucherIndex'])->name('report.vouchers');
     // Quản hệ thống
     Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
         /* Route User */
@@ -336,32 +339,9 @@ Route::group(['prefix' => ''], function () {
 
     Route::get('/test', function () {
 
-        $today = Carbon::today();
-        $yesterday = Carbon::yesterday();
-        $thisYear = Carbon::now()->year;
-        $lastYear = Carbon::now()->subYear()->year;
-        $thisMonth = Carbon::now()->month;
-        $lastMonth = Carbon::now()->subMonth()->month;
-
-        $totalToday = \App\Models\Order::query()
-            ->with('voucher')
+        $voucherApplyOrders = DB::table('orders')
             ->whereNotNull('voucher_id')
-            ->whereDate('created_at',$thisYear)
             ->count();
 
-
-        $totalThisMonth = \App\Models\Order::query()
-            ->with('voucher')
-            ->whereNotNull('voucher_id')
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->count();
-
-        $totalThisYear = \App\Models\Order::query()
-            ->with('voucher')
-            ->whereNotNull('voucher_id')
-            ->whereYear('created_at', Carbon::now()->year)
-            ->count();
-
-        dd($totalThisYear);
+        dd($voucherApplyOrders);
     });

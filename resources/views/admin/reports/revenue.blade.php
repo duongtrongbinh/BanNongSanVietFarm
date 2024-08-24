@@ -97,6 +97,11 @@
             const ctx = document.getElementById('revenueChart').getContext('2d');
             let revenueChart;
 
+            // Function to format currency
+            function formatCurrency(value) {
+                return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
             function renderRevenueChart(data) {
                 if (revenueChart) {
                     revenueChart.destroy();  // Xóa biểu đồ cũ trước khi vẽ biểu đồ mới
@@ -186,14 +191,14 @@
             }
 
             function updateRevenueDisplay(data) {
-                // Cập nhật các khối thống kê
-                $('#revenue-today').text(data.today.revenue + ' VND');
+                // Cập nhật các khối thống kê với định dạng giá tiền
+                $('#revenue-today').text(formatCurrency(data.today.revenue) + ' VND');
                 $('#revenue-today-change').text(data.today.percentage_change + '% ' + data.today.change);
 
-                $('#revenue-this-month').text(data.this_month.revenue + ' VND');
+                $('#revenue-this-month').text(formatCurrency(data.this_month.revenue) + ' VND');
                 $('#revenue-this-month-change').text(data.this_month.percentage_change + '% ' + data.this_month.change);
 
-                $('#revenue-this-year').text(data.this_year.revenue + ' VND');
+                $('#revenue-this-year').text(formatCurrency(data.this_year.revenue) + ' VND');
                 $('#revenue-this-year-change').text(data.this_year.percentage_change + '% ' + data.this_year.change);
 
                 // Cập nhật biểu đồ

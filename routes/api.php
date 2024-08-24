@@ -46,6 +46,7 @@ Route::get('report/users',[ReportController::class,'report_users'])->name('repor
 Route::get('report/revenue',[ReportController::class,'report_revenue'])->name('report.revenue');
 Route::get('report/purchase_receipt',[ReportController::class,'report_purchase_receipt'])->name('report.purchase_receipt');
 
+Route::get('report/vouchers',[ReportController::class,'report_vouchers'])->name('report.vouchers');
 
 // dashboard voucher
 Route::get('vouchers', [DashboardController::class, 'voucher'])->name('dashboard.voucher');

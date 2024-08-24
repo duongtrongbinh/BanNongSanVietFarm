@@ -32,6 +32,7 @@ class VoucherSeeder extends Seeder
             $startDate = Carbon::now()->addDays(rand(-30, 30));
             $endDate = (clone $startDate)->addDays(rand(1, 90));
 
+            // Tạo voucher
             DB::table('vouchers')->insert([
                 'title' => 'Giảm ' . $amount . ' cho đơn hàng có giá trị ' . $applicableLimit . ' VNĐ',
                 'quantity' => rand(1, 100), // Số lượng phải ít nhất là 1
@@ -43,6 +44,8 @@ class VoucherSeeder extends Seeder
                 'type_unit' => $typeUnit, // Phải là 0 hoặc 1
                 'code' => $faker->uuid, // Đảm bảo mã duy nhất
                 'applicable_limit' => $applicableLimit, // applicable_limit phải từ 1000 trở lên
+                'created_at' => $i < 5 ? Carbon::now() : $faker->dateTimeBetween('-1 year', 'now'),
+                'updated_at' => $i < 5 ? Carbon::now() : $faker->dateTimeBetween('-1 year', 'now'),
             ]);
         }
     }
