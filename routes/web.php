@@ -10,19 +10,13 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\DashboardOrderController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Client\AuthClientController;
 use App\Http\Controllers\Client\OrderController as OrderClientController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Client\ShopController;
 use App\Http\Services\GHNService;
 use App\Jobs\SendOrderConfirmation;
-use App\Models\Provinces;
-use App\Models\Voucher;
-use App\Models\Ward;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\GoogleLoginController;
 use App\Http\Controllers\client\FaceBookLoginController;
@@ -51,6 +45,7 @@ use \App\Http\Controllers\Admin\SystemNotificationController;
 
 use App\Notifications\SystemNotification;
 use \Illuminate\Support\Facades\Notification;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -71,7 +66,11 @@ Route::group(['prefix' => 'admin'], function () {
 Route::group(['middleware' => 'admin.auth', 'prefix' => 'admin'], function () {
     /* Route Dashboard */
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('dashboard/orders', [DashboardOrderController::class, 'orders'])->name('dashboardorder.orders');
+    /* Route Report */
+    Route::get('report/orders', [ReportController::class, 'orders'])->name('report.orders');
+    Route::get('report/users', [ReportController::class, 'users'])->name('report.users');
+    Route::get('report/revenue', [ReportController::class, 'revenue'])->name('report.revenue');
+    Route::get('report/purchase_receipt', [ReportController::class, 'purchase_receipt'])->name('report.purchase_receipt');
     // Quản hệ thống
     Route::group(['middleware' => ['role:' . Roles::SYSTEM_ADMINISTRATOR->name]], function () {
         /* Route User */
@@ -275,10 +274,10 @@ Route::group(['prefix' => ''], function () {
     /* Route Order */
     Route::get('/don-hang', [OrderClientController::class, 'index'])->name('order.index');
     Route::get('/fetch-orders', [OrderClientController::class, 'fetchOrders'])->name('fetch.orders');
-    Route::get('/chi-tiet-don-hang/{order}',[OrderClientController::class,'detail'])->name('order.detail');
-    Route::get('/check-out',[OrderClientController::class,'orderCheckOut'])->name('checkout');
-    Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
-    Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
+    Route::get('/chi-tiet-don-hang/{order}', [OrderClientController::class, 'detail'])->name('order.detail');
+    Route::get('/check-out', [OrderClientController::class, 'orderCheckOut'])->name('checkout');
+    Route::post('/check-out', [GHNService::class, 'store'])->name('checkout.store');
+    Route::get('/check-out/success/{order}', [OrderClientController::class, 'success'])->name('checkout.success');
     Route::post('orders/{order}/cancel', [OrderClientController::class, 'cancel'])
         ->name('orders.cancel');
     Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])

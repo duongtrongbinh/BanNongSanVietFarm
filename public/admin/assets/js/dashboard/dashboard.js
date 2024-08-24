@@ -1,47 +1,42 @@
 $(document).ready(function () {
-    function fetchData(filter = 'day') {
+    function fetchData() {
         $.when(
             $.ajax({
                 url: '/api/orders',
                 type: 'GET',
-                data: { filter: filter }
+                data: { filter: 'day' }
             }),
             $.ajax({
                 url: '/api/orders/total',
                 type: 'GET',
-                data: { filter: filter }
+                data: { filter: 'day' }
             }),
             $.ajax({
                 url: '/api/users',
                 type: 'GET',
-                data: { filter: filter }
+                data: { filter: 'day' }
             })
         ).done(function (ordersResponse, revenueResponse, usersResponse) {
             const ordersData = ordersResponse[0];
             const revenueData = revenueResponse[0];
             const usersData = usersResponse[0];
 
-            updateChart(ordersData, revenueData, usersData, filter);
+            updateChart(ordersData, revenueData, usersData);
         });
     }
-    function updateChart(ordersData, revenueData, usersData, filter) {
+
+    function updateChart(ordersData, revenueData, usersData) {
         const salesData = [
-            ordersData.orders_today.toLocaleString('vi-VN'),
-            ordersData.orders_this_month.toLocaleString('vi-VN'),
-            ordersData.orders_this_year.toLocaleString('vi-VN')
+            parseInt(ordersData.orders_today).toLocaleString('vi-VN')
         ];
         const revenueDataPoints = [
-            revenueData.total_today.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }),
-            revenueData.total_this_month.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }),
-            revenueData.total_this_year.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+            parseFloat(revenueData.total_today).toLocaleString('vi-VN', { style: 'currency', currency: 'VND', minimumFractionDigits: 0, maximumFractionDigits: 0 })
         ];
         const customersData = [
-            usersData.users_today.toLocaleString('vi-VN'),
-            usersData.users_this_month.toLocaleString('vi-VN'),
-            usersData.users_this_year.toLocaleString('vi-VN')
+            parseInt(usersData.users_today).toLocaleString('vi-VN')
         ];
 
-        const xCategories = getXaxisCategories(filter);
+        const xCategories = ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"];
 
         new ApexCharts(document.querySelector("#reportsChart"), {
             series: [{
@@ -86,27 +81,11 @@ $(document).ready(function () {
             },
             tooltip: {
                 x: {
-                    format: filter === 'day' ? 'HH:mm' : (filter === 'month' ? 'dd/MM' : 'MM/yyyy')
+                    format: 'HH:mm'
                 },
             }
         }).render();
     }
 
-    function getXaxisCategories(filter) {
-        if (filter === 'day') {
-            return ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"];
-        } else if (filter === 'month') {
-            return Array.from({ length: 31 }, (_, i) => `Day ${i + 1}`);
-        } else {
-            return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        }
-    }
-
     fetchData();
-
-    $('.filter .dropdown-menu a').on('click', function (e) {
-        e.preventDefault();
-        const filter = $(this).data('filter');
-        fetchData(filter);
-    });
 });
