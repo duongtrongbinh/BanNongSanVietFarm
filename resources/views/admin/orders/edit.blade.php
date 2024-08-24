@@ -195,7 +195,7 @@
                                 </div>
                             @else
                                 @if ($order->status == OrderStatus::PENDING->value || $order->status == OrderStatus::DELIVERED->value || $show)
-                                    <form action="{{ route('orders.update', $order->id) }}" method="POST">
+                                    <form action="{{ route('orders.update', ['order' => $order->id, 'return' => $show ? 1 : '']) }}" method="POST">
                                         @csrf
                                         @method('PUT')
                                         <button type="submit" class="btn btn-primary btn-sm align-items-center" style="font-size: 0.9rem; margin-right: 5px;">
