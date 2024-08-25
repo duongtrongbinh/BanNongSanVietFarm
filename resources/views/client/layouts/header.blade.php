@@ -1,8 +1,14 @@
-  <style>
+<style>
+    .dropdown-menu-cart {
+        min-width: 31.25rem;
+    }
+    .div-cart::-webkit-scrollbar {
+        width: 8px; /* Đặt chiều rộng của thanh cuộn */
+        height: 8px; /* Đặt chiều cao của thanh cuộn (khi cuộn ngang) */
+    }
     .shadow {
         top: 0 !important;
     }
-
     .search-input {
         width: 0;
         padding-right: 0;
@@ -15,6 +21,34 @@
         padding-right: 45px;
         opacity: 1;
     }
+
+    @media (max-width: 576px) { /* Màn hình nhỏ hơn hoặc bằng 576px */
+        .dropdown-menu-cart {
+            min-width: 0 !important;
+        }
+        .div-cart {
+            max-height: 220px !important;
+            overflow: auto !important;
+        }
+    }
+
+    @media (max-width: 1024px) { /* Màn hình nhỏ hơn hoặc bằng 768px */
+        .navbar {
+            height: 100%;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .div-search {
+            margin-left: 0 !important;
+        }
+        .div-user {
+            margin: 0.25rem !important;
+        }
+        .div-cart {
+            max-height: 220px !important;
+            overflow: auto !important;
+        }
+    }
 </style>
 <!-- Navbar start -->
 <div class="fixed-top container-fluid">
@@ -23,9 +57,11 @@
           <a href="{{ route('home') }}" class="navbar-brand">
             <img src="{{ asset('client/assets/img/logo.png') }}" height="100px">
           </a>
-          <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-              <span class="fa fa-bars text-primary"></span>
-          </button>
+          <div class="d-flex div-responsive">
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars text-primary"></span>
+            </button>
+          </div>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
                     <a href="{{ route('home') }}"
@@ -37,8 +73,8 @@
                     <a href="{{route('contact.index')}}" class="nav-item nav-link @if(request()->is('*lien-he*')) active @endif"><b>Liên hệ</b></a>
                     <a href="{{route('policy.index')}}" class="nav-item nav-link @if(request()->is('*chinh-sach*')) active @endif"><b>Chính sách</b></a>
                 </div>
-                <div class="d-flex align-items-center m-3 me-0">
-                    <div class="position-relative mx-auto">
+                <div class="d-flex align-items-center m-3 me-0 div-user">
+                    <div class="div-search position-relative mx-auto">
                         <form action="{{ route('shop') }}" method="GET" class="search-form">
                             <input class="form-control border-2 border-secondary rounded-pill search-input" type="text" name="search" placeholder="Tìm kiếm..." style="padding-right: 45px;">
                             <button type="button" class="btn border-2 border-secondary position-absolute rounded-pill text-white h-100 search-button" style="top: 0; right: 0;">
@@ -47,7 +83,7 @@
                             <button type="submit" class="d-none submit-btn"></button>
                         </form>
                     </div>                    
-                    <div class="dropdown topbar-head-dropdown ms-1 header-item">
+                    <div class="dropdown topbar-head-dropdown ms-1 header-item div-cart-responsive">
                         <button type="button"
                                 class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle position-relative my-auto cart-button"
                                 data-url="{{ route('cart.getCart') }}"
@@ -60,7 +96,7 @@
                                 style="top: -5px; left: 30px; height: 20px; min-width: 20px;">{{ session()->exists('cart') ? count(session()->get('cart')) : 0 }}</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end p-0 dropdown-menu-cart"
-                             style="min-width: 31.25rem" aria-labelledby="page-header-cart-dropdown">
+                             aria-labelledby="page-header-cart-dropdown">
                             @if (session('cart'))
                                 <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
                                     <div class="row align-items-center">
@@ -76,7 +112,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div data-simplebar style="max-height: 100%;" class="div-cart">
+                                <div data-simplebar style="max-height: 330px;" class="div-cart overflow-auto">
                                     <div class="p-2 cart-items">
                                         @php $total = 0 @endphp
                                         @foreach((array) session('cart') as $id => $item)
@@ -213,5 +249,27 @@
 
         // Thêm sự kiện để ẩn ô nhập liệu khi nhấp ra ngoài
         document.addEventListener('click', handleClickOutside);
+
+        const cartDiv = document.querySelector('.div-cart-responsive');
+        const targetDiv = document.querySelector('.div-responsive'); // Thẻ div mà bạn muốn di chuyển vào
+        const originalParent = cartDiv.parentElement;
+
+        function moveCartDiv() {
+            if (window.innerWidth <= 1024) { // Độ rộng màn hình khi responsive
+                if (!targetDiv.contains(cartDiv)) {
+                    targetDiv.appendChild(cartDiv);
+                }
+            } else {
+                if (cartDiv.parentElement !== originalParent) {
+                    originalParent.appendChild(cartDiv); // Di chuyển lại vị trí ban đầu khi không responsive
+                }
+            }
+        }
+
+        // Gọi hàm ngay khi trang được tải và khi thay đổi kích thước cửa sổ
+        moveCartDiv();
+        console.log(cartDiv);
+        
+        window.addEventListener('resize', moveCartDiv);
     });
 </script>

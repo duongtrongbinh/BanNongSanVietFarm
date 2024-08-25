@@ -342,6 +342,7 @@
 
                             // Xóa hàng trong bảng
                             $(this).closest('tr').remove();
+                            $(this).closest('.dropdown-item-cart').remove();
                         }
                     });
                 });
