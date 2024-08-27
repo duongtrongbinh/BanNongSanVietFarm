@@ -6,6 +6,7 @@
         <h1 class="text-center text-white display-6">{{ $category->name }}</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-white">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('shop') }}" class="text-white">Cửa hàng</a></li>
             <li class="breadcrumb-item"><a href="{{ route('category', $category->slug) }}" class="active">{{ $category->name }}</a></li>
         </ol>
     </div>
@@ -44,7 +45,7 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Thương hiệu</h4>
-                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="height: 200px;">
+                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="max-height: 200px;">
                                                 @foreach ($brands as $brand)
                                                     @if ($brand->products->isNotEmpty())
                                                         <li>
@@ -66,7 +67,7 @@
                                     <div class="col-lg-12">
                                         <div class="mb-3">
                                             <h4>Danh mục</h4>
-                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="height: 200px;">
+                                            <ul class="list-unstyled fruite-categorie overflow-auto" style="max-height: 200px;">
                                                 @foreach ($categories as $category)
                                                     @if ($category->products->isNotEmpty())
                                                         <li>

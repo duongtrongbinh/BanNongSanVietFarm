@@ -30,9 +30,13 @@
             left: 23px;
             border-left: 2px dashed #626264;
         }
+    
+        .accordion-item.single-item::before {
+            display: none;
+        }
 
         .accordion-item:last-child::before {
-            display: none;
+            bottom: 10px;
         }
     </style>
 @endsection
@@ -195,7 +199,7 @@
                                 </div>
                             @else
                                 @if ($order->status == OrderStatus::PENDING->value || $order->status == OrderStatus::DELIVERED->value || $show)
-                                    <form action="{{ route('orders.update', $order->id) }}" method="POST">
+                                    <form action="{{ route('orders.update', ['order' => $order->id, 'return' => $show ? 1 : '']) }}" method="POST">
                                         @csrf
                                         @method('PUT')
                                         <button type="submit" class="btn btn-primary btn-sm align-items-center" style="font-size: 0.9rem; margin-right: 5px;">
@@ -250,7 +254,7 @@
                                                 @foreach($historyWithTransfers['transferHistories'] as $transfer_history)
                                                     @foreach (TransferStatus::cases() as $statusTransfer)
                                                         @if($transfer_history->status == $statusTransfer->value)
-                                                            <h6 class="">{{ $statusTransfer->label() }}</h6>
+                                                            <h6 class=""><b>{{ $statusTransfer->label() }}</b> - <span class="fw-normal">{{ $transfer_history->warehouse }}</span></h6>
                                                             <p class="text-muted">{{ mb_convert_case(Carbon::parse($transfer_history->created_at)->translatedFormat('H:i:s l, d/m/Y'), MB_CASE_TITLE, "UTF-8") }}</p>
                                                         @endif
                                                     @endforeach
@@ -312,6 +316,11 @@
 
     <script>
     $(document).ready(function() {
+        var items = document.querySelectorAll('.accordion-item');
+        if (items.length === 1) {
+            items[0].classList.add('single-item');
+        }
+        
         let updated = @json($updated);
         let error = @json($error);
         if (updated) {

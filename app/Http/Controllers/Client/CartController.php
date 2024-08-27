@@ -20,10 +20,11 @@ class CartController extends Controller
     public function addToCart(Request $request)
     {
         $cart = session()->get('cart');
-        $product = $request->input('product');
+        $product = $request->product;
         $id = $product['id'];
-        $quantity = $request->input('quantity');
+        $quantity = $request->quantity;
         $productDT = Product::findOrFail($id);
+        
         if(isset($cart[$id])) {
             $cart[$id]['quantity'] += $quantity;
         } else {
@@ -40,6 +41,12 @@ class CartController extends Controller
                 'price_regular' => $productDT->price_regular,
                 'price_sale' => $productDT->price_sale,
             ];
+        }
+
+        if ($cart[$id]['quantity'] > $productDT->quantity) {
+            return response()->json([
+                'error' => 'Số lượng không được lớn hơn sản phẩm sẵn có!',
+            ]);
         }
 
         session()->put('cart', $cart);
@@ -65,15 +72,32 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-        $id = $request->input('id');
-        $quantity = $request->input('quantity');
+        $id = $request->id;
+        $quantity = $request->quantity;
+        $productDT = Product::findOrFail($id);
 
         $cart = session()->get('cart');
+
+        if ($quantity <= 0 || !ctype_digit($quantity)) {
+            return response()->json([
+                'error' => 'Số lượng phải là số nguyên và lớn hơn 0!',
+                'cart' => $cart[$id],
+            ]);
+        }
+
+        if ($quantity > $productDT->quantity) {
+            return response()->json([
+                'error' => 'Số lượng không được lớn hơn sản phẩm sẵn có!',
+                'cart' => $cart[$id],
+            ]);
+        }
+
         $cart[$id]['quantity'] = $quantity;
+
         session()->put('cart', $cart);
         
         return response()->json([
-            'message' => 'Update cart successfully',
+            'message' => 'Cập nhật giỏ hàng thành công!',
             'cart' => $cart,
         ]);
     }

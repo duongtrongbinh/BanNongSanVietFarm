@@ -2,6 +2,13 @@
 @section('title', 'Trang chủ')
 @section('styles')
     <style>
+        .categories-wrapper .nav {
+            flex-wrap: nowrap !important;
+        }
+        .categories-wrapper::-webkit-scrollbar {
+            width: 8px; /* Đặt chiều rộng của thanh cuộn */
+            height: 8px; /* Đặt chiều cao của thanh cuộn (khi cuộn ngang) */
+        }
         .product-div-a {
             color: inherit !important;
         }
@@ -71,8 +78,8 @@
                             <i class="fas fa-car-side fa-3x text-white"></i>
                         </div>
                         <div class="featurs-content text-center">
-                            <h5>Miễn Phí Giao Hàng</h5>
-                            <p class="mb-0">Đơn hàng từ 500,000 VNĐ</p>
+                            <h5 class="text-truncate" data-toggle="tooltip" data-placement="top" title="Miễn Phí Giao Hàng">Miễn Phí Giao Hàng</h5>
+                            <p class="mb-0 text-truncate" data-toggle="tooltip" data-placement="top" title="Đơn hàng từ 500,000 VNĐ">Đơn hàng từ 500,000 VNĐ</p>
                         </div>
                     </div>
                 </div>
@@ -82,8 +89,8 @@
                             <i class="fas fa-user-shield fa-3x text-white"></i>
                         </div>
                         <div class="featurs-content text-center">
-                            <h5>Thanh Toán Bảo Mật</h5>
-                            <p class="mb-0">Bảo mật thông tin 100%</p>
+                            <h5 class="text-truncate" data-toggle="tooltip" data-placement="top" title="Thanh Toán Bảo Mật">Thanh Toán Bảo Mật</h5>
+                            <p class="mb-0 text-truncate" data-toggle="tooltip" data-placement="top" title="Thanh Toán Bảo Mật">Bảo mật thông tin 100%</p>
                         </div>
                     </div>
                 </div>
@@ -93,8 +100,8 @@
                             <i class="fas fa-exchange-alt fa-3x text-white"></i>
                         </div>
                         <div class="featurs-content text-center">
-                            <h5>Hoàn Trả Trong 7 Ngày </h5>
-                            <p class="mb-0">Bảo đảm hoàn tiền trong 7 ngày</p>
+                            <h5 class="text-truncate" data-toggle="tooltip" data-placement="top" title="Hoàn Trả Trong 7 Ngày">Hoàn Trả Trong 7 Ngày</h5>
+                            <p class="mb-0 text-truncate" data-toggle="tooltip" data-placement="top" title="Bảo đảm hoàn tiền trong 7 ngày">Bảo đảm hoàn tiền trong 7 ngày</p>
                         </div>
                     </div>
                 </div>
@@ -104,8 +111,8 @@
                             <i class="fa fa-phone-alt fa-3x text-white"></i>
                         </div>
                         <div class="featurs-content text-center">
-                            <h5>Hỗ Trợ 24/7</h5>
-                            <p class="mb-0">Hỗ trợ nhanh chóng mọi lúc</p>
+                            <h5 class="text-truncate" data-toggle="tooltip" data-placement="top" title="Hỗ Trợ 24/7">Hỗ Trợ 24/7</h5>
+                            <p class="mb-0 text-truncate" data-toggle="tooltip" data-placement="top" title="Hỗ trợ nhanh chóng mọi lúc">Hỗ trợ nhanh chóng mọi lúc</p>
                         </div>
                     </div>
                 </div>
@@ -124,20 +131,22 @@
                         <h1>Sản phẩm</h1>
                     </div>
                     <div class="col-lg-6 text-end">
-                        <ul class="nav nav-pills d-inline-flex text-center mb-5">
-                            <li class="nav-item">
-                                <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-0">
-                                    <span class="text-dark" style="width: 130px;">Tất cả</span>
-                                </a>
-                            </li>
-                            @foreach ($categories as $key => $category)
+                        <div class="categories-wrapper" style="max-width: 100%; overflow-x: auto;">
+                            <ul class="nav nav-pills text-center mb-5">
                                 <li class="nav-item">
-                                    <a class="d-flex py-2 m-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-{{ $key + 1 }}">
-                                        <span class="text-dark" style="width: 130px;">{{ $category->name }}</span>
+                                    <a class="d-flex m-2 py-2 bg-light rounded-pill active" data-bs-toggle="pill" href="#tab-0">
+                                        <span class="text-dark" style="width: 130px;">Tất cả</span>
                                     </a>
                                 </li>
-                            @endforeach
-                        </ul>
+                                @foreach ($categories as $key => $category)
+                                    <li class="nav-item">
+                                        <a class="d-flex py-2 m-2 bg-light rounded-pill" data-bs-toggle="pill" href="#tab-{{ $key + 1 }}">
+                                            <span class="text-dark" style="width: 130px;">{{ $category->name }}</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="tab-content">

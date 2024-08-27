@@ -34,7 +34,7 @@
             height: 100%;
             left: 23px;
             border-left: 2px dashed #626264;
-            z-index: -1; 
+            z-index: -1;
         }
 
         .accordion-item.single-item::before {
@@ -44,24 +44,19 @@
         .accordion-item:last-child::before {
             bottom: 10px;
         }
+
     </style>
 @endsection
 @php
     use App\Enums\OrderStatus;
     use App\Enums\TransferStatus;
     use Carbon\Carbon;
-
-    $updated = session('updated');
-    $error = session('error');
 @endphp
 @section('content')
     <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">Chi tiết đơn hàng</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            @if (Auth::check())
-                <li class="breadcrumb-item"><a href="{{ route('order.index') }} "> Đơn hàng </a></li>
-            @endif
             <li class="breadcrumb-item active text-white">Chi tiết đơn hàng</li>
         </ol>
     </div>
@@ -206,15 +201,6 @@
                                         <div class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem; cursor: default; pointer-events: none;">
                                             Đơn hàng đã bị hủy
                                         </div>
-                                    @else
-                                        @if ($order->status < OrderStatus::PROCESSING->value && Auth::check())
-                                            <form action="{{ route('ordersClient.cancel', $order->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-danger btn-sm align-items-center" style="font-size: 0.9rem;">
-                                                    Hủy đơn hàng
-                                                </button>
-                                            </form>
-                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -306,32 +292,11 @@
     </div>
 @endsection
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!--ShowMessage js-->
-    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
-
     <script>
         $(document).ready(function() {
             var items = document.querySelectorAll('.accordion-item');
             if (items.length === 1) {
                 items[0].classList.add('single-item');
-            }
-
-            let updated = @json($updated);
-            let error = @json($error);
-            if (updated) {
-                let title = 'Cập nhật';
-                let message = updated;
-                let icon = 'success';
-                showMessage(title, message, icon);
-            }
-
-            if (error) {
-                let title = 'Lỗi';
-                let message = error;
-                let icon = 'error';
-                showMessage(title, message, icon);
             }
         });
     </script>

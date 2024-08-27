@@ -14,7 +14,6 @@ use App\Models\TransferHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
@@ -97,6 +96,10 @@ class OrderController extends Controller
                 ],
                 OrderStatus::RETURNED->value => [
                     'label' => 'Trả hàng/Hoàn tiền',
+                    'badgeClass' => 'badge bg-danger text-white text-uppercase'
+                ],
+                OrderStatus::RETRY->value => [
+                    'label' => 'Gửi yêu cầu lỗi',
                     'badgeClass' => 'badge bg-danger text-white text-uppercase'
                 ],
             ];
@@ -237,22 +240,7 @@ class OrderController extends Controller
 
         // Transition from 4 to 5 requires checking order_histories for statuses 0 to 10 and not having statuses 11 or higher
         if ($currentStatus === OrderStatus::DELIVERED->value && $newStatus === OrderStatus::COMPLETED->value) {
-            $validStatuses = range(TransferStatus::READY_TO_PICK->value, TransferStatus::DELIVERED->value);
-            $invalidStatuses = range(TransferStatus::WAITING_TO_RETURN->value, TransferStatus::CANCEL->value);
-
-            $validCount = TransferHistory::where('order_id', $order->id)
-                ->whereIn('status', $validStatuses)
-                ->count();
-
-            $invalidCount = TransferHistory::where('order_id', $order->id)
-                ->whereIn('status', $invalidStatuses)
-                ->count();
-
-            if ($validCount === count($validStatuses) && $invalidCount === 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return true;
         }
 
         return false;
@@ -350,7 +338,7 @@ class OrderController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('order', 'statusData', 'orderHistoriesWithTransfers', 'show'));
     }
 
-    public function update(Order $order)
+    public function update(Order $order, $return = null)
     {
         $newStatus = '';
         $message = '';
@@ -384,22 +372,22 @@ class OrderController extends Controller
                 return redirect()->back()->with('error', $message);
         }
 
-        if ($this->isValidStatusTransition($order, $newStatus)) {
+        if ($return == '1' || $this->isValidStatusTransition($order, $newStatus)) {
             $order->update(['status' => $newStatus]);
-
+    
             OrderHistory::create([
                 'order_id' => $order->id,
                 'status' => $newStatus,
             ]);
-
+    
             return redirect()
                 ->back()
                 ->with('updated', $message);
-        } else {
-            return redirect()
-                ->back()
-                ->with('error', 'Đơn hàng không đủ điều kiện để cập nhật trạng thái!');
         }
+
+        return redirect()
+            ->back()
+            ->with('error', 'Đơn hàng không đủ điều kiện để cập nhật trạng thái!');
     }
 
     public function updateStatus(Request $request)
@@ -473,9 +461,15 @@ class OrderController extends Controller
 
     public function cancel(Order $order)
     {
+        if ($order->status == OrderStatus::CANCELLED->value) {
+            return redirect()
+                ->back()
+                ->with('error', 'Không thể hủy đơn hàng vì đơn hàng đã bị hủy!');
+        }
+
         if ($order->status < OrderStatus::PROCESSING->value) {
             // Cập nhật trạng thái của order
-            $order = $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
+            $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
 
             // Thêm bản ghi vào order_histories
             $data = [

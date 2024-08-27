@@ -184,7 +184,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
             ->name('orders.updateStatus');
         Route::get('orders/{order}/edit/{return?}', [OrderController::class, 'edit'])
             ->name('orders.edit');
-        Route::resource('orders', OrderController::class)->except('edit');
+        Route::put('orders/{order}/update/{return?}', [OrderController::class, 'update'])
+            ->name('orders.update');
+        Route::resource('orders', OrderController::class)->except(['edit', 'update']);
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
             ->name('orders.cancel');
         Route::get('/bill/return', [GHNService::class, 'pay_return'])
@@ -274,7 +276,7 @@ Route::group(['prefix' => ''], function () {
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
     Route::post('orders/{order}/cancel', [OrderClientController::class, 'cancel'])
-        ->name('orders.cancel');
+        ->name('ordersClient.cancel');
     Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])
         ->name('orders.checking');
 

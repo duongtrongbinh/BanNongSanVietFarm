@@ -80,21 +80,25 @@
                             _token: $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            let title = 'Thêm vào giỏ';
-                            let message = 'Thêm sản phẩm vào giỏ hàng thành công!';
-                            let icon = 'success';
+                            if (response.error) {
+                                let title = 'Lỗi';
+                                let icon = 'error';
 
-                            showMessage(title, message, icon);
+                                showMessage(title, response.error, icon);
+                            } else {
+                                let title = 'Thêm vào giỏ';
+                                let message = 'Thêm sản phẩm vào giỏ hàng thành công!';
+                                let icon = 'success';
 
-                            $('.cart-count').text(Object.keys(response.cart).length);
+                                showMessage(title, message, icon);
+
+                                $('.cart-count').text(Object.keys(response.cart).length);
+                            }
+                        },
+                        error: function(response) {
+                            
                         }
                     });
-                }
-
-                // Cập nhật data-quantity khi giá trị của input thay đổi
-                function updateQuantity() {
-                    let quantity = $('input[name="quantity"]').val();
-                    $('.add-to-cart').data('quantity', quantity);
                 }
 
                 function renderCart(url) {
@@ -112,12 +116,7 @@
                                 cartEmpty.classList.add('text-center', 'empty-cart');
                                 cartEmpty.id = 'empty-cart';
                                 cartEmpty.innerHTML = `
-                                    <div class="avatar-md mx-auto my-3">
-                                        <div class="avatar-title bg-info-subtle text-info fs-36 rounded-circle">
-                                            <i class='bx bx-cart'></i>
-                                        </div>
-                                    </div>
-                                    <h5 class="mb-3">Giỏ hàng trống!</h5>
+                                    <h5 class="mb-3 pt-3">Giỏ hàng trống!</h5>
                                     <a href="{{ route('shop') }}" class="btn btn-success w-md mb-3">Mua Ngay</a>
                                 `;
                                 cartDrop.appendChild(cartEmpty);
@@ -201,7 +200,7 @@
                     });
                 }
 
-                function updateToCart(url, id, quantity) {
+                function updateToCart(url, id, quantity, inputField) {
                     $.ajax({
                         url: url,
                         method: 'POST',
@@ -215,20 +214,36 @@
                             quantity: quantity,
                         },
                         success: function(response) {
-                            // Lấy danh sách các khóa từ đối tượng cart
-                            let keys = Object.keys(response.cart);
+                            if (response.error) {
+                                let title = 'Lỗi';
+                                let icon = 'error';
+                                
+                                showMessage(title, response.error, icon);
+                                inputField.val(response.cart.quantity);
+                                let oldTotalPrice = response.cart.quantity * response.cart.price;
+                                let oldFormattedTotal = formatNumber(oldTotalPrice);
+                                inputField.closest('tr').find('.total').text(oldFormattedTotal + 'đ');
+                            } else {
+                                // Lấy danh sách các khóa từ đối tượng cart
+                                let keys = Object.keys(response.cart);
 
-                            // Chuyển đổi đối tượng thành mảng các sản phẩm
-                            let cartArray = keys.map(key => response.cart[key]);
-                            let totalPrice = 0;
-                            cartArray.forEach(function(cart) {
-                                let total = (cart.price * cart.quantity);
-                                totalPrice += total;
-                            });
-                            
-                            const subtotal = formatNumber(totalPrice);
-                            $('#subtotal').text(subtotal + 'đ');
-                        }
+                                // Chuyển đổi đối tượng thành mảng các sản phẩm
+                                let cartArray = keys.map(key => response.cart[key]);
+                                let totalPrice = 0;
+                                cartArray.forEach(function(cart) {
+                                    let total = (cart.price * cart.quantity);
+                                    totalPrice += total;
+                                });
+
+                                const subtotal = formatNumber(totalPrice);
+                                $('#subtotal').text(subtotal + 'đ');
+
+                                let title = 'Cập nhật';
+                                let icon = 'success';
+                                
+                                showMessage(title, response.message, icon);
+                            }
+                        },
                     });
                 }
 
@@ -265,22 +280,22 @@
                             let icon = 'success';
 
                             showMessage(title, message, icon);
+
+                            if (response.cart.length === 0) {
+                                $('.div-table').hide();
+                                let cartEmpty = `
+                                    <div class="text-center div-home">
+                                        <h3>Không có sản phẩm nào trong giỏ hàng</h3>
+                                        <a href="{{ route('home') }}" class="btn btn-secondary"> 
+                                            <i class="fa fa-arrow-left"></i> VỀ TRANG CHỦ
+                                        </a>
+                                    </div>
+                                `;
+                                $('.div-cart').html(cartEmpty);
+                            }
                         }
                     });
                 }
-
-                // Cập nhật data-quantity khi giá trị của input thay đổi
-                $('.quantity button').on('click', function () {
-                    var button = $(this);
-                    var oldValue = button.parent().parent().find('input').val();
-                    var newVal;
-
-                    newVal = parseFloat(oldValue)
-
-                    button.parent().parent().find('input').val(newVal);
-                    updateQuantity(); // Cập nhật giá trị data-quantity
-                });
-
 
                 $(".add-to-cart").on("click", function() {
                     let url = $(this).data("url");
@@ -292,15 +307,23 @@
                         id: id,
                     };
 
-                    setTimeout(function() {
-                        addToCart(product, url, quantity);
-                    }, 100);
+                    addToCart(product, url, quantity);
                 });
 
                 $(".cart-button").on("click", function() {
                     let url = $(this).data("url");
 
                     renderCart(url);
+                });
+
+                // Cập nhật data-quantity khi giá trị của input thay đổi
+                $('.quantity button').on('click', function () {
+                    var button = $(this);
+                    var oldValue = button.parent().parent().find('input').val();
+                    var newVal = parseFloat(oldValue);
+
+                    button.parent().parent().find('input').val(newVal);
+                    $('.add-to-cart').data('quantity', newVal);
                 });
 
                 $('.quantity button').on('click', function () {
@@ -310,17 +333,46 @@
                     var button = $(this);
                     var inputField = button.parent().parent().find('input');
                     var oldValue = button.parent().parent().find('input').val();
-                    var quantity;
+                    var quantity = parseFloat(oldValue);
                     
-                    quantity = parseFloat(oldValue)
-
                     let price = $(this).data("price");
                     var $tr = $(this).closest('tr');
                     var totalPrice = quantity * price;
                     var total = formatNumber(totalPrice);
                     $tr.find('.total').text(total + 'đ');
 
-                    updateToCart(url, id, quantity);
+                    if (url) {
+                        updateToCart(url, id, quantity, inputField);
+                    }
+                });
+
+                $('.quantity input').on('change', function () {
+                    let inputField = $(this);
+                    let quantity = inputField.val();
+
+                    let id = inputField.closest('.quantity').find('button[data-id]').data('id');
+                    let url = inputField.closest('.quantity').find('button[data-url]').data('url');
+                    let price = inputField.closest('.quantity').find('button[data-price]').data('price');
+                    
+                    if (url) {
+                        updateToCart(url, id, quantity, inputField);
+                    }
+                });
+
+                $('input[name="quantity"]').on("change", function() {
+                    let quantity = $(this).val();
+                    
+                    if (isNaN(quantity) || quantity <= 0 || !Number.isInteger(parseFloat(quantity))) {
+                        let title = 'Lỗi';
+                        let message = 'Số lượng phải là số nguyên và lớn hơn 0!';
+                        let icon = 'error';
+
+                        showMessage(title, message, icon);
+                        $(this).val(1); 
+                        quantity = 1;
+                    }
+
+                    $('.add-to-cart').data('quantity', quantity);
                 });
 
                 $(".remove-cart").on("click", function() {
@@ -342,6 +394,7 @@
 
                             // Xóa hàng trong bảng
                             $(this).closest('tr').remove();
+                            $(this).closest('.dropdown-item-cart').remove();
                         }
                     });
                 });
