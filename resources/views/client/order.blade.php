@@ -132,6 +132,12 @@
                             </button>
                         </li>
                         <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending" data-status="0">
+                                <i class="ri-loader-2-fill me-1 align-bottom"></i> 
+                                Đang chờ xử lý
+                            </button>
+                        </li>
+                        <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#shipping" data-status="2">
                                 <i class="ri-truck-fill me-1 align-bottom"></i> 
                                 Vận chuyển
@@ -174,6 +180,16 @@
                             </div>
                             <!-- Pagination -->
                             <div id="pagination" class="pagination">
+                                <!-- Pagination links will be loaded here via AJAX -->
+                            </div>
+                        </div>
+                        <!-- Pending -->
+                        <div class="tab-pane fade pending pt-3" id="pending">
+                            <div id="pending-orders" class="order-item">
+                                <!-- Orders will be loaded here via AJAX -->
+                            </div>
+                            <!-- Pagination -->
+                            <div id="pending-pagination" class="pagination">
                                 <!-- Pagination links will be loaded here via AJAX -->
                             </div>
                         </div>

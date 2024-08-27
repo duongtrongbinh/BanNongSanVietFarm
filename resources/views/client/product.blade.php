@@ -131,27 +131,37 @@
                                 </div>
                                 <p class="mb-0">{{ number_format($averageRatting, 1) }}</p>
                             </div>
-                            <div class="input-group quantity mb-5" style="width: 100px;">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                        <i class="fa fa-minus"></i>
-                                    </button>
+                            @if ($product->quantity > 0)
+                                <div class="input-group quantity mb-3" style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="text" name="quantity" class="form-control form-control-sm text-center border-0" value="1">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <input type="text" name="quantity" class="form-control form-control-sm text-center border-0" value="1">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                        <i class="fa fa-plus"></i>
-                                    </button>
+                                <p>{{ $product->quantity }} sản phẩm có sẵn</p>
+                                <div class="mt-3">
+                                    <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart"
+                                    data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}" data-quantity="1">
+                                        <i class="fa fa-shopping-bag me-2 text-primary"></i>
+                                        Thêm vào giỏ
+                                    </a>
                                 </div>
-                            </div>
-                            <p>{{ $product->quantity }} sản phẩm có sẵn</p>
-                            <div class="text-center mt-5">
-                                <a class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary add-to-cart"
-                                data-url="{{ route('cart.add') }}" data-id="{{ $product->id }}">
-                                    <i class="fa fa-shopping-bag me-2 text-primary"></i>
-                                    Thêm vào giỏ
-                                </a>
-                            </div>
+                            @elseif ($product->quantity <= 0)
+                                <p class="text-danger"><b>Hết hàng</b></p>
+                                <div class="mt-3">
+                                    <a href="{{ route('contact.index') }}" class="btn border border-danger rounded-pill px-4 py-2 mb-4 text-danger" style="font-size: 1.25rem;">
+                                        Liên hệ
+                                    </a>
+                                </div>
+                            @endif
+                            
                         </div>
                         <div class="col-lg-12">
                             <nav>

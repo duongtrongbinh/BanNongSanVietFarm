@@ -16,9 +16,6 @@ use App\Models\Ward;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 
 class OrderController extends Controller
@@ -83,7 +80,7 @@ class OrderController extends Controller
         $query = Order::with('order_details.product.category')
                     ->where('user_id', Auth::user()->id);
 
-        if ($status) {
+        if ($status !== null) {
             $query->where('status', $status);
         }
 
@@ -166,18 +163,6 @@ class OrderController extends Controller
                     ];
                     $showTransferHistory = true;
                     break;
-                case OrderStatus::RETURNED->value:
-                    $transferStatusRange = [
-                        TransferStatus::WAITING_TO_RETURN->value,
-                        TransferStatus::RETURN->value,
-                        TransferStatus::RETURN_TRANSPORTING->value,
-                        TransferStatus::RETURN_SORTING->value,
-                        TransferStatus::RETURNING->value,
-                        TransferStatus::RETURN_FAIL->value,
-                        TransferStatus::RETURNED->value
-                    ];
-                    $showTransferHistory = true;
-                    break;
                 default:
                     $transferStatusRange = [];
                     $showTransferHistory = false;
@@ -211,9 +196,15 @@ class OrderController extends Controller
 
     public function cancel(Order $order)
     {
+        if ($order->status == OrderStatus::CANCELLED->value) {
+            return redirect()
+                ->back()
+                ->with('error', 'Không thể hủy đơn hàng vì đơn hàng đã bị hủy!');
+        }
+
         if ($order->status < OrderStatus::PROCESSING->value) {
             // Cập nhật trạng thái của order
-            $order = $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
+            $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
 
             // Thêm bản ghi vào order_histories
             $data = [
@@ -274,16 +265,8 @@ class OrderController extends Controller
                         $showTransferHistory = true;
                         break;
                     case OrderStatus::RETURNED->value:
-                        $transferStatusRange = [
-                            TransferStatus::WAITING_TO_RETURN->value,
-                            TransferStatus::RETURN->value,
-                            TransferStatus::RETURN_TRANSPORTING->value,
-                            TransferStatus::RETURN_SORTING->value,
-                            TransferStatus::RETURNING->value,
-                            TransferStatus::RETURN_FAIL->value,
-                            TransferStatus::RETURNED->value
-                        ];
-                        $showTransferHistory = true;
+                        $transferStatusRange = [];
+                        $showTransferHistory = false;
                         break;
                     default:
                         $transferStatusRange = [];
@@ -306,7 +289,7 @@ class OrderController extends Controller
                 return $history['orderHistory']->created_at;
             });
 
-            return view('client.order-detail', compact('order', 'statusData', 'orderHistoriesWithTransfers'));
+            return view('client.checking-order', compact('order', 'statusData', 'orderHistoriesWithTransfers'));
         } else {
             return redirect()
                 ->back()

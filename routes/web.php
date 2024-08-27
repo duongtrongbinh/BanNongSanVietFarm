@@ -276,7 +276,7 @@ Route::group(['prefix' => ''], function () {
     Route::post('/check-out',[GHNService::class,'store'])->name('checkout.store');
     Route::get('/check-out/success/{order}',[OrderClientController::class,'success'])->name('checkout.success');
     Route::post('orders/{order}/cancel', [OrderClientController::class, 'cancel'])
-        ->name('orders.cancel');
+        ->name('ordersClient.cancel');
     Route::get('tra-cuu-don-hang', [OrderClientController::class, 'checking'])
         ->name('orders.checking');
 

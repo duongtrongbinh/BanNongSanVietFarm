@@ -1,5 +1,9 @@
 @extends('client.layouts.master')
 @section('title', 'Giỏ hàng')
+@php
+    $error = session('error');
+    $cart = session('cart');
+@endphp
 @section('content')
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
@@ -50,7 +54,7 @@
                                                 <i class="fa fa-minus"></i>
                                                 </button>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm text-center border-0" value="{{ $details['quantity'] }}" data-min="1" data-max="{{ $details['quantity'] }}">
+                                            <input type="text" class="form-control form-control-sm text-center border-0" value="{{ $details['quantity'] }}">
                                             <div class="input-group-btn">
                                                 <button class="btn btn-sm btn-plus rounded-circle bg-light border" data-id="{{ $id }}" data-price="{{ $details['price'] }}" data-url="{{ route('cart.update') }}">
                                                     <i class="fa fa-plus"></i>
@@ -97,5 +101,20 @@
 @endsection
 
 @section('scripts')
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--ShowMessage js-->
+    <script src="{{ asset('admin/assets/js/showMessage/message.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            let error = @json($error);
+
+            if (error) {
+                let title = 'Lỗi';
+                let icon = 'error';
+                showMessage(title, error, icon);
+            }
+        });
+    </script>
 @endsection

@@ -14,7 +14,6 @@ use App\Models\TransferHistory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
@@ -462,9 +461,15 @@ class OrderController extends Controller
 
     public function cancel(Order $order)
     {
+        if ($order->status == OrderStatus::CANCELLED->value) {
+            return redirect()
+                ->back()
+                ->with('error', 'Không thể hủy đơn hàng vì đơn hàng đã bị hủy!');
+        }
+
         if ($order->status < OrderStatus::PROCESSING->value) {
             // Cập nhật trạng thái của order
-            $order = $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
+            $this->orderRepository->update($order->id, ['status' => OrderStatus::CANCELLED->value]);
 
             // Thêm bản ghi vào order_histories
             $data = [

@@ -268,7 +268,6 @@
 
         // Gọi hàm ngay khi trang được tải và khi thay đổi kích thước cửa sổ
         moveCartDiv();
-        console.log(cartDiv);
         
         window.addEventListener('resize', moveCartDiv);
     });
